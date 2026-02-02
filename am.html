@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>استضافة أوبرا عاشور - Kids Area</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- المتغيرات والألوان الحديثة (High-End Theme) --- */
+        :root {
+            --primary: #ff4757;       /* أحمر حيوي */
+            --primary-hover: #ff6b81;
+            --secondary: #2f3542;     /* داكن جداً للنصوص */
+            --accent: #1e90ff;        /* أزرق عصري */
+            --success: #2ed573;       /* أخضر نيون هادئ */
+            --warning: #ffa502;       /* برتقالي ذهبي */
+            --danger: #ff4757;
+            --bg-body: #f1f2f6;       /* خلفية رمادية فاتحة جداً */
+            --surface: #ffffff;       /* لون الكروت */
+            --whatsapp: #25D366;
+            --glass: rgba(255, 255, 255, 0.95);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+            --shadow-md: 0 8px 24px rgba(149, 157, 165, 0.1);
+            --shadow-lg: 0 15px 35px rgba(0,0,0,0.1);
+            --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- التنسيقات العامة --- */
+        * { 
+            box-sizing: border-box; margin: 0; padding: 0; 
+            font-family: 'Tajawal', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+            outline: none;
+        }
+        
+        body { 
+            background-color: var(--bg-body); 
+            color: var(--secondary); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            font-size: 16px;
+            overflow-x: hidden;
+        }
+
+        /* تحسين شريط التمرير */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        /* --- Animations General --- */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-ring { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(255, 71, 87, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); } }
+
+        /* --- Header بتأثير الزجاج --- */
+        header { 
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 0; 
+            position: sticky; top: 0; z-index: 1000; 
+            box-shadow: var(--shadow-sm);
+        }
+        .header-top { 
+            background: var(--secondary); 
+            color: white; 
+            font-size: 0.85rem; 
+            padding: 8px 20px; 
+            display: flex; justify-content: space-between; align-items: center; 
+        }
+        .header-content { 
+            padding: 15px 20px; 
+            display: flex; align-items: center; gap: 20px; 
+            max-width: 1200px; margin: 0 auto;
+        }
+        .logo-img { 
+            height: 55px; width: 55px; 
+            background: white; 
+            border-radius: 50%; 
+            padding: 5px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+            border: 2px solid var(--bg-body);
+            object-fit: contain;
+        }
+        .header-text h1 { color: var(--primary); font-weight: 800; font-size: 1.5rem; margin-bottom: 0.2rem; letter-spacing: -0.5px; }
+        .header-text p { color: #7f8c8d; font-size: 0.9rem; font-weight: 500; }
+
+        /* --- LOGIN SCREEN --- */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #ff9ff3 0%, #feca57 100%);
+            display: flex; justify-content: center; align-items: center; z-index: 9999;
+        }
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem 2rem; border-radius: 24px; width: 90%; max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15); text-align: center;
+            border: 1px solid rgba(255,255,255,0.5);
+            animation: fadeIn 0.6s ease-out;
+        }
+        .login-card h2 { color: var(--secondary); margin-bottom: 0.5rem; font-weight: 800; }
+        .login-input {
+            width: 100%; padding: 18px; 
+            background: #f7f9fc; border: 2px solid transparent; 
+            border-radius: 12px; font-size: 1.3rem; 
+            text-align: center; margin: 2rem 0; letter-spacing: 8px; font-weight: bold;
+            transition: var(--transition);
+            color: var(--secondary);
+        }
+        .login-input:focus { background: white; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(255, 71, 87, 0.1); }
+
+        /* --- LAYOUT & GRID --- */
+        main { flex: 1; padding: 2rem 1rem; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+        @media (min-width: 992px) { .dashboard-grid { grid-template-columns: 380px 1fr; } }
+
+        /* --- CARDS --- */
+        .card { 
+            background: var(--surface); 
+            border-radius: var(--radius); 
+            padding: 1.8rem; 
+            box-shadow: var(--shadow-md); 
+            margin-bottom: 1.5rem; 
+            border: 1px solid rgba(0,0,0,0.02);
+            animation: fadeIn 0.5s ease-out;
+        }
+        .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); transition: var(--transition); }
+        
+        /* --- FORMS --- */
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label { display: block; margin-bottom: 0.6rem; font-weight: 600; font-size: 0.95rem; color: #57606f; }
+        .form-control { 
+            width: 100%; padding: 14px; 
+            background: #f8f9fa; border: 1px solid #dfe4ea; 
+            border-radius: 12px; font-size: 1rem; transition: var(--transition);
+        }
+        .form-control:focus { border-color: var(--accent); background: white; box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.1); }
+
+        /* --- BUTTONS --- */
+        .btn { 
+            padding: 14px 24px; border: none; border-radius: 12px; 
+            cursor: pointer; font-weight: 700; font-size: 1rem; 
+            transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; 
+            position: relative; overflow: hidden;
+        }
+        .btn:active { transform: scale(0.98); }
+        @media (min-width: 768px) { .btn { width: auto; min-width: 120px; } }
+        
+        .btn-primary { background: var(--secondary); color: white; box-shadow: 0 4px 15px rgba(47, 53, 66, 0.3); }
+        .btn-primary:hover { background: #1e232c; transform: translateY(-2px); }
+        
+        .btn-danger { background: var(--danger); color: white; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3); }
+        .btn-danger:hover { background: #ff2e43; }
+
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-whatsapp { background: var(--whatsapp); color: white; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); }
+        
+        .btn-stats { background: var(--success); color: white; padding: 6px 15px; border-radius: 20px; font-size: 0.85rem; }
+        .btn-outline { background: transparent; border: 2px solid var(--secondary); color: var(--secondary); }
+        .btn-logout { background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3); color: white; }
+        .btn-logout:hover { background: rgba(255,255,255,0.3); }
+
+        /* --- SEARCH BOX --- */
+        .search-box {
+            background: white; padding: 0.8rem 1.2rem; border-radius: 50px; 
+            margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); border: 1px solid #eee;
+            display: flex; gap: 15px; align-items: center; transition: var(--transition);
+        }
+        .search-box:focus-within { box-shadow: var(--shadow-md); border-color: var(--primary); }
+        .search-box input { border: none; flex: 1; outline: none; font-size: 1rem; }
+        .search-box i { color: #a4b0be; font-size: 1.2rem; }
+
+        /* --- KIDS LIST CARD STYLE --- */
+        .kid-card { 
+            background: white; border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; 
+            display: flex; flex-direction: column; gap: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03); border: 1px solid #f1f2f6;
+            position: relative; overflow: hidden;
+            transition: var(--transition);
+        }
+        .kid-card:hover { transform: translateX(-5px); box-shadow: var(--shadow-md); }
+        
+        /* شريط ملون جانبي */
+        .kid-card::before { content: ''; position: absolute; top: 0; right: 0; width: 6px; height: 100%; border-radius: 0 16px 16px 0; }
+        .kid-card.in-status::before { background: var(--success); }
+        .kid-card.paused-status::before { background: var(--warning); }
+        .kid-card.out-status::before { background: #ccc; }
+        
+        @media (min-width: 600px) { .kid-card { flex-direction: row; justify-content: space-between; align-items: center; } }
+        
+        .kid-info h3 { margin-bottom: 8px; font-size: 1.15rem; font-weight: 700; color: var(--secondary); display: flex; align-items: center; gap: 8px; }
+        .kid-id-badge { background: #dfe4ea; color: var(--secondary); padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; letter-spacing: 1px; }
+        
+        .kid-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+        .kid-tag { background: #f1f2f6; color: #747d8c; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 5px;}
+        
+        .timer-display { font-family: 'Courier New', monospace; font-weight: 800; color: var(--primary); font-size: 1.1rem; background: rgba(255, 71, 87, 0.05); padding: 5px 10px; border-radius: 8px; display: inline-block;}
+        .timer-paused { color: var(--warning); background: rgba(255, 165, 2, 0.1); }
+        
+        /* Control Buttons in Card */
+        .controls { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; width: 100%; }
+        @media (min-width: 600px) { .controls { width: auto; } }
+        .controls .btn { padding: 8px 14px; font-size: 0.85rem; border-radius: 8px; min-width: auto; width: auto; }
+
+        /* Notification Badge */
+        .notification-badge {
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.75rem;
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            animation: bounce 0.5s;
+        }
+        @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+
+        /* --- CHAT STYLES --- */
+        .chat-container { margin-top: 1.5rem; border: 1px solid #f1f2f6; border-radius: 16px; overflow: hidden; background: #fff; }
+        .chat-messages { height: 250px; overflow-y: auto; padding: 20px; background: #f7f9fc; display: flex; flex-direction: column; gap: 12px; }
+        
+        .message { max-width: 75%; padding: 12px 18px; border-radius: 18px; font-size: 0.95rem; line-height: 1.5; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        
+        .message.parent { align-self: flex-start; background: white; color: var(--secondary); border-bottom-right-radius: 4px; }
+        .message.admin { align-self: flex-end; background: linear-gradient(135deg, var(--secondary) 0%, #4b5563 100%); color: white; border-bottom-left-radius: 4px; }
+        .message .sender-name { font-size: 0.7rem; opacity: 0.6; margin-bottom: 4px; display: block; font-weight: bold; }
+        
+        .chat-input-area { padding: 15px; background: white; display: flex; gap: 10px; border-top: 1px solid #f1f2f6; }
+        .chat-input-area input { background: #f1f2f6; border: none; }
+
+        /* --- PARENT VIEW (APP STYLE) --- */
+        .parent-view-card {
+            text-align: center; border-radius: 30px; padding: 2.5rem 1.5rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.08); 
+            margin-top: 2rem; border: 1px solid rgba(0,0,0,0.03);
+            /* Important for Animation Background */
+            position: relative; z-index: 10;
+            background: rgba(255, 255, 255, 0.95) !important; 
+            backdrop-filter: blur(5px);
+        }
+        
+        .parent-timer-circle {
+            width: 240px; height: 240px; background: white; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            margin: 30px auto; position: relative; z-index: 1;
+        }
+        /* Ring Animation Layer */
+        .parent-timer-circle::before {
+            content: ''; position: absolute; z-index: -1;
+            width: 100%; height: 100%; border-radius: 50%;
+            background: rgba(255, 71, 87, 0.05);
+            animation: pulse-ring 2s infinite;
+        }
+        /* Static Border */
+        .parent-timer-circle::after {
+            content: ''; position: absolute; width: 220px; height: 220px; border-radius: 50%;
+            border: 8px solid var(--primary); opacity: 0.1;
+        }
+        
+        .timer-text-big { font-size: 3.5rem; font-weight: 900; color: var(--secondary); font-variant-numeric: tabular-nums; letter-spacing: -2px; }
+        
+        .child-number-display { 
+            background: var(--secondary); color: white; padding: 8px 25px; border-radius: 50px; 
+            font-size: 1.4rem; font-weight: 800; display: inline-block; margin-top: 10px; box-shadow: 0 5px 15px rgba(47, 53, 66, 0.2);
+            letter-spacing: 2px;
+        }
+        
+        #live-cost { color: var(--primary); font-weight: 800; font-size: 2.5rem; }
+        .status-badge-in, .status-badge-paused { padding: 6px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
+
+        /* --- FINANCIAL REPORT --- */
+        .financial-container { background: #dfe6e9; padding: 1.5rem; border-radius: 20px; min-height: 85vh; }
+        .grand-total-box { 
+            background: var(--secondary); color: white; padding: 2.5rem; border-radius: 20px; 
+            text-align: center; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(47, 53, 66, 0.2); 
+            background-image: linear-gradient(135deg, #2f3542 0%, #57606f 100%);
+            border: none;
+        }
+        .grand-total-box .big-number { font-size: 3.5rem; font-weight: 800; color: #2ed573; text-shadow: 0 2px 10px rgba(46, 213, 115, 0.3); }
+
+        .day-group { background: white; border-radius: 16px; padding: 0; margin-bottom: 2rem; box-shadow: var(--shadow-sm); overflow: hidden; border: none; }
+        .day-header { 
+            background: #f1f2f6; color: var(--secondary); padding: 15px 20px; 
+            font-weight: 800; display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 1px solid #e1e1e1;
+        }
+        .record-row { padding: 15px 20px; border-bottom: 1px solid #f5f5f5; transition: background 0.2s; }
+        .record-row:hover { background: #fafafa; }
+        .record-name { font-weight: 700; color: var(--secondary); display: block; }
+        .record-time { font-size: 0.8rem; color: #a4b0be; margin-top: 3px; display: block; }
+        .record-cost { font-weight: 800; color: var(--primary); font-size: 1.1rem; }
+        .day-total { background: rgba(46, 213, 115, 0.1); color: #218c74; padding: 15px 20px; font-weight: 800; text-align: right; }
+
+        /* --- MODALS --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; animation: fadeIn 0.2s; }
+        .modal-content { background: white; padding: 2.5rem; border-radius: 24px; width: 90%; max-width: 450px; text-align: center; box-shadow: var(--shadow-lg); }
+        .modal-chat-content { max-width: 600px; height: 85vh; display: flex; flex-direction: column; padding: 1.5rem; }
+
+        .finance-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        @media(min-width: 400px){ .finance-grid { grid-template-columns: 1fr 1fr 1fr; } }
+        .finance-item { background: #f9f9f9; padding: 15px; border-radius: 12px; border: 1px solid #eee; }
+        .finance-item .money { font-size: 1.2rem; font-weight: bold; color: var(--success); }
+
+        /* --- UTILS --- */
+        .hidden { display: none !important; }
+        .section-title { font-size: 1.2rem; margin-bottom: 1.2rem; color: var(--secondary); position: relative; padding-right: 15px; border: none; }
+        .section-title::before { content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 6px; height: 25px; background: var(--warning); border-radius: 10px; }
+        
+        /* --- FOOTER STYLING (UPDATED) --- */
+        .developer-footer { 
+            margin-top: auto;
+            text-align: center; padding: 1.5rem; 
+            border-top: 1px solid rgba(255,255,255,0.5);
+            /* Solid Glass Effect */
+            background: rgba(255, 255, 255, 0.98) !important; 
+            backdrop-filter: blur(15px);
+            border-radius: 20px 20px 0 0; 
+            position: relative; z-index: 50;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+        }
+        .developer-footer a { color: var(--secondary); text-decoration: none; font-weight: bold; display: inline-block; margin-top: 10px; padding: 8px 15px; background: #f0f2f5; border-radius: 20px; transition: 0.3s; }
+        .developer-footer a:hover { background: var(--accent); color: white; }
+        .heart-beat { display: inline-block; animation: heartbeat 1.5s infinite; color: var(--danger); }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        .test-link { font-size: 0.85rem; color: var(--accent); text-decoration: none; cursor: pointer; margin-top: 15px; display: block; font-weight: bold;}
+
+        /* --- 3D AMUSEMENT PARK BACKGROUND (Animation) --- */
+        .scene-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden; z-index: 0; pointer-events: none;
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F7FA 100%);
+        }
+
+        /* 1. الغيوم */
+        .cloud {
+            position: absolute; background: #fff; border-radius: 100px;
+            opacity: 0.8; animation: floatCloud linear infinite;
+            box-shadow: 0 8px 5px rgba(0,0,0,0.05);
+        }
+        .cloud::after, .cloud::before { content: ''; position: absolute; background: #fff; border-radius: 50%; }
+        .cloud-1 { width: 100px; height: 40px; top: 10%; left: -120px; animation-duration: 25s; }
+        .cloud-1::after { width: 40px; height: 40px; top: -20px; left: 15px; }
+        .cloud-1::before { width: 50px; height: 50px; top: -30px; left: 35px; }
+        .cloud-2 { width: 160px; height: 60px; top: 25%; left: -180px; animation-duration: 35s; animation-delay: 5s; transform: scale(0.8); opacity: 0.6; }
+        .cloud-2::after { width: 60px; height: 60px; top: -30px; left: 25px; }
+        .cloud-2::before { width: 70px; height: 70px; top: -45px; left: 55px; }
+        @keyframes floatCloud { 0% { left: -200px; } 100% { left: 120%; } }
+
+        /* 2. المنطاد */
+        .balloon {
+            position: absolute; width: 60px; height: 80px;
+            top: 15%; right: -100px;
+            animation: floatBalloon 40s linear infinite;
+            z-index: 0;
+        }
+        .balloon-top { width: 60px; height: 60px; background: #ff7675; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; position: relative; }
+        .balloon-top::before { content: ''; position: absolute; width: 20px; height: 60px; background: rgba(255,255,255,0.2); left: 20px; border-radius: 50%; }
+        .balloon-basket { width: 20px; height: 15px; background: #d63031; margin: 5px auto 0; border-radius: 3px; position: relative; }
+        .balloon-basket::before, .balloon-basket::after { content: ''; position: absolute; width: 1px; height: 10px; background: #636e72; top: -10px; }
+        .balloon-basket::before { left: 0; } .balloon-basket::after { right: 0; }
+        @keyframes floatBalloon { 0% { right: -100px; transform: translateY(0); } 50% { transform: translateY(-20px); } 100% { right: 110%; transform: translateY(0); } }
+
+        /* 3. قطار الموت */
+        .coaster-container { position: absolute; bottom: 80px; left: -50px; width: 100%; height: 200px; z-index: 0; opacity: 0.7; }
+        @keyframes coasterMove { 0% { offset-distance: 0%; } 100% { offset-distance: 100%; } }
+
+        /* 4. العجلة الدوارة */
+        .ferris-wheel-container {
+            position: absolute; bottom: 50px; left: 70%; 
+            transform: translateX(-50%) scale(0.7);
+            width: 300px; height: 300px;
+            z-index: 1;
+        }
+        @media (min-width: 768px) { .ferris-wheel-container { bottom: 80px; left: 50%; transform: translateX(-50%) scale(0.9); } }
+
+        .wheel {
+            width: 300px; height: 300px; border: 4px solid #bdc3c7; border-radius: 50%;
+            position: relative; animation: wheelRotate 10s linear infinite;
+            box-shadow: 0 0 0 10px rgba(255,255,255,0.2);
+        }
+        .wheel::before { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 4px; background: #bdc3c7; }
+        .wheel::after { content: ''; position: absolute; top: 0; left: 50%; width: 4px; height: 100%; background: #bdc3c7; }
+        .spoke-x { position: absolute; top: 0; left: 50%; width: 4px; height: 100%; background: #bdc3c7; transform: rotate(45deg); }
+        .spoke-y { position: absolute; top: 0; left: 50%; width: 4px; height: 100%; background: #bdc3c7; transform: rotate(-45deg); }
+
+        .cabin { width: 40px; height: 50px; position: absolute; transform-origin: top center; animation: cabinRotate 10s linear infinite reverse; }
+        .cabin-box { width: 100%; height: 100%; border-radius: 10px 10px 5px 5px; box-shadow: inset 0 0 10px rgba(0,0,0,0.1), 2px 2px 5px rgba(0,0,0,0.2); position: relative; }
+        .cabin-box::before { content: ''; position: absolute; top: -10px; left: 50%; width: 4px; height: 10px; background: #7f8c8d; transform: translateX(-50%); }
+        .cabin:nth-child(1) { top: -25px; left: 130px; } .cabin:nth-child(1) .cabin-box { background: #FF6B6B; }
+        .cabin:nth-child(2) { top: 35px; right: 35px; } .cabin:nth-child(2) .cabin-box { background: #4ECDC4; }
+        .cabin:nth-child(3) { bottom: 35px; right: 35px; } .cabin:nth-child(3) .cabin-box { background: #FFE66D; }
+        .cabin:nth-child(4) { bottom: -25px; left: 130px; } .cabin:nth-child(4) .cabin-box { background: #FF9F43; }
+        .cabin:nth-child(5) { bottom: 35px; left: 35px; } .cabin:nth-child(5) .cabin-box { background: #54A0FF; }
+        .cabin:nth-child(6) { top: 35px; left: 35px; } .cabin:nth-child(6) .cabin-box { background: #5F27CD; color:white; }
+        
+        .stand { position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 100px solid transparent; border-right: 100px solid transparent; border-bottom: 160px solid #95a5a6; z-index: -1; }
+        .stand::after { content: ''; position: absolute; top: 160px; left: -120px; width: 240px; height: 20px; background: #7f8c8d; border-radius: 10px; }
+
+        @keyframes wheelRotate { 100% { transform: rotate(360deg); } }
+        @keyframes cabinRotate { 100% { transform: rotate(-360deg); } }
+
+        /* 5. الأرضية (Hill) */
+        .ground-hill {
+            position: absolute; bottom: -50px; left: 0; width: 100%; height: 120px;
+            background: #55efc4; border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+            z-index: 1; box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+        }
+
+        .parent-view-container { display: flex; flex-direction: column; min-height: 85vh; }
+
+        /* استجابة للهواتف الصغيرة */
+        @media (max-width: 480px) {
+            .header-text h1 { font-size: 1.1rem; }
+            .header-content { padding: 10px; gap: 10px; }
+            .card { padding: 1.2rem; }
+            .kid-card { padding: 1rem; }
+            .parent-timer-circle { width: 180px; height: 180px; }
+            .timer-text-big { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-card">
+            <img src="https://raw.githubusercontent.com/mohamednasr5/opera/main/01.png" alt="Logo" style="width:100px; margin-bottom:15px; border-radius: 50%; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+            <h2>استضافة أوبرا عاشور</h2>
+            <p style="color:#666; margin-bottom:20px;">يرجى إدخال كلمة المرور للدخول</p>
+            <input type="password" id="login-pass" class="login-input" placeholder="****" onkeypress="handleEnter(event)">
+            <button class="btn btn-primary" onclick="checkLogin()">دخول للنظام</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="header-top">
+            <span>📅 <span id="header-datetime">...</span></span>
+            <div id="admin-controls" style="display:flex; gap:10px;">
+                <button id="nav-stats-btn" class="btn-stats hidden" onclick="openFinanceModal()">
+                    <i class="fas fa-chart-pie"></i> ملخص
+                </button>
+                <button id="nav-logout-btn" class="btn-logout hidden" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> خروج
+                </button>
+            </div>
+        </div>
+        <div class="header-content">
+            <img src="https://raw.githubusercontent.com/mohamednasr5/opera/main/01.png" alt="Opera Ashour Logo" class="logo-img">
+            <div class="header-text">
+                <h1>🎪 استضافة أوبرا عاشور</h1>
+                <p id="header-subtitle">نظام إدارة وتتبع الأطفال الذكي</p>
+            </div>
+        </div>
+    </header>
+
+    <main id="app">
+        
+        <div id="admin-view" class="hidden">
+            <div class="dashboard-grid">
+                
+                <section class="card">
+                    <h2 style="margin-bottom: 1.5rem; color: var(--primary);">📝 تسجيل طفل جديد</h2>
+                    <form id="checkin-form">
+                        <div class="form-group">
+                            <label>اسم الطفل</label>
+                            <input type="text" id="child-name" class="form-control" placeholder="اسم الطفل" required>
+                        </div>
+                        <div class="form-group">
+                            <label>رقم هاتف الوالد</label>
+                            <input type="tel" id="parent-phone" class="form-control" placeholder="مثال: 201xxxxxxxxx" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>إضافة منتج (اختياري)</label>
+                            <input type="text" id="extra-item" class="form-control" placeholder="اسم المنتج (مثلاً: فشار)">
+                        </div>
+                        <div class="form-group">
+                            <label>سعر المنتج (اختياري)</label>
+                            <input type="number" id="extra-price" class="form-control" placeholder="السعر بالجنيه">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">تسجيل دخول</button>
+                    </form>
+
+                    <div id="new-child-qr" class="hidden text-center" style="margin-top: 1.5rem; border-top: 1px dashed #ccc; padding-top: 1rem;">
+                        <h3 style="color: var(--success); margin-bottom:10px;">✅ تم التسجيل!</h3>
+                        <p id="qr-parent-name" style="font-weight:bold; margin-bottom:10px;"></p>
+                        <div id="qr-code" style="display:flex; justify-content:center; margin: 15px 0;"></div>
+                        
+                        <a id="test-link-btn" class="test-link" target="_blank">تجربة صفحة الوالد (للاختبار)</a>
+
+                        <div style="display:grid; gap:10px; margin-top:20px;">
+                            <button class="btn btn-primary" onclick="copyLink()">📋 نسخ الرابط</button>
+                            <button class="btn btn-whatsapp" id="wa-btn-new">📱 إرسال واتساب</button>
+                            <button class="btn btn-outline" onclick="closeQR()">إغلاق</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="admin-search" placeholder="بحث بالاسم، الهاتف، أو الرقم (####)">
+                    </div>
+
+                    <div class="card">
+                        <h2 class="section-title">👶 الحالي (نشط / مؤقت)</h2>
+                        <div id="kids-list-active"></div>
+                    </div>
+
+                    <div class="card" style="background: #fafafa;">
+                        <h2 class="section-title" style="color:#7f8c8d;">📜 سجل الخروج</h2>
+                        <div id="kids-list-history"></div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="developer-footer">
+                <p>برمجة وتطوير بكل حب <span class="heart-beat">❤️</span></p>
+                <p>المهندس محمد حماد</p>
+                <a href="tel:01279934735" class="phone-link"><i class="fas fa-phone"></i> 01279934735</a>
+                <a href="https://www.facebook.com/en.mohamed.nasr" target="_blank">
+                    <i class="fab fa-facebook-f"></i> فيسبوك
+                </a>
+            </div>
+        </div>
+
+        <div id="financial-view" class="hidden financial-container">
+            <div class="grand-total-box">
+                <h2>الإجمالي العام</h2>
+                <div class="big-number" id="grand-total-display">0 ج.م</div>
+            </div>
+            <div id="financial-logs"></div>
+
+            <div class="developer-footer" style="background: transparent;">
+                <p>برمجة وتطوير بكل حب <span class="heart-beat">❤️</span></p>
+                <p>المهندس محمد حماد</p>
+                <a href="tel:01279934735" class="phone-link"><i class="fas fa-phone"></i> 01279934735</a>
+                <a href="https://www.facebook.com/en.mohamed.nasr" target="_blank">
+                    <i class="fab fa-facebook-f"></i> فيسبوك
+                </a>
+            </div>
+        </div>
+
+        <div id="parent-view" class="hidden">
+            
+            <div class="parent-view-container">
+                <div class="scene-container">
+                    <div class="cloud cloud-1"></div>
+                    <div class="cloud cloud-2"></div>
+                    <div class="balloon">
+                        <div class="balloon-top"></div>
+                        <div class="balloon-basket"></div>
+                    </div>
+                    <div class="coaster-container">
+                        <svg width="100%" height="200" style="position:absolute; bottom:0;">
+                            <path id="coasterPath" d="M-100,200 Q300,0 600,200 T1500,200" fill="transparent" stroke="rgba(0,0,0,0.1)" stroke-width="2" />
+                            <circle r="8" fill="#e84393">
+                                <animateMotion dur="10s" repeatCount="indefinite" rotate="auto">
+                                    <mpath href="#coasterPath"/>
+                                </animateMotion>
+                            </circle>
+                            <circle r="8" fill="#0984e3">
+                                <animateMotion dur="10s" begin="0.5s" repeatCount="indefinite" rotate="auto">
+                                    <mpath href="#coasterPath"/>
+                                </animateMotion>
+                            </circle>
+                        </svg>
+                    </div>
+                    <div class="ferris-wheel-container">
+                        <div class="wheel">
+                            <div class="spoke-x"></div>
+                            <div class="spoke-y"></div>
+                            <div class="cabin"><div class="cabin-box"></div></div>
+                            <div class="cabin"><div class="cabin-box"></div></div>
+                            <div class="cabin"><div class="cabin-box"></div></div>
+                            <div class="cabin"><div class="cabin-box"></div></div>
+                            <div class="cabin"><div class="cabin-box"></div></div>
+                            <div class="cabin"><div class="cabin-box"></div></div>
+                        </div>
+                        <div class="stand"></div>
+                    </div>
+                    <div class="ground-hill"></div>
+                </div>
+
+                <div style="padding: 1rem; position: relative; z-index: 10; flex-grow: 1;">
+                    <div class="parent-view-card">
+                        <div class="status-badge-in" id="p-status-badge">متواجد حالياً</div>
+                        <h2 id="p-child-name" style="font-size:2rem; margin:15px 0 5px; color:var(--secondary);">اسم الطفل</h2>
+                        
+                        <p id="p-child-snack" style="color: #888; font-size:1.1rem; margin-bottom:15px;"></p>
+                        
+                        <div id="p-child-id" class="child-number-display">#0000</div>
+                        <div class="parent-timer-circle">
+                            <div class="timer-text-big" id="live-timer">00:00:00</div>
+                        </div>
+                        <p style="color:#666; margin-top:20px;">وقت الدخول: <span id="entry-time-display" style="font-weight:bold;"></span></p>
+                        <h3 style="color:var(--secondary); font-size:1.5rem; margin:20px 0;">
+                            التكلفة الحالية: <span id="live-cost">0</span> ج.م
+                        </h3>
+                        <div class="chat-container">
+                            <div id="parent-chat-messages" class="chat-messages">
+                                <div style="text-align:center; color:#999; font-size:0.8rem;">يمكنك إرسال رسالة للإدارة</div>
+                            </div>
+                            <div class="chat-input-area">
+                                <input type="text" id="parent-message-input" class="form-control" placeholder="اكتب رسالة للإدارة...">
+                                <button class="btn btn-primary" onclick="sendParentMessage()" style="border-radius: 8px; width: 50px; position:relative;">
+                                    ➤
+                                    <span id="parent-msg-badge" class="hidden notification-badge" style="top:-8px; right:-8px;">0</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="session-ended-card" class="parent-view-card hidden" style="background:#fff; border:2px solid var(--danger);">
+                        <h2 style="color:var(--danger); margin-bottom:20px;">انتهت الجلسة</h2>
+                        <p style="font-size:1.2rem; color:#666;">غادر الطفل منطقة اللعب.</p>
+                        <h3 style="margin: 20px 0; font-size:2.5rem; color:var(--secondary);">
+                            المبلغ النهائي: <span id="final-cost" style="color:var(--primary);">0</span> ج.م
+                        </h3>
+                        <p style="font-size:1.2rem; font-weight:bold;">شكراً لزيارتكم! 🎈</p>
+                        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px dashed #ccc;">
+                            <h4 style="color: var(--secondary); margin-bottom:5px; font-weight: normal;">في استضافة أوبرا عاشور</h4>
+                            <p style="color: var(--primary); font-size: 1.1rem; font-style: italic; font-weight: bold;">..من هنا تبدأ الحكاية</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="developer-footer">
+                    <p>برمجة وتطوير بكل حب <span class="heart-beat">❤️</span></p>
+                    <p>المهندس محمد حماد</p>
+                    <a href="tel:01279934735" class="phone-link"><i class="fas fa-phone"></i> 01279934735</a>
+                    <a href="https://www.facebook.com/en.mohamed.nasr" target="_blank">
+                        <i class="fab fa-facebook-f"></i> فيسبوك
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="admin-chat-modal" class="modal">
+        <div class="modal-content modal-chat-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 id="chat-modal-title">محادثة مع ولي الأمر</h3>
+                <button onclick="closeAdminChat()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+            </div>
+            <div id="admin-chat-history" class="chat-messages" style="flex:1; overflow-y:auto;"></div>
+            <div class="chat-input-area">
+                <input type="text" id="admin-chat-input" class="form-control" placeholder="اكتب رد...">
+                <button class="btn btn-primary" onclick="sendAdminMessage()" style="width: auto;">إرسال</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="finance-modal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom:15px; color: var(--secondary);">ملخص سريع</h2>
+            <div class="finance-grid">
+                <div class="finance-item">
+                    <h4>اليوم</h4>
+                    <div class="money" id="stat-today">0</div>
+                </div>
+                <div class="finance-item">
+                    <h4>الأسبوع</h4>
+                    <div class="money" id="stat-week">0</div>
+                </div>
+                <div class="finance-item">
+                    <h4>الشهر</h4>
+                    <div class="money" id="stat-month">0</div>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="closeFinanceModal()" style="margin-top:20px;">إغلاق</button>
+        </div>
+    </div>
+
+    <div id="checkout-modal" class="modal">
+        <div class="modal-content">
+            <h2 style="color:var(--danger);">إنهاء جلسة</h2>
+            <p>المدة: <span id="modal-duration" style="font-weight:bold; font-family:monospace;"></span></p>
+            
+            <div style="font-size:2.5rem; font-weight:800; color:var(--secondary); margin:15px 0;" id="modal-price">0 ج.م</div>
+            
+            <p style="font-size:0.8rem; color:#666; margin-bottom:1.5rem;">(20 ج.م لكل ساعة كاملة + الإضافات)</p>
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <button class="btn btn-danger" onclick="confirmCheckout()">تأكيد</button>
+                <button class="btn btn-outline" onclick="closeModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" style="position:fixed; bottom:20px; left:20px; z-index:2000;"></div>
+
+    <audio id="msg-sound" src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_3f32527b79.mp3"></audio>
+    <audio id="hour-sound" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_12b0c7443c.mp3"></audio>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getDatabase, ref, push, onValue, update, set, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+        // --- NEW CONFIGURATION ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyDIH-wzZV71U-zbkxArRE4f9oiCtwvKOWA",
+          authDomain: "operaestdafa.firebaseapp.com",
+          databaseURL: "https://operaestdafa-default-rtdb.firebaseio.com",
+          projectId: "operaestdafa",
+          storageBucket: "operaestdafa.firebasestorage.app",
+          messagingSenderId: "44885598287",
+          appId: "1:44885598287:web:e2b0d3497b86c69de38a3a",
+          measurementId: "G-X1129EKN1P"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // --- AUDIO & NOTIFICATION LOGIC ---
+        const msgSound = document.getElementById('msg-sound');
+        const hourSound = document.getElementById('hour-sound');
+
+        // Request Permission
+        function requestNotifyPermission() {
+            if ("Notification" in window && Notification.permission !== "granted") {
+                Notification.requestPermission();
+            }
+        }
+
+        function sendBrowserNotification(title, body) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification(title, { body: body, icon: 'https://raw.githubusercontent.com/mohamednasr5/opera/main/01.png' });
+            }
+        }
+
+        function playSound(type) {
+            if(type === 'msg') {
+                msgSound.currentTime = 0;
+                msgSound.play().catch(e => console.log("Audio play failed", e));
+            } else if (type === 'hour') {
+                hourSound.currentTime = 0;
+                hourSound.play().catch(e => console.log("Audio play failed", e));
+            }
+        }
+
+        // Global State
+        let currentChildId = null;
+        let currentChildLink = "";
+        let parentInterval = null;
+        let adminTimerInterval = null;
+        let allChildrenData = {};
+        let currentChatId = null; 
+        let lastMessageCounts = {}; 
+        let searchQuery = ""; 
+        
+        // DOM Elements
+        const adminView = document.getElementById('admin-view');
+        const financialView = document.getElementById('financial-view');
+        const parentView = document.getElementById('parent-view');
+        const loginScreen = document.getElementById('login-screen');
+        const listActive = document.getElementById('kids-list-active');
+        const listHistory = document.getElementById('kids-list-history');
+        const qrContainer = document.getElementById('qr-code');
+        const searchInput = document.getElementById('admin-search');
+
+        // --- SEARCH LISTENER ---
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.toLowerCase();
+            filterAdminList();
+        });
+
+        function filterAdminList() {
+            const cards = document.querySelectorAll('#kids-list-active .kid-card');
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name').toLowerCase();
+                const phone = card.getAttribute('data-phone').toLowerCase();
+                const id = card.getAttribute('data-id');
+                
+                if(name.includes(searchQuery) || phone.includes(searchQuery) || id === searchQuery) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // --- ROUTING & LOGIN ---
+        function handleEnter(e) { if(e.key === 'Enter') checkLogin(); }
+        window.handleEnter = handleEnter;
+
+        window.checkLogin = () => {
+            requestNotifyPermission(); 
+            const pass = document.getElementById('login-pass').value;
+            if(pass === '0100') {
+                // ADMIN LOGIN (MANAGEMENT)
+                loginScreen.classList.add('hidden');
+                // IMPORTANT: Hide stats button for 0100 user
+                document.getElementById('nav-stats-btn').classList.add('hidden'); 
+                document.getElementById('nav-logout-btn').classList.remove('hidden');
+                document.getElementById('admin-controls').style.display = 'flex'; 
+                initAdminView();
+            } else if (pass === '521988') {
+                // FINANCE LOGIN (STATISTICS)
+                loginScreen.classList.add('hidden');
+                document.getElementById('nav-stats-btn').classList.add('hidden'); 
+                document.getElementById('nav-logout-btn').classList.remove('hidden');
+                document.getElementById('admin-controls').style.display = 'flex';
+                initFinancialView();
+            } else {
+                showToast("كلمة المرور خاطئة! ❌");
+                document.getElementById('login-pass').value = '';
+            }
+        };
+
+        window.logout = () => {
+            location.reload();
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const viewMode = urlParams.get('mode');
+        const childIdParam = urlParams.get('id');
+
+        if (viewMode === 'parent' && childIdParam) {
+            // PARENT MODE
+            loginScreen.classList.add('hidden');
+            document.getElementById('admin-controls').style.display = 'none'; 
+            document.getElementById('header-subtitle').innerText = "بوابة متابعة أولياء الأمور";
+            requestNotifyPermission();
+            initParentView(childIdParam);
+        }
+
+        // --- HEADER CLOCK ---
+        setInterval(() => {
+            document.getElementById('header-datetime').innerText = new Date().toLocaleDateString('ar-EG', { weekday:'long', day:'numeric', month:'long', hour:'2-digit', minute:'2-digit' });
+        }, 1000);
+
+        // ==========================================
+        // ADMIN VIEW LOGIC
+        // ==========================================
+        function initAdminView() {
+            adminView.classList.remove('hidden');
+            document.getElementById('header-subtitle').innerText = "لوحة الإدارة";
+            
+            onValue(ref(db, 'children'), (snapshot) => {
+                const data = snapshot.val();
+                allChildrenData = data || {};
+                listActive.innerHTML = '';
+                listHistory.innerHTML = '';
+                if (!data) listActive.innerHTML = '<p style="text-align:center; color:#999;">لا يوجد أطفال</p>';
+
+                Object.keys(data).forEach(key => {
+                    const child = data[key];
+                    const link = `${window.location.origin}${window.location.pathname}?mode=parent&id=${key}`;
+                    let billableTime = 0;
+                    
+                    // تحضير نص المنتج الإضافي للعرض
+                    let productText = '';
+                    if(child.productName) {
+                        productText = `<span class="kid-tag" style="background:#e1f5fe; color:#0288d1;">🛒 ${child.productName} (${child.productPrice || 0} ج.م)</span>`;
+                    }
+
+                    if (child.status === 'in') {
+                        billableTime = Date.now() - child.entryTime - (child.totalPausedTime || 0);
+                        const div = document.createElement('div');
+                        div.className = 'kid-card in-status';
+                        div.setAttribute('data-name', child.name);
+                        div.setAttribute('data-phone', child.phone);
+                        div.setAttribute('data-id', child.childId || '');
+
+                        // --- MESSAGE NOTIFICATION LOGIC (ADMIN) ---
+                        const msgs = child.messages ? Object.values(child.messages) : [];
+                        const msgCount = msgs.length;
+                        const lastCount = lastMessageCounts[key] || 0;
+                        
+                        if (msgCount > lastCount) {
+                             const lastMsg = msgs[msgs.length - 1];
+                             if (lastMsg.sender === 'parent') {
+                                 playSound('msg');
+                                 sendBrowserNotification(`رسالة جديدة من: ${child.name}`, lastMsg.text);
+                                 showToast(`📩 رسالة من ${child.name}`);
+                             }
+                        }
+                        lastMessageCounts[key] = msgCount;
+                        const badgeHtml = msgCount > 0 ? `<span class="notification-badge">${msgCount}</span>` : '';
+
+                        div.innerHTML = `
+                            <div class="kid-info">
+                                <h3>${child.name} <span class="kid-id-badge">#${child.childId || '0000'}</span></h3>
+                                <div class="kid-meta">
+                                    <span class="kid-tag">📱 ${child.phone}</span>
+                                    ${productText}
+                                </div>
+                                <div class="timer-display">⏰ <span class="time-text" data-name="${child.name}" data-billable="${billableTime}" data-last-hour="0">${formatDuration(billableTime)}</span></div>
+                            </div>
+                            <div class="controls">
+                                <button class="btn btn-whatsapp" onclick="sendToWhatsApp('${child.phone}', '${encodeURIComponent(link)}')"><i class="fab fa-whatsapp"></i></button>
+                                <button class="btn btn-warning" onclick="pauseChild('${key}')" title="خروج مؤقت"><i class="fas fa-pause"></i></button>
+                                <button class="btn btn-primary" style="position:relative;" onclick="openAdminChat('${key}', '${child.name}')" title="محادثة">
+                                    <i class="fas fa-comments"></i> ${badgeHtml}
+                                </button>
+                                <button class="btn btn-danger" onclick="prepareCheckout('${key}')">خروج</button>
+                            </div>
+                        `;
+                        listActive.appendChild(div);
+                    } else if (child.status === 'paused') {
+                        billableTime = child.pauseStartTime - child.entryTime - (child.totalPausedTime || 0);
+                        const div = document.createElement('div');
+                        div.className = 'kid-card paused-status';
+                        div.setAttribute('data-name', child.name);
+                        div.setAttribute('data-phone', child.phone);
+                        div.setAttribute('data-id', child.childId || '');
+                        
+                        div.innerHTML = `
+                            <div class="kid-info">
+                                <h3>${child.name} <span class="kid-id-badge">#${child.childId || '0000'}</span></h3>
+                                <div class="kid-meta"><span class="status-badge-paused">خروج مؤقت</span> ${productText}</div>
+                                <div class="timer-display timer-paused">⏰ ${formatDuration(billableTime)}</div>
+                            </div>
+                            <div class="controls">
+                                <button class="btn btn-success" style="color:white; background:var(--success);" onclick="resumeChild('${key}')">▶️ استكمال</button>
+                                <button class="btn btn-danger" onclick="prepareCheckout('${key}')">خروج نهائي</button>
+                            </div>
+                        `;
+                        listActive.appendChild(div);
+                    } else {
+                        const diff = child.exitTime - child.entryTime - (child.totalPausedTime || 0);
+                        const div = document.createElement('div');
+                        div.className = 'kid-card out-status';
+                        div.innerHTML = `
+                            <div class="kid-info">
+                                <h3>${child.name} <small style="text-decoration:line-through; color:#999;">(خارج)</small> <span class="kid-id-badge">#${child.childId || '0000'}</span></h3>
+                                <div class="kid-meta">
+                                    <span class="kid-tag">⏳ ${formatDuration(diff)}</span>
+                                    <span class="kid-tag">📅 ${new Date(child.exitTime).toLocaleDateString('ar-EG')}</span>
+                                    ${productText}
+                                </div>
+                                <div class="price-tag" style="font-weight:bold; color:var(--primary);">💰 ${child.totalCost} ج.م</div>
+                            </div>
+                        `;
+                        listHistory.appendChild(div);
+                    }
+                });
+                
+                filterAdminList();
+            });
+
+            if(adminTimerInterval) clearInterval(adminTimerInterval);
+            adminTimerInterval = setInterval(() => {
+                document.querySelectorAll('.time-text').forEach(el => {
+                    let t = parseInt(el.getAttribute('data-billable')) + 1000;
+                    el.setAttribute('data-billable', t);
+                    el.innerText = formatDuration(t);
+
+                    // Hour Alert Logic
+                    const currentHour = Math.floor(t / 3600000); 
+                    const lastHour = parseInt(el.getAttribute('data-last-hour'));
+                    const childName = el.getAttribute('data-name');
+                    
+                    if (currentHour > lastHour) {
+                        playSound('hour');
+                        sendBrowserNotification("مرور ساعة ⏰", `أتم الطفل ${childName} ساعة جديدة.`);
+                        showToast(`⏰ مر ساعة للطفل: ${childName}`);
+                        el.setAttribute('data-last-hour', currentHour);
+                    }
+                });
+            }, 1000);
+
+            document.getElementById('checkin-form').onsubmit = (e) => {
+                e.preventDefault();
+                const name = document.getElementById('child-name').value;
+                const phone = document.getElementById('parent-phone').value;
+                
+                // --- تعديل: قراءة الحقول الجديدة ---
+                const productName = document.getElementById('extra-item').value;
+                const productPrice = parseFloat(document.getElementById('extra-price').value) || 0;
+
+                const randomId = Math.floor(1000 + Math.random() * 9000).toString();
+                const newRef = push(ref(db, 'children'));
+                const link = `${window.location.origin}${window.location.pathname}?mode=parent&id=${newRef.key}`;
+                
+                // حفظ البيانات مع المنتج والسعر
+                set(newRef, {
+                    name, phone, 
+                    productName: productName, // اسم المنتج
+                    productPrice: productPrice, // سعر المنتج
+                    entryTime: Date.now(), status:'in', messages:[], totalPausedTime:0,
+                    childId: randomId
+                }).then(() => {
+                    showToast(`تم تسجيل ${name} (رقم الطفل: ${randomId})`);
+                    document.getElementById('child-name').value = '';
+                    document.getElementById('parent-phone').value = '';
+                    document.getElementById('extra-item').value = '';
+                    document.getElementById('extra-price').value = '';
+                    
+                    currentChildLink = link;
+                    document.getElementById('new-child-qr').classList.remove('hidden');
+                    document.getElementById('qr-parent-name').innerText = `${name} - رقم: ${randomId}`;
+                    qrContainer.innerHTML = '';
+                    new QRCode(qrContainer, { text: link, width:128, height: 128 });
+                    document.getElementById('test-link-btn').href = link;
+                    document.getElementById('wa-btn-new').onclick = () => sendToWhatsApp(phone, encodeURIComponent(link));
+                });
+            };
+        }
+
+        // --- CHAT SYSTEM ---
+        window.openAdminChat = (id, name) => {
+            currentChatId = id;
+            document.getElementById('chat-modal-title').innerText = `محادثة مع والد/ة الطفل: ${name}`;
+            document.getElementById('admin-chat-modal').style.display = 'flex';
+            document.getElementById('admin-chat-input').focus();
+            const chatRef = ref(db, `children/${id}/messages`);
+            onValue(chatRef, (snapshot) => {
+                const messages = snapshot.val();
+                const historyEl = document.getElementById('admin-chat-history');
+                historyEl.innerHTML = '';
+                if(!messages) return;
+                Object.values(messages).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
+                    const div = document.createElement('div');
+                    div.className = `message ${msg.sender}`;
+                    const senderName = msg.sender === 'admin' ? 'أنت' : 'الوالد';
+                    div.innerHTML = `<span class="sender-name">${senderName}</span>${msg.text}`;
+                    historyEl.appendChild(div);
+                });
+                historyEl.scrollTop = historyEl.scrollHeight;
+            });
+        };
+
+        window.closeAdminChat = () => {
+            document.getElementById('admin-chat-modal').style.display = 'none';
+            currentChatId = null;
+        };
+
+        window.sendAdminMessage = () => {
+            const input = document.getElementById('admin-chat-input');
+            const text = input.value.trim();
+            if(!text || !currentChatId) return;
+            push(ref(db, `children/${currentChatId}/messages`), { text: text, sender: 'admin', timestamp: Date.now() });
+            input.value = '';
+        };
+
+        // ==========================================
+        // FINANCIAL VIEW LOGIC
+        // ==========================================
+        function initFinancialView() {
+            financialView.classList.remove('hidden');
+            document.getElementById('header-subtitle').innerText = "التقارير والسجلات المالية";
+            const logsContainer = document.getElementById('financial-logs');
+            logsContainer.innerHTML = '<div style="text-align:center; padding:20px; color:#666;"><i class="fas fa-spinner fa-spin"></i> جاري تحميل البيانات...</div>';
+
+            get(ref(db, 'children')).then((snapshot) => {
+                const data = snapshot.val();
+                if (!data) {
+                    logsContainer.innerHTML = '<div style="text-align:center;">لا توجد بيانات مالية مسجلة بعد.</div>';
+                    return;
+                }
+                const records = {}; 
+                let grandTotal = 0;
+                Object.keys(data).forEach(key => {
+                    const child = data[key];
+                    if (child.status === 'out' && child.exitTime) {
+                        const cost = parseFloat(child.totalCost);
+                        const dateObj = new Date(child.exitTime);
+                        const dateKey = `${dateObj.getFullYear()}-${dateObj.getMonth()+1}-${dateObj.getDate()}`; 
+                        const dateDisplay = dateObj.toLocaleDateString('ar-EG', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+                        const exitTime = dateObj.toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
+                        if (!records[dateKey]) { records[dateKey] = { display: dateDisplay, total: 0, items: [] }; }
+                        records[dateKey].items.push({ name: child.name + ' (#'+(child.childId || '0000')+')', cost: cost, time: exitTime });
+                        records[dateKey].total += cost;
+                        grandTotal += cost;
+                    }
+                });
+                document.getElementById('grand-total-display').innerText = grandTotal.toFixed(1) + ' ج.م';
+                logsContainer.innerHTML = '';
+                if (Object.keys(records).length === 0) {
+                    logsContainer.innerHTML = '<div style="text-align:center;">لا توجد سجلات خروج مكتملة.</div>';
+                    return;
+                }
+                Object.keys(records).sort((a,b) => new Date(b) - new Date(a)).forEach(date => {
+                    const dayData = records[date];
+                    const dayHtml = document.createElement('div');
+                    dayHtml.className = 'day-group';
+                    let itemsHtml = '';
+                    dayData.items.forEach(item => {
+                        itemsHtml += `
+                            <div class="record-row">
+                                <div class="record-info">
+                                    <span class="record-name">${item.name}</span>
+                                    <span class="record-time">وقت الخروج: ${item.time}</span>
+                                </div>
+                                <span class="record-cost">${item.cost.toFixed(1)} ج.م</span>
+                            </div>`;
+                    });
+                    dayHtml.innerHTML = `
+                        <div class="day-header"><span>📅 ${dayData.display}</span><span>سجل يومي</span></div>
+                        ${itemsHtml}
+                        <div class="day-total"><span>إجمالي اليوم</span><span>${dayData.total.toFixed(1)} ج.م</span></div>`;
+                    logsContainer.appendChild(dayHtml);
+                });
+            }).catch(err => { logsContainer.innerHTML = '<div style="text-align:center; color:red;">حدث خطأ في تحميل البيانات.</div>'; });
+        }
+
+        // --- ACTIONS ---
+        window.pauseChild = (id) => update(ref(db, `children/${id}`), { status:'paused', pauseStartTime: Date.now() });
+        window.resumeChild = (id) => {
+            get(ref(db, `children/${id}`)).then(snap => {
+                const d = snap.val();
+                const pauseDur = Date.now() - d.pauseStartTime;
+                update(ref(db, `children/${id}`), { status:'in', totalPausedTime: (d.totalPausedTime||0) + pauseDur });
+            });
+        };
+        
+        window.prepareCheckout = (id) => {
+            currentChildId = id;
+            get(ref(db, `children/${id}`)).then(s => {
+                const c = s.val();
+                let bill = c.status === 'paused' ? c.pauseStartTime - c.entryTime - (c.totalPausedTime||0) : Date.now() - c.entryTime - (c.totalPausedTime||0);
+                
+                // --- تعديل: حساب التكلفة (وقت + منتج) ---
+                const timeCost = calculateTimeCost(bill);
+                const extra = c.productPrice || 0;
+                const total = (parseFloat(timeCost) + parseFloat(extra)).toFixed(1);
+
+                document.getElementById('modal-duration').innerText = formatDuration(bill);
+                document.getElementById('modal-price').innerHTML = total + ' ج.م <br><span style="font-size:1rem; color:#666; font-weight:normal;">(وقت: '+timeCost+' + منتجات: '+extra+')</span>';
+                document.getElementById('checkout-modal').style.display = 'flex';
+            });
+        };
+
+        window.confirmCheckout = () => {
+            get(ref(db, `children/${currentChildId}`)).then(s => {
+                const c = s.val();
+                let bill = c.status === 'paused' ? c.pauseStartTime - c.entryTime - (c.totalPausedTime||0) : Date.now() - c.entryTime - (c.totalPausedTime||0);
+                
+                // --- تعديل: الحساب النهائي وحفظه ---
+                const timeCost = calculateTimeCost(bill);
+                const extra = c.productPrice || 0;
+                const total = (parseFloat(timeCost) + parseFloat(extra)).toFixed(1);
+
+                update(ref(db, `children/${currentChildId}`), { status:'out', exitTime: Date.now(), totalCost: total });
+                closeModal();
+                showToast("تم تسجيل الخروج");
+            });
+        };
+
+        window.closeModal = () => document.getElementById('checkout-modal').style.display = 'none';
+        window.closeQR = () => document.getElementById('new-child-qr').classList.add('hidden');
+        window.copyLink = () => { navigator.clipboard.writeText(currentChildLink); showToast("تم النسخ"); };
+        window.sendToWhatsApp = (phone, link) => { window.open(`https://wa.me/${phone.replace(/[^0-9]/g,'')}?text=${encodeURIComponent('رابط متابعة طفلك: '+decodeURIComponent(link))}`, '_blank'); };
+
+        // --- FINANCIAL MODAL ---
+        window.openFinanceModal = () => {
+            const now = new Date();
+            const startDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            const startWeek = startDay - (6*86400000);
+            const startMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+            let d=0, w=0, m=0;
+            Object.keys(allChildrenData).forEach(k => {
+                const c = allChildrenData[k];
+                if(c.status==='out' && c.exitTime) {
+                    const cost = parseFloat(c.totalCost);
+                    if(c.exitTime >= startDay) d += cost;
+                    if(c.exitTime >= startWeek) w += cost;
+                    if(c.exitTime >= startMonth) m += cost;
+                }
+            });
+            document.getElementById('stat-today').innerText = d.toFixed(1);
+            document.getElementById('stat-week').innerText = w.toFixed(1);
+            document.getElementById('stat-month').innerText = m.toFixed(1);
+            document.getElementById('finance-modal').style.display = 'flex';
+        };
+        window.closeFinanceModal = () => document.getElementById('finance-modal').style.display = 'none';
+
+        // --- PARENT LOGIC ---
+        function initParentView(id) {
+            adminView.classList.add('hidden');
+            financialView.classList.add('hidden');
+            parentView.classList.remove('hidden');
+            
+            let prevMsgCount = 0;
+            
+            // 1. Chat Listener
+            onValue(ref(db, `children/${id}/messages`), (snapshot) => {
+                const messages = snapshot.val();
+                const container = document.getElementById('parent-chat-messages');
+                container.innerHTML = '';
+                let currentCount = 0;
+                let msgsArray = [];
+                if (messages) {
+                    msgsArray = Object.values(messages).sort((a,b) => a.timestamp - b.timestamp);
+                    msgsArray.forEach(msg => {
+                        const div = document.createElement('div');
+                        div.className = `message ${msg.sender === 'admin' ? 'admin' : 'parent'}`;
+                        const senderName = msg.sender === 'admin' ? 'الإدارة' : 'أنت';
+                        div.innerHTML = `<span class="sender-name">${senderName}</span>${msg.text}`;
+                        container.appendChild(div);
+                        currentCount++;
+                    });
+                }
+                // NOTIFICATION (PARENT)
+                if (currentCount > prevMsgCount && currentCount > 0) {
+                    const lastMsg = msgsArray[msgsArray.length - 1];
+                    if (lastMsg.sender === 'admin') {
+                        playSound('msg');
+                        sendBrowserNotification("رسالة من الإدارة 💬", lastMsg.text);
+                        showToast("📩 رسالة جديدة من الإدارة");
+                    }
+                }
+                // BADGE
+                const badge = document.getElementById('parent-msg-badge');
+                if(currentCount > 0) {
+                    badge.innerText = currentCount;
+                    badge.classList.remove('hidden');
+                } else { badge.classList.add('hidden'); }
+
+                prevMsgCount = currentCount;
+                container.scrollTop = container.scrollHeight;
+            });
+
+            // 2. Main Data Listener
+            onValue(ref(db, `children/${id}`), s => {
+                const c = s.val();
+                if(!c) return;
+                document.getElementById('p-child-id').innerText = '#' + (c.childId || '0000');
+                document.getElementById('p-child-name').innerText = c.name;
+                
+                // --- تعديل: عرض المنتج والسعر للأب ---
+                let snackText = "لا توجد طلبات إضافية";
+                if(c.productName) {
+                    snackText = `🛒 ${c.productName} (${c.productPrice} ج.م)`;
+                }
+                document.getElementById('p-child-snack').innerText = snackText;
+
+                document.getElementById('entry-time-display').innerText = new Date(c.entryTime).toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
+                const badge = document.getElementById('p-status-badge');
+                const timer = document.getElementById('live-timer');
+
+                if(c.status === 'in') {
+                    badge.className = 'status-badge-in'; badge.innerText = 'متواجد حالياً';
+                    badge.style.background = 'var(--success)'; badge.style.color = '#005f33';
+                    document.querySelector('.parent-view-card').style.display='block';
+                    document.getElementById('session-ended-card').classList.add('hidden');
+                    if(parentInterval) clearInterval(parentInterval);
+                    let lastHour = 0;
+                    const updateTimer = () => {
+                        const t = Date.now() - c.entryTime - (c.totalPausedTime||0);
+                        timer.innerText = formatDuration(t);
+                        
+                        // --- تعديل: تحديث السعر اللحظي (وقت + منتج) ---
+                        const timeCost = calculateTimeCost(t);
+                        const extra = c.productPrice || 0;
+                        const totalLive = (parseFloat(timeCost) + parseFloat(extra)).toFixed(1);
+                        document.getElementById('live-cost').innerText = totalLive;
+
+                        // HOUR ALERT (PARENT)
+                        const currentHour = Math.floor(t / 3600000);
+                        if (currentHour > lastHour) {
+                            playSound('hour');
+                            sendBrowserNotification("تنبيه الوقت ⏰", "لقد أتم طفلك ساعة إضافية من اللعب.");
+                            lastHour = currentHour;
+                        }
+                    };
+                    updateTimer(); 
+                    parentInterval = setInterval(updateTimer, 1000);
+                } else if (c.status === 'paused') {
+                    clearInterval(parentInterval);
+                    badge.className = 'status-badge-paused'; badge.innerText = 'خروج مؤقت';
+                    badge.style.background = 'var(--warning)'; badge.style.color = 'white';
+                    const pausedT = c.pauseStartTime - c.entryTime - (c.totalPausedTime||0);
+                    timer.innerText = formatDuration(pausedT);
+                    timer.style.color = 'var(--warning)';
+                } else if (c.status === 'out') {
+                    clearInterval(parentInterval);
+                    document.querySelector('.parent-view-card').style.display='none';
+                    document.getElementById('session-ended-card').classList.remove('hidden');
+                    document.getElementById('final-cost').innerText = c.totalCost;
+                }
+            });
+        }
+
+        window.sendParentMessage = () => {
+            const t = document.getElementById('parent-message-input').value;
+            if(!t) return;
+            push(ref(db, `children/${childIdParam}/messages`), { text:t, sender:'parent', timestamp:Date.now() });
+            document.getElementById('parent-message-input').value = '';
+        };
+
+        // --- NEW PRICING LOGIC (20 EGP/Hour) ---
+        // دالة تحسب سعر الوقت فقط
+        function calculateTimeCost(ms) { 
+            const hours = Math.ceil(ms / 3600000); 
+            return (hours * 20); 
+        }
+
+        function formatDuration(ms) {
+            const s = Math.floor((ms/1000)%60), m = Math.floor((ms/60000)%60), h = Math.floor(ms/3600000);
+            return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }
+        window.showToast = (m) => {
+            const t = document.createElement('div'); 
+            t.style.cssText = 'background:var(--secondary); color:white; padding:10px 20px; border-radius:8px; margin-top:10px; position:fixed; bottom:20px; left:20px; z-index:2000; animation: fadeIn 0.3s;';
+            t.innerText = m;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        };
+    </script>
+</body>
+</html>
+//
