@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- نفس المتغيرات والألوان الأساسية --- */
+        /* --- المتغيرات والألوان --- */
         :root {
             --primary: #ff4757;
             --primary-hover: #ff6b81;
@@ -22,10 +22,7 @@
             --bg-body: #f1f2f6;
             --surface: #ffffff;
             --whatsapp: #25D366;
-            --glass: rgba(255, 255, 255, 0.95);
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
             --shadow-md: 0 8px 24px rgba(149, 157, 165, 0.1);
-            --shadow-lg: 0 15px 35px rgba(0,0,0,0.1);
             --radius: 16px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -33,138 +30,114 @@
         /* --- التنسيقات العامة --- */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
         body { background-color: var(--bg-body); color: var(--secondary); min-height: 100vh; display: flex; flex-direction: column; font-size: 16px; overflow-x: hidden; }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
         
-        /* --- Animations --- */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse-ring { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(255, 71, 87, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); } }
-
         /* --- Header --- */
-        header { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); padding: 0; position: sticky; top: 0; z-index: 1000; box-shadow: var(--shadow-sm); }
+        header { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .header-top { background: var(--secondary); color: white; font-size: 0.85rem; padding: 8px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .header-content { padding: 15px 20px; display: flex; align-items: center; gap: 20px; max-width: 1200px; margin: 0 auto; }
-        .logo-img { height: 55px; width: 55px; background: white; border-radius: 50%; padding: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid var(--bg-body); object-fit: contain; }
-        .header-text h1 { color: var(--primary); font-weight: 800; font-size: 1.5rem; margin-bottom: 0.2rem; }
-        .header-text p { color: #7f8c8d; font-size: 0.9rem; font-weight: 500; }
+        .header-content { padding: 15px 20px; display: flex; align-items: center; gap: 15px; max-width: 1200px; margin: 0 auto; }
+        .logo-img { height: 50px; width: 50px; background: white; border-radius: 50%; padding: 2px; border: 2px solid #eee; object-fit: contain; }
+        .header-text h1 { color: var(--primary); font-weight: 800; font-size: 1.4rem; margin: 0; }
+        .header-text p { color: #7f8c8d; font-size: 0.85rem; margin: 0; }
 
-        /* --- Layout --- */
-        main { flex: 1; padding: 2rem 1rem; max-width: 1200px; margin: 0 auto; width: 100%; }
-        .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
-        @media (min-width: 992px) { .dashboard-grid { grid-template-columns: 380px 1fr; } }
-        
         /* --- Login --- */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #ff9ff3 0%, #feca57 100%); display: flex; justify-content: center; align-items: center; z-index: 9999; }
-        .login-card { background: rgba(255, 255, 255, 0.95); padding: 3rem 2rem; border-radius: 24px; width: 90%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); text-align: center; animation: fadeIn 0.6s ease-out; }
-        .login-input { width: 100%; padding: 18px; background: #f7f9fc; border: 2px solid transparent; border-radius: 12px; font-size: 1.3rem; text-align: center; margin: 2rem 0; letter-spacing: 8px; font-weight: bold; color: var(--secondary); transition: var(--transition); }
+        .login-card { background: white; padding: 2.5rem; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+        .login-input { width: 100%; padding: 15px; background: #f7f9fc; border: 2px solid transparent; border-radius: 12px; font-size: 1.2rem; text-align: center; margin: 1.5rem 0; letter-spacing: 5px; font-weight: bold; }
         .login-input:focus { background: white; border-color: var(--primary); }
 
-        /* --- Components --- */
-        .card { background: var(--surface); border-radius: var(--radius); padding: 1.8rem; box-shadow: var(--shadow-md); margin-bottom: 1.5rem; animation: fadeIn 0.5s ease-out; }
-        .form-group { margin-bottom: 1.2rem; }
-        .form-group label { display: block; margin-bottom: 0.6rem; font-weight: 600; color: #57606f; }
-        .form-control { width: 100%; padding: 14px; background: #f8f9fa; border: 1px solid #dfe4ea; border-radius: 12px; font-size: 1rem; transition: var(--transition); }
-        .form-control:focus { border-color: var(--accent); background: white; }
-
-        .btn { padding: 14px 24px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 1rem; transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; position: relative; overflow: hidden; }
-        .btn:active { transform: scale(0.98); }
-        @media (min-width: 768px) { .btn { width: auto; min-width: 120px; } }
+        /* --- Main Layout --- */
+        main { flex: 1; padding: 1.5rem 1rem; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .card { background: var(--surface); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow-md); margin-bottom: 1.5rem; }
+        
+        /* --- Inputs & Buttons --- */
+        .form-control { width: 100%; padding: 12px; background: #f8f9fa; border: 1px solid #dfe4ea; border-radius: 10px; font-size: 1rem; margin-bottom: 10px; }
+        .btn { padding: 12px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn:active { transform: scale(0.96); }
         .btn-primary { background: var(--secondary); color: white; }
         .btn-danger { background: var(--danger); color: white; }
         .btn-warning { background: var(--warning); color: white; }
         .btn-whatsapp { background: var(--whatsapp); color: white; }
         .btn-success { background: var(--success); color: white; }
-        .btn-info { background: var(--accent); color: white; } /* للطلبات */
+        .btn-info { background: var(--accent); color: white; }
         .btn-outline { background: transparent; border: 2px solid var(--secondary); color: var(--secondary); }
-        .btn-logout { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 5px 15px; border-radius: 20px; }
-        .btn-stats { background: var(--success); color: white; padding: 6px 15px; border-radius: 20px; font-size: 0.85rem; }
-
-        .search-box { background: white; padding: 0.8rem 1.2rem; border-radius: 50px; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); display: flex; gap: 15px; align-items: center; border: 1px solid #eee; }
-        .search-box input { border: none; flex: 1; outline: none; font-size: 1rem; }
+        .btn-logout { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; }
+        .btn-stats { background: var(--success); color: white; padding: 6px 15px; border-radius: 20px; font-size: 0.8rem; }
 
         /* --- Kid Card --- */
-        .kid-card { background: white; border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); border: 1px solid #f1f2f6; position: relative; overflow: hidden; transition: var(--transition); }
-        .kid-card:hover { transform: translateX(-5px); box-shadow: var(--shadow-md); }
-        .kid-card::before { content: ''; position: absolute; top: 0; right: 0; width: 6px; height: 100%; border-radius: 0 16px 16px 0; }
+        .kid-card { background: white; border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; border: 1px solid #f1f2f6; position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        @media (min-width: 600px) { .kid-card { flex-direction: row; justify-content: space-between; align-items: center; } }
+        .kid-card::before { content: ''; position: absolute; top: 0; right: 0; width: 5px; height: 100%; }
         .kid-card.in-status::before { background: var(--success); }
         .kid-card.paused-status::before { background: var(--warning); }
-        .kid-card.out-status::before { background: #ccc; }
-        @media (min-width: 600px) { .kid-card { flex-direction: row; justify-content: space-between; align-items: center; } }
+        .kid-card.out-status::before { background: #bdc3c7; }
+
+        .kid-info h3 { font-size: 1.1rem; margin-bottom: 5px; color: var(--secondary); display: flex; align-items: center; gap: 8px; }
+        .kid-id-badge { background: #dfe4ea; color: var(--secondary); padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; }
+        .kid-meta { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px; }
+        .kid-tag { background: #f1f2f6; color: #7f8c8d; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: 600; }
         
-        .kid-info h3 { margin-bottom: 8px; font-size: 1.15rem; font-weight: 700; color: var(--secondary); display: flex; align-items: center; gap: 8px; }
-        .kid-id-badge { background: #dfe4ea; color: var(--secondary); padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; }
-        .kid-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-        .kid-tag { background: #f1f2f6; color: #747d8c; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
-        .timer-display { font-family: 'Courier New', monospace; font-weight: 800; color: var(--primary); font-size: 1.1rem; background: rgba(255, 71, 87, 0.05); padding: 5px 10px; border-radius: 8px; display: inline-block;}
-        .timer-paused { color: var(--warning); background: rgba(255, 165, 2, 0.1); }
-        .controls { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; width: 100%; }
-        .controls .btn { padding: 8px 14px; font-size: 0.85rem; border-radius: 8px; width: auto; }
+        .timer-display { font-family: monospace; font-weight: 800; color: var(--primary); font-size: 1.1rem; background: rgba(255, 71, 87, 0.08); padding: 5px 10px; border-radius: 8px; display: inline-block; }
+        .controls { display: flex; gap: 5px; flex-wrap: wrap; }
+        .controls .btn { padding: 8px 12px; font-size: 0.85rem; }
 
-        /* --- Chat & New Features --- */
-        .notification-badge { background: var(--danger); color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.75rem; position: absolute; top: -5px; right: -5px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2); animation: bounce 0.5s; }
-        @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        /* --- Orders in History --- */
+        .history-orders { margin-top: 8px; border-top: 1px dashed #eee; padding-top: 8px; font-size: 0.85rem; color: #666; }
+        .history-item { display: inline-block; background: #f8f9fa; padding: 2px 8px; border-radius: 4px; margin: 2px; border: 1px solid #eee; }
 
-        .chat-container { margin-top: 1.5rem; border: 1px solid #f1f2f6; border-radius: 16px; overflow: hidden; background: #fff; }
-        .chat-messages { height: 300px; overflow-y: auto; padding: 20px; background: #f7f9fc; display: flex; flex-direction: column; gap: 12px; }
-        .message { max-width: 80%; padding: 10px 15px; border-radius: 18px; font-size: 0.95rem; line-height: 1.5; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer; transition: 0.2s; }
-        .message:active { transform: scale(0.98); }
-        .message.parent { align-self: flex-start; background: white; color: var(--secondary); border-bottom-right-radius: 4px; }
-        .message.admin { align-self: flex-end; background: linear-gradient(135deg, var(--secondary) 0%, #4b5563 100%); color: white; border-bottom-left-radius: 4px; }
+        /* --- Chat System --- */
+        .notification-badge { background: var(--danger); color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; position: absolute; top: -5px; right: -5px; font-weight: bold; animation: bounce 0.5s infinite alternate; }
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-3px); } }
+
+        .chat-container { margin-top: 1rem; border: 1px solid #f1f2f6; border-radius: 16px; overflow: hidden; background: #fff; display: flex; flex-direction: column; }
+        .chat-messages { height: 280px; overflow-y: auto; padding: 15px; background: #f7f9fc; display: flex; flex-direction: column; gap: 10px; }
         
-        .msg-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; font-size: 0.7rem; opacity: 0.7; gap: 5px;}
-        .ticks { font-weight: bold; font-size: 0.8rem; }
-        .ticks.read { color: var(--success); } /* صح أخضر */
-        .ticks.sent { color: #ccc; } /* صح رمادي */
+        .message { max-width: 80%; padding: 10px 14px; border-radius: 16px; font-size: 0.9rem; line-height: 1.4; position: relative; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .message.parent { align-self: flex-start; background: white; color: var(--secondary); border-bottom-right-radius: 2px; }
+        .message.admin { align-self: flex-end; background: #e3f2fd; color: #2c3e50; border-bottom-left-radius: 2px; }
+        
+        .msg-meta { display: flex; justify-content: flex-end; align-items: center; margin-top: 4px; font-size: 0.7rem; opacity: 0.7; gap: 4px; }
+        .ticks { font-size: 0.85rem; }
+        .ticks.read { color: var(--success); } /* أخضر عند القراءة */
+        .ticks.sent { color: #bdc3c7; } /* رمادي عند الإرسال */
 
-        .reaction-popup { position: absolute; bottom: 100%; right: 0; background: white; padding: 5px 10px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: flex; gap: 10px; z-index: 10; animation: fadeIn 0.2s; }
+        /* Reactions */
+        .reaction-popup { position: absolute; bottom: 100%; right: 0; background: white; padding: 5px; border-radius: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; gap: 5px; z-index: 10; animation: fadeIn 0.2s; }
         .reaction-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
-        .reaction-btn:hover { transform: scale(1.3); }
-        .msg-reaction { font-size: 0.8rem; background: rgba(255,255,255,0.8); border-radius: 10px; padding: 2px 5px; position: absolute; bottom: -10px; left: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .reaction-btn:hover { transform: scale(1.2); }
+        .msg-reaction { font-size: 0.8rem; background: white; border-radius: 10px; padding: 2px 5px; position: absolute; bottom: -10px; left: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #eee; }
 
-        .chat-input-area { padding: 15px; background: white; display: flex; gap: 10px; border-top: 1px solid #f1f2f6; }
-        .chat-input-area input { background: #f1f2f6; border: none; }
+        .chat-input-area { padding: 10px; background: white; display: flex; gap: 8px; border-top: 1px solid #eee; }
 
-        /* --- Orders Styles --- */
-        .orders-list { margin-top: 15px; border-top: 1px dashed #eee; padding-top: 10px; }
-        .order-item { display: flex; justify-content: space-between; padding: 8px 0; font-size: 0.9rem; border-bottom: 1px solid #f9f9f9; }
-        .order-total-display { margin-top: 10px; text-align: left; font-weight: bold; color: var(--primary); }
+        /* --- Parent View Specifics --- */
+        .parent-view-card { text-align: center; border-radius: 24px; padding: 2rem 1.5rem; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px); margin-top: 2rem; position: relative; z-index: 10; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .parent-timer-circle { width: 200px; height: 200px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 20px auto; position: relative; z-index: 1; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .parent-timer-circle::after { content: ''; position: absolute; width: 180px; height: 180px; border-radius: 50%; border: 6px solid var(--primary); opacity: 0.1; }
+        .timer-text-big { font-size: 2.8rem; font-weight: 900; color: var(--secondary); letter-spacing: -1px; }
 
-        /* --- Parent View --- */
-        .parent-view-card { text-align: center; border-radius: 30px; padding: 2.5rem 1.5rem; box-shadow: 0 20px 50px rgba(0,0,0,0.08); margin-top: 2rem; border: 1px solid rgba(0,0,0,0.03); background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px); position: relative; z-index: 10; }
-        .parent-timer-circle { width: 220px; height: 220px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 30px auto; position: relative; z-index: 1; }
-        .parent-timer-circle::before { content: ''; position: absolute; z-index: -1; width: 100%; height: 100%; border-radius: 50%; background: rgba(255, 71, 87, 0.05); animation: pulse-ring 2s infinite; }
-        .parent-timer-circle::after { content: ''; position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 8px solid var(--primary); opacity: 0.1; }
-        .timer-text-big { font-size: 3rem; font-weight: 900; color: var(--secondary); font-variant-numeric: tabular-nums; letter-spacing: -2px; }
-        
-        .parent-orders-section { background: #f8f9fa; border-radius: 12px; padding: 15px; margin-top: 20px; text-align: right; }
-        .parent-orders-section h4 { color: var(--secondary); margin-bottom: 10px; font-size: 1rem; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        .orders-list { margin-top: 15px; border-top: 1px dashed #eee; padding-top: 10px; text-align: right; }
+        .order-item { display: flex; justify-content: space-between; padding: 6px 0; font-size: 0.9rem; border-bottom: 1px solid #f9f9f9; }
 
         /* --- Modals --- */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; animation: fadeIn 0.2s; }
-        .modal-content { background: white; padding: 2.5rem; border-radius: 24px; width: 90%; max-width: 450px; text-align: center; box-shadow: var(--shadow-lg); }
-        .modal-chat-content { max-width: 600px; height: 85vh; display: flex; flex-direction: column; padding: 1.5rem; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 2rem; border-radius: 20px; width: 95%; max-width: 450px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-chat-content { height: 85vh; display: flex; flex-direction: column; padding: 1.5rem; }
 
         /* --- Footer --- */
-        .developer-footer { margin-top: auto; text-align: center; padding: 1.5rem; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(15px); border-radius: 20px 20px 0 0; position: relative; z-index: 50; box-shadow: 0 -10px 30px rgba(0,0,0,0.1); }
-        .developer-footer a { color: var(--secondary); text-decoration: none; font-weight: bold; display: inline-block; margin-top: 10px; padding: 8px 15px; background: #f0f2f5; border-radius: 20px; transition: 0.3s; }
+        .developer-footer { margin-top: auto; text-align: center; padding: 1.5rem; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-radius: 20px 20px 0 0; position: relative; z-index: 50; border-top: 1px solid rgba(0,0,0,0.05); }
+        .developer-footer p { margin-bottom: 5px; font-weight: bold; color: var(--secondary); font-size: 0.95rem; }
+        .developer-footer a { color: var(--secondary); text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; margin-top: 8px; padding: 8px 15px; background: #f1f2f6; border-radius: 20px; transition: 0.3s; font-size: 0.9rem; }
         .developer-footer a:hover { background: var(--accent); color: white; }
         .heart-beat { display: inline-block; animation: heartbeat 1.5s infinite; color: var(--danger); }
-        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
 
-        /* --- Background Animation (Amusement Park) --- */
+        /* --- Background Animation --- */
         .scene-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 0; pointer-events: none; background: linear-gradient(to bottom, #87CEEB 0%, #E0F7FA 100%); }
-        /* (Shortened animation CSS for brevity - same as original) */
-        .cloud { position: absolute; background: #fff; border-radius: 100px; opacity: 0.8; animation: floatCloud 25s linear infinite; }
+        .cloud { position: absolute; background: #fff; border-radius: 100px; opacity: 0.8; animation: floatCloud 30s linear infinite; }
         .cloud::after, .cloud::before { content: ''; position: absolute; background: #fff; border-radius: 50%; }
         .cloud-1 { width: 100px; height: 40px; top: 10%; left: -120px; } .cloud-1::after { width: 40px; height: 40px; top: -20px; left: 15px; } .cloud-1::before { width: 50px; height: 50px; top: -30px; left: 35px; }
-        @keyframes floatCloud { 0% { left: -200px; } 100% { left: 120%; } }
-        .ferris-wheel-container { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%) scale(0.9); width: 300px; height: 300px; z-index: 1; opacity: 0.3; }
-        .wheel { width: 300px; height: 300px; border: 4px solid #bdc3c7; border-radius: 50%; position: relative; animation: wheelRotate 20s linear infinite; }
-        .wheel::before, .wheel::after { content: ''; position: absolute; background: #bdc3c7; } .wheel::before { top: 50%; left: 0; width: 100%; height: 4px; } .wheel::after { top: 0; left: 50%; width: 4px; height: 100%; }
-        @keyframes wheelRotate { 100% { transform: rotate(360deg); } }
-        .stand { position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%); border-left: 100px solid transparent; border-right: 100px solid transparent; border-bottom: 160px solid #95a5a6; z-index: -1; }
-        .ground-hill { position: absolute; bottom: -50px; left: 0; width: 100%; height: 120px; background: #55efc4; border-radius: 50% 50% 0 0 / 100% 100% 0 0; z-index: 1; }
+        @keyframes floatCloud { 0% { left: -150px; } 100% { left: 110%; } }
+        .ground-hill { position: absolute; bottom: -50px; left: 0; width: 100%; height: 100px; background: #55efc4; border-radius: 50% 50% 0 0 / 100% 100% 0 0; z-index: 1; }
 
         .hidden { display: none !important; }
     </style>
@@ -175,9 +148,9 @@
         <div class="login-card">
             <img src="https://raw.githubusercontent.com/mohamednasr5/opera/main/01.png" alt="Logo" style="width:100px; margin-bottom:15px; border-radius: 50%; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
             <h2>أوبرا عاشور للأطفال</h2>
-            <p style="color:#666; margin-bottom:20px;">يرجى إدخال كلمة المرور للدخول</p>
+            <p style="color:#666; margin-bottom:20px;">يرجى إدخال كلمة المرور</p>
             <input type="password" id="login-pass" class="login-input" placeholder="****" onkeypress="handleEnter(event)">
-            <button class="btn btn-primary" onclick="checkLogin()">دخول للنظام</button>
+            <button class="btn btn-primary" style="width:100%;" onclick="checkLogin()">دخول للنظام</button>
         </div>
     </div>
 
@@ -196,8 +169,8 @@
         <div class="header-content">
             <img src="https://raw.githubusercontent.com/mohamednasr5/opera/main/01.png" alt="Logo" class="logo-img">
             <div class="header-text">
-                <h1>🎪 أوبرا عاشور للأطفال</h1>
-                <p id="header-subtitle">نظام إدارة وتتبع الأطفال الذكي</p>
+                <h1>🎪 أوبرا عاشور</h1>
+                <p id="header-subtitle">منطقة ألعاب الأطفال</p>
             </div>
         </div>
     </header>
@@ -205,107 +178,82 @@
     <main id="app">
         
         <div id="admin-view" class="hidden">
-            <div class="dashboard-grid">
-                
-                <section class="card">
-                    <h2 style="margin-bottom: 1.5rem; color: var(--primary);">📝 تسجيل طفل جديد</h2>
-                    <form id="checkin-form">
-                        <div class="form-group">
-                            <label>اسم الطفل</label>
-                            <input type="text" id="child-name" class="form-control" placeholder="اسم الطفل" required>
-                        </div>
-                        <div class="form-group">
-                            <label>رقم هاتف الوالد</label>
-                            <input type="tel" id="parent-phone" class="form-control" placeholder="مثال: 201xxxxxxxxx" required>
-                        </div>
-                        <div class="form-group">
-                            <label>المشروب / الوجبة</label>
-                            <select id="child-snack" class="form-control">
-                                <option value="غزل بنات">1 غزل بنات 🍭</option>
-                                <option value="فشار">1 فشار 🍿</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">تسجيل دخول</button>
-                    </form>
-
-                    <div id="new-child-qr" class="hidden text-center" style="margin-top: 1.5rem; border-top: 1px dashed #ccc; padding-top: 1rem;">
-                        <h3 style="color: var(--success); margin-bottom:10px;">✅ تم التسجيل!</h3>
-                        <p id="qr-parent-name" style="font-weight:bold; margin-bottom:10px;"></p>
-                        <div id="qr-code" style="display:flex; justify-content:center; margin: 15px 0;"></div>
-                        <div style="display:grid; gap:10px; margin-top:20px;">
-                            <button class="btn btn-primary" onclick="copyLink()">📋 نسخ الرابط</button>
-                            <button class="btn btn-whatsapp" id="wa-btn-new">📱 إرسال واتساب</button>
-                            <button class="btn btn-outline" onclick="closeQR()">إغلاق</button>
-                        </div>
+            
+            <section class="card">
+                <h2 style="margin-bottom: 1rem; color: var(--primary);">📝 تسجيل دخول طفل</h2>
+                <form id="checkin-form">
+                    <div style="display: grid; gap: 10px; grid-template-columns: 1fr 1fr;">
+                        <input type="text" id="child-name" class="form-control" placeholder="اسم الطفل" required>
+                        <input type="tel" id="parent-phone" class="form-control" placeholder="رقم الهاتف" required>
                     </div>
-                </section>
+                    <select id="child-snack" class="form-control">
+                        <option value="غزل بنات">1 غزل بنات 🍭</option>
+                        <option value="فشار">1 فشار 🍿</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary" style="width:100%;">تسجيل</button>
+                </form>
 
-                <section>
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="admin-search" placeholder="بحث بالاسم، الهاتف، أو الرقم (####)">
+                <div id="new-child-qr" class="hidden text-center" style="margin-top: 1rem; border-top: 1px dashed #ccc; padding-top: 1rem;">
+                    <h3 style="color: var(--success); margin-bottom:10px;">✅ تم التسجيل!</h3>
+                    <p id="qr-parent-name" style="font-weight:bold; margin-bottom:10px;"></p>
+                    <div id="qr-code" style="display:flex; justify-content:center; margin: 15px 0;"></div>
+                    <div style="display:flex; gap:10px; justify-content:center; margin-top:10px;">
+                        <button class="btn btn-primary" onclick="copyLink()">📋 نسخ الرابط</button>
+                        <button class="btn btn-whatsapp" id="wa-btn-new">📱 واتساب</button>
                     </div>
+                </div>
+            </section>
 
-                    <div class="card">
-                        <h2 style="font-size: 1.2rem; margin-bottom: 1.2rem; color: var(--secondary);">👶 الحالي (نشط / مؤقت)</h2>
-                        <div id="kids-list-active"></div>
-                    </div>
-
-                    <div class="card" style="background: #fafafa;">
-                        <h2 style="font-size: 1.2rem; margin-bottom: 1.2rem; color: #7f8c8d;">📜 سجل الخروج</h2>
-                        <div id="kids-list-history"></div>
-                    </div>
-                </section>
+            <div class="card" style="padding:10px;">
+                <input type="text" id="admin-search" class="form-control" placeholder="🔍 بحث بالاسم أو الهاتف...">
             </div>
+
+            <h3 style="margin-bottom:10px; color:#555;">نشط حالياً</h3>
+            <div id="kids-list-active"></div>
+
+            <h3 style="margin:20px 0 10px; color:#555;">سجل الخروج</h3>
+            <div id="kids-list-history"></div>
             
             <div class="developer-footer">
                 <p>برمجة وتطوير بكل حب <span class="heart-beat">❤️</span></p>
                 <p>المهندس محمد حماد</p>
                 <a href="tel:01279934735"><i class="fas fa-phone"></i> 01279934735</a>
+                <a href="https://www.facebook.com/en.mohamed.nasr" target="_blank"><i class="fab fa-facebook"></i> فيسبوك</a>
             </div>
-        </div>
-
-        <div id="financial-view" class="hidden" style="background: #dfe6e9; padding: 1.5rem; border-radius: 20px; min-height: 85vh;">
-            <div style="background: var(--secondary); color: white; padding: 2.5rem; border-radius: 20px; text-align: center; margin-bottom: 2rem;">
-                <h2>الإجمالي العام</h2>
-                <div class="big-number" id="grand-total-display" style="font-size: 3.5rem; font-weight: 800; color: #2ed573;">0 ج.م</div>
-            </div>
-            <div id="financial-logs"></div>
         </div>
 
         <div id="parent-view" class="hidden">
             <div style="display: flex; flex-direction: column; min-height: 85vh;">
                 <div class="scene-container">
                     <div class="cloud cloud-1"></div>
-                    <div class="ferris-wheel-container"><div class="wheel"></div><div class="stand"></div></div>
                     <div class="ground-hill"></div>
                 </div>
 
                 <div style="padding: 1rem; position: relative; z-index: 10; flex-grow: 1;">
                     <div class="parent-view-card">
-                        <div class="status-badge-in" id="p-status-badge" style="padding: 6px 15px; border-radius: 20px; font-weight: bold;">متواجد حالياً</div>
-                        <h2 id="p-child-name" style="font-size:2rem; margin:15px 0 5px; color:var(--secondary);">اسم الطفل</h2>
-                        <div id="p-child-id" style="background:var(--secondary); color:white; padding:8px 25px; border-radius:50px; font-weight:800; display:inline-block;">#0000</div>
+                        <div class="status-badge-in" id="p-status-badge" style="padding: 6px 15px; border-radius: 20px; font-weight: bold; background: var(--success); color: white; display: inline-block;">متواجد حالياً</div>
+                        <h2 id="p-child-name" style="font-size:1.8rem; margin:15px 0 5px; color:var(--secondary);">...</h2>
+                        <div id="p-child-id" style="background:#eee; color:#555; padding:4px 15px; border-radius:50px; font-size:0.9rem; display:inline-block;">#0000</div>
                         
                         <div class="parent-timer-circle">
                             <div class="timer-text-big" id="live-timer">00:00:00</div>
                         </div>
 
-                        <div id="parent-orders-container" class="parent-orders-section hidden">
-                            <h4>🛒 الطلبات والمشتريات</h4>
+                        <div id="parent-orders-container" class="orders-list hidden">
+                            <h4 style="font-size:1rem; margin-bottom:5px;">🛒 الطلبات الإضافية</h4>
                             <div id="parent-orders-list"></div>
                         </div>
 
-                        <h3 style="color:var(--secondary); font-size:1.5rem; margin:20px 0;">
-                            التكلفة الحالية: <span id="live-cost" style="color:var(--primary); font-weight:800; font-size:2.5rem;">0</span> ج.م
+                        <h3 style="color:var(--secondary); font-size:1.4rem; margin:20px 0;">
+                            الإجمالي: <span id="live-cost" style="color:var(--primary); font-weight:800; font-size:2rem;">0</span> ج.م
                         </h3>
                         
                         <div class="chat-container">
                             <div id="parent-chat-messages" class="chat-messages">
-                                <div style="text-align:center; color:#999; font-size:0.8rem;">يمكنك إرسال رسالة للإدارة</div>
+                                <div style="text-align:center; color:#999; font-size:0.8rem; margin-top:50px;">مرحباً بك! يمكنك التواصل مع الإدارة هنا</div>
                             </div>
                             <div class="chat-input-area">
-                                <input type="text" id="parent-message-input" class="form-control" placeholder="اكتب رسالة للإدارة...">
+                                <input type="text" id="parent-message-input" class="form-control" style="margin:0;" placeholder="اكتب رسالة...">
                                 <button class="btn btn-primary" onclick="sendParentMessage()" style="width: auto;">➤ <span id="parent-msg-badge" class="hidden notification-badge">0</span></button>
                             </div>
                         </div>
@@ -313,11 +261,10 @@
                     
                     <div id="session-ended-card" class="parent-view-card hidden" style="background:#fff; border:2px solid var(--danger);">
                         <h2 style="color:var(--danger); margin-bottom:20px;">انتهت الجلسة</h2>
-                        <p style="font-size:1.2rem; color:#666;">غادر الطفل منطقة اللعب.</p>
+                        <p style="font-size:1.1rem; color:#666;">نتمنى أن تكونوا قد استمتعتم!</p>
                         <h3 style="margin: 20px 0; font-size:2.5rem; color:var(--secondary);">
-                            المبلغ النهائي: <span id="final-cost" style="color:var(--primary);">0</span> ج.م
+                            الحساب: <span id="final-cost" style="color:var(--primary);">0</span> ج.م
                         </h3>
-                        <p style="font-size:1.2rem; font-weight:bold;">شكراً لزيارتكم! 🎈</p>
                     </div>
                 </div>
                 
@@ -325,20 +272,30 @@
                     <p>برمجة وتطوير بكل حب <span class="heart-beat">❤️</span></p>
                     <p>المهندس محمد حماد</p>
                     <a href="tel:01279934735"><i class="fas fa-phone"></i> 01279934735</a>
+                    <a href="https://www.facebook.com/en.mohamed.nasr" target="_blank"><i class="fab fa-facebook"></i> فيسبوك</a>
                 </div>
             </div>
+        </div>
+
+        <div id="financial-view" class="hidden" style="background: #f1f2f6; padding: 1rem; min-height: 100vh;">
+            <div style="background: var(--secondary); color: white; padding: 2rem; border-radius: 20px; text-align: center; margin-bottom: 2rem; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+                <h2>الإجمالي العام</h2>
+                <div class="big-number" id="grand-total-display" style="font-size: 3rem; font-weight: 800; color: #2ed573;">0 ج.م</div>
+                <button class="btn btn-outline" style="color:white; border-color:white; margin-top:15px;" onclick="location.reload()">رجوع</button>
+            </div>
+            <div id="financial-logs"></div>
         </div>
     </main>
 
     <div id="admin-chat-modal" class="modal">
         <div class="modal-content modal-chat-content">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <h3 id="chat-modal-title">محادثة</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:10px;">
+                <h3 id="chat-modal-title" style="font-size:1.1rem;">محادثة</h3>
                 <button onclick="closeAdminChat()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
             </div>
             <div id="admin-chat-history" class="chat-messages" style="flex:1; overflow-y:auto;"></div>
             <div class="chat-input-area">
-                <input type="text" id="admin-chat-input" class="form-control" placeholder="اكتب رد...">
+                <input type="text" id="admin-chat-input" class="form-control" style="margin:0;" placeholder="اكتب رد...">
                 <button class="btn btn-primary" onclick="sendAdminMessage()" style="width: auto;">إرسال</button>
             </div>
         </div>
@@ -346,36 +303,36 @@
 
     <div id="orders-modal" class="modal">
         <div class="modal-content">
-            <h3 style="color: var(--accent); margin-bottom: 15px;">🛒 إضافة طلبات للطفل</h3>
-            <h4 id="order-child-name" style="margin-bottom: 20px;"></h4>
+            <h3 style="color: var(--accent); margin-bottom: 15px;">🛒 إضافة طلبات</h3>
+            <h4 id="order-child-name" style="margin-bottom: 20px; color:#666;"></h4>
             
             <div style="display:flex; gap:10px; margin-bottom:10px;">
-                <input type="text" id="product-name" class="form-control" placeholder="اسم المنتج (مثال: عصير)">
+                <input type="text" id="product-name" class="form-control" placeholder="اسم المنتج (عصير..)">
                 <input type="number" id="product-price" class="form-control" placeholder="السعر" style="width: 80px;">
             </div>
-            <button class="btn btn-info" onclick="addProductToChild()">➕ إضافة المنتج</button>
+            <button class="btn btn-info" style="width:100%;" onclick="addProductToChild()">➕ إضافة</button>
             
-            <div class="orders-list" style="margin-top:20px; text-align:right;">
-                <h5>الطلبات الحالية:</h5>
+            <div class="orders-list" style="margin-top:20px;">
+                <h5>القائمة الحالية:</h5>
                 <div id="current-orders-list" style="max-height: 150px; overflow-y: auto;"></div>
-                <div class="order-total-display">إجمالي الطلبات: <span id="modal-orders-total">0</span> ج.م</div>
+                <div style="margin-top:10px; font-weight:bold; color:var(--primary);">الإجمالي: <span id="modal-orders-total">0</span> ج.م</div>
             </div>
             
-            <button class="btn btn-outline" onclick="closeOrderModal()" style="margin-top:20px;">إغلاق</button>
+            <button class="btn btn-outline" onclick="closeOrderModal()" style="margin-top:20px; width:100%;">إغلاق</button>
         </div>
     </div>
 
     <div id="checkout-modal" class="modal">
         <div class="modal-content">
-            <h2 style="color:var(--danger);">إنهاء جلسة</h2>
-            <div style="text-align: right; margin: 15px 0; font-size: 0.9rem; background: #f9f9f9; padding: 10px; border-radius: 10px;">
-                <div style="display:flex; justify-content:space-between;"><span>⏳ وقت اللعب:</span><span id="modal-duration"></span></div>
-                <div style="display:flex; justify-content:space-between;"><span>🎮 تكلفة اللعب:</span><span id="modal-play-cost"></span></div>
-                <div style="display:flex; justify-content:space-between; color: var(--accent);"><span>🛒 تكلفة الطلبات:</span><span id="modal-products-cost"></span></div>
+            <h2 style="color:var(--danger); margin-bottom:10px;">إنهاء جلسة</h2>
+            <div style="text-align: right; background: #f9f9f9; padding: 15px; border-radius: 10px; font-size: 0.95rem;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>⏳ الوقت:</span><span id="modal-duration"></span></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>🎮 اللعب:</span><span id="modal-play-cost"></span></div>
+                <div style="display:flex; justify-content:space-between; color: var(--accent);"><span>🛒 الطلبات:</span><span id="modal-products-cost"></span></div>
             </div>
             <div style="font-size:2.5rem; font-weight:800; color:var(--secondary); margin:15px 0;" id="modal-total-price">0 ج.م</div>
             <div style="display:flex; gap:10px; justify-content:center;">
-                <button class="btn btn-danger" onclick="confirmCheckout()">تأكيد والدفع</button>
+                <button class="btn btn-danger" onclick="confirmCheckout()">تأكيد ودفع</button>
                 <button class="btn btn-outline" onclick="closeCheckoutModal()">إلغاء</button>
             </div>
         </div>
@@ -383,19 +340,18 @@
     
     <div id="finance-modal" class="modal">
         <div class="modal-content">
-            <h2 style="margin-bottom:15px; color: var(--secondary);">ملخص سريع</h2>
+            <h2 style="margin-bottom:15px;">ملخص سريع</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
                 <div style="background:#f9f9f9; padding:10px; border-radius:10px;"><h4>اليوم</h4><div style="color:green; font-weight:bold;" id="stat-today">0</div></div>
                 <div style="background:#f9f9f9; padding:10px; border-radius:10px;"><h4>الأسبوع</h4><div style="color:green; font-weight:bold;" id="stat-week">0</div></div>
                 <div style="background:#f9f9f9; padding:10px; border-radius:10px;"><h4>الشهر</h4><div style="color:green; font-weight:bold;" id="stat-month">0</div></div>
             </div>
-            <button class="btn btn-primary" onclick="closeFinanceModal()" style="margin-top:20px;">إغلاق</button>
+            <button class="btn btn-primary" onclick="closeFinanceModal()" style="margin-top:20px; width:100%;">إغلاق</button>
         </div>
     </div>
 
     <div id="toast-container" style="position:fixed; bottom:20px; left:20px; z-index:2000;"></div>
     <audio id="msg-sound" src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_3f32527b79.mp3"></audio>
-    <audio id="hour-sound" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_12b0c7443c.mp3"></audio>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
@@ -414,160 +370,134 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // --- Audio & State ---
+        // --- Utils ---
         const msgSound = document.getElementById('msg-sound');
-        const hourSound = document.getElementById('hour-sound');
-        function playSound(type) {
-            const s = type === 'msg' ? msgSound : hourSound;
-            s.currentTime = 0; s.play().catch(e => console.log(e));
+        function playSound() { msgSound.currentTime = 0; msgSound.play().catch(e=>{}); }
+        function showToast(m) {
+            const t = document.createElement('div');
+            t.style.cssText = 'background:var(--secondary); color:white; padding:12px 24px; border-radius:30px; margin-top:10px; position:fixed; bottom:30px; left:50%; transform:translateX(-50%); z-index:3000; animation: fadeIn 0.3s; box-shadow:0 5px 15px rgba(0,0,0,0.2);';
+            t.innerText = m; document.body.appendChild(t); setTimeout(() => t.remove(), 3000);
         }
-
-        let currentChildId = null;
-        let currentChildLink = "";
-        let parentInterval = null;
-        let adminTimerInterval = null;
-        let allChildrenData = {};
-        let currentChatId = null; 
-        let currentOrderChildId = null; // ID for adding orders
-
-        // --- DOM Elements ---
-        const adminView = document.getElementById('admin-view');
-        const financialView = document.getElementById('financial-view');
-        const parentView = document.getElementById('parent-view');
-        const loginScreen = document.getElementById('login-screen');
-        const listActive = document.getElementById('kids-list-active');
-        const listHistory = document.getElementById('kids-list-history');
-        const searchInput = document.getElementById('admin-search');
-
-        // --- Helper: Format & Calculate ---
         function formatDuration(ms) {
             const s = Math.floor((ms/1000)%60), m = Math.floor((ms/60000)%60), h = Math.floor(ms/3600000);
             return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
         }
-        
-        // Calculate Cost Function (Returns Object)
-        function calculateDetailedCost(child, isOut = false) {
+        function calculateDetailedCost(child, isOut=false) {
             let duration = 0;
-            if (isOut) {
-                duration = child.exitTime - child.entryTime - (child.totalPausedTime || 0);
-            } else if (child.status === 'paused') {
-                duration = child.pauseStartTime - child.entryTime - (child.totalPausedTime || 0);
-            } else {
-                duration = Date.now() - child.entryTime - (child.totalPausedTime || 0);
-            }
+            if (isOut) duration = child.exitTime - child.entryTime - (child.totalPausedTime || 0);
+            else if (child.status === 'paused') duration = child.pauseStartTime - child.entryTime - (child.totalPausedTime || 0);
+            else duration = Date.now() - child.entryTime - (child.totalPausedTime || 0);
 
             const hours = Math.ceil(duration / 3600000);
             const playCost = hours * 50;
-            
             let productCost = 0;
-            if (child.orders) {
-                Object.values(child.orders).forEach(order => {
-                    productCost += parseFloat(order.price);
-                });
-            }
+            if (child.orders) Object.values(child.orders).forEach(o => productCost += parseFloat(o.price));
 
-            return {
-                durationStr: formatDuration(duration),
-                playCost: playCost,
-                productCost: productCost,
-                total: playCost + productCost
-            };
+            return { durationStr: formatDuration(duration), playCost, productCost, total: playCost + productCost };
         }
 
-        // --- Auth & Routing ---
-        window.handleEnter = (e) => { if(e.key === 'Enter') checkLogin(); }
+        // --- App State ---
+        let currentChildId = null;
+        let currentChildLink = "";
+        let currentChatId = null;
+        let currentOrderChildId = null;
+        let adminTimerInterval = null;
+        let parentInterval = null;
+
+        // --- Login & Routing ---
+        window.handleEnter = (e) => { if(e.key==='Enter') checkLogin(); }
         window.checkLogin = () => {
             const pass = document.getElementById('login-pass').value;
             if(pass === '0100') {
-                loginScreen.classList.add('hidden');
-                document.getElementById('nav-stats-btn').classList.add('hidden');
+                document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('nav-logout-btn').classList.remove('hidden');
-                document.getElementById('admin-controls').style.display = 'flex';
+                document.getElementById('admin-view').classList.remove('hidden');
                 initAdminView();
             } else if (pass === '521988') {
-                loginScreen.classList.add('hidden');
-                document.getElementById('nav-logout-btn').classList.remove('hidden');
-                document.getElementById('admin-controls').style.display = 'flex';
+                document.getElementById('login-screen').classList.add('hidden');
                 initFinancialView();
             } else {
-                showToast("كلمة المرور خاطئة! ❌");
+                showToast("كلمة المرور خاطئة");
             }
         };
         window.logout = () => location.reload();
 
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('mode') === 'parent' && urlParams.get('id')) {
-            loginScreen.classList.add('hidden');
+            document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('admin-controls').style.display = 'none';
             initParentView(urlParams.get('id'));
         }
 
         setInterval(() => {
-            document.getElementById('header-datetime').innerText = new Date().toLocaleDateString('ar-EG', { weekday:'long', hour:'2-digit', minute:'2-digit' });
+            document.getElementById('header-datetime').innerText = new Date().toLocaleDateString('ar-EG', { weekday:'short', hour:'2-digit', minute:'2-digit' });
         }, 1000);
 
-        // --- ADMIN LOGIC ---
+        // --- ADMIN VIEW ---
         function initAdminView() {
-            adminView.classList.remove('hidden');
+            const listActive = document.getElementById('kids-list-active');
+            const listHistory = document.getElementById('kids-list-history');
             
             onValue(ref(db, 'children'), (snapshot) => {
                 const data = snapshot.val();
-                allChildrenData = data || {};
                 listActive.innerHTML = '';
                 listHistory.innerHTML = '';
-                
                 if (!data) return;
 
                 Object.keys(data).forEach(key => {
                     const child = data[key];
-                    const link = `${window.location.origin}${window.location.pathname}?mode=parent&id=${key}`;
-                    
-                    // Logic for Badge
+                    // --- Chat Badge Logic ---
                     const msgs = child.messages ? Object.values(child.messages) : [];
-                    const unreadCount = msgs.filter(m => m.sender === 'parent' && m.status !== 'read').length;
-                    const badgeHtml = unreadCount > 0 ? `<span class="notification-badge">${unreadCount}</span>` : '';
-                    if (unreadCount > 0) playSound('msg');
+                    const unread = msgs.filter(m => m.sender === 'parent' && m.status !== 'read').length;
+                    const badgeHtml = unread > 0 ? `<span class="notification-badge">${unread}</span>` : '';
+                    if (unread > 0) playSound();
 
                     if (child.status === 'in' || child.status === 'paused') {
                         const costs = calculateDetailedCost(child);
                         const isPaused = child.status === 'paused';
                         const div = document.createElement('div');
                         div.className = `kid-card ${isPaused ? 'paused-status' : 'in-status'}`;
-                        div.setAttribute('data-search', `${child.name} ${child.phone} ${child.childId}`);
-
+                        div.setAttribute('data-search', `${child.name} ${child.phone}`);
+                        
                         div.innerHTML = `
                             <div class="kid-info">
                                 <h3>${child.name} <span class="kid-id-badge">#${child.childId || '00'}</span></h3>
                                 <div class="kid-meta">
-                                    <span class="kid-tag">📱 ${child.phone}</span>
                                     <span class="kid-tag">🛒 ${costs.productCost} ج.م</span>
                                 </div>
                                 <div class="timer-display ${isPaused ? 'timer-paused' : ''}">⏰ ${costs.durationStr}</div>
                             </div>
                             <div class="controls">
-                                <button class="btn btn-info" onclick="openOrderModal('${key}', '${child.name}')" title="طلبات"><i class="fas fa-cart-plus"></i></button>
-                                <button class="btn btn-whatsapp" onclick="window.open('https://wa.me/${child.phone.replace(/[^0-9]/g,'')}?text=${encodeURIComponent(link)}', '_blank')"><i class="fab fa-whatsapp"></i></button>
-                                ${isPaused ? 
-                                    `<button class="btn btn-success" onclick="resumeChild('${key}')">▶️</button>` : 
-                                    `<button class="btn btn-warning" onclick="pauseChild('${key}')"><i class="fas fa-pause"></i></button>`
-                                }
-                                <button class="btn btn-primary" onclick="openAdminChat('${key}', '${child.name}')" style="position:relative;">
-                                    <i class="fas fa-comments"></i> ${badgeHtml}
-                                </button>
+                                <button class="btn btn-info" onclick="openOrderModal('${key}', '${child.name}')"><i class="fas fa-cart-plus"></i></button>
+                                <button class="btn btn-whatsapp" onclick="window.open('https://wa.me/${child.phone}?text=مرحباً', '_blank')"><i class="fab fa-whatsapp"></i></button>
+                                ${isPaused ? `<button class="btn btn-success" onclick="resumeChild('${key}')">▶️</button>` : `<button class="btn btn-warning" onclick="pauseChild('${key}')"><i class="fas fa-pause"></i></button>`}
+                                <button class="btn btn-primary" onclick="openAdminChat('${key}', '${child.name}')" style="position:relative;"><i class="fas fa-comments"></i> ${badgeHtml}</button>
                                 <button class="btn btn-danger" onclick="prepareCheckout('${key}')">خروج</button>
                             </div>
                         `;
                         listActive.appendChild(div);
                     } else {
-                        // History
+                        // --- History Logic with Orders List ---
+                        let ordersHtml = '';
+                        if(child.orders) {
+                            let items = [];
+                            Object.values(child.orders).forEach(o => items.push(`${o.item} (${o.price})`));
+                            if(items.length > 0) {
+                                ordersHtml = `<div class="history-orders">🛒 ${items.join('، ')}</div>`;
+                            }
+                        }
+
                         const div = document.createElement('div');
                         div.className = 'kid-card out-status';
-                        div.setAttribute('data-search', `${child.name} ${child.phone} ${child.childId}`);
+                        div.setAttribute('data-search', `${child.name} ${child.phone}`);
                         div.innerHTML = `
-                            <div class="kid-info">
-                                <h3>${child.name} <small>(خارج)</small></h3>
+                            <div class="kid-info" style="width:100%;">
+                                <div style="display:flex; justify-content:space-between; width:100%;">
+                                    <h3>${child.name} <small style="font-size:0.8rem; color:#666;">(خرج)</small></h3>
+                                    <div style="font-weight:bold; color:var(--primary);">${child.totalCost} ج.م</div>
+                                </div>
                                 <div class="kid-meta"><span class="kid-tag">📅 ${new Date(child.exitTime).toLocaleDateString('ar-EG')}</span></div>
-                                <div style="font-weight:bold; color:var(--primary);">💰 ${child.totalCost} ج.م</div>
+                                ${ordersHtml}
                             </div>
                         `;
                         listHistory.appendChild(div);
@@ -576,171 +506,99 @@
                 filterList();
             });
 
-            // Live Timer Update
             if(adminTimerInterval) clearInterval(adminTimerInterval);
             adminTimerInterval = setInterval(() => {
-                // Just refreshing UI via onValue is enough for accurate time, 
-                // but for optimization we could update DOM directly. 
-                // For simplicity in this structure, we rely on Firebase updates or manual refresh for "minute-by-minute" changes if strict.
-                // However, let's force a re-render logic if needed, but onValue handles it if data changes. 
-                // To make timer tick without DB write, we'd need separate DOM manipulation.
-                // Re-triggering calculations locally:
-                document.querySelectorAll('#kids-list-active .kid-card').forEach(card => {
-                    // This is a visual tick only, actual logic is in calculateDetailedCost
-                    // Advanced implementation would go here. Keeping it simple for now.
-                });
-            }, 60000); 
+                // Force refresh UI logic if needed, data refreshes via Firebase
+            }, 60000);
 
-            // Add Child Form
+            // Search
+            document.getElementById('admin-search').addEventListener('input', filterList);
+            function filterList() {
+                const q = document.getElementById('admin-search').value.toLowerCase();
+                document.querySelectorAll('.kid-card').forEach(c => {
+                    c.style.display = c.getAttribute('data-search').includes(q) ? 'flex' : 'none';
+                });
+            }
+
+            // Registration
             document.getElementById('checkin-form').onsubmit = (e) => {
                 e.preventDefault();
                 const name = document.getElementById('child-name').value;
                 const phone = document.getElementById('parent-phone').value;
-                const snack = document.getElementById('child-snack').value;
-                const randomId = Math.floor(1000 + Math.random() * 9000).toString();
+                const randomId = Math.floor(1000+Math.random()*9000).toString();
                 const newRef = push(ref(db, 'children'));
                 const link = `${window.location.origin}${window.location.pathname}?mode=parent&id=${newRef.key}`;
                 
                 set(newRef, {
-                    name, phone, snack, entryTime: Date.now(), status:'in', messages:[], totalPausedTime:0, childId: randomId
+                    name, phone, childId:randomId, entryTime:Date.now(), status:'in', messages:[], orders:[], 
+                    snack: document.getElementById('child-snack').value
                 }).then(() => {
-                    showToast("تم التسجيل");
+                    showToast('تم التسجيل بنجاح');
                     document.getElementById('checkin-form').reset();
                     document.getElementById('new-child-qr').classList.remove('hidden');
                     document.getElementById('qr-parent-name').innerText = `${name} - #${randomId}`;
-                    const qrDiv = document.getElementById('qr-code'); qrDiv.innerHTML = '';
-                    new QRCode(qrDiv, { text: link, width:128, height: 128 });
-                    document.getElementById('wa-btn-new').onclick = () => window.open(`https://wa.me/${phone}?text=${encodeURIComponent(link)}`, '_blank');
+                    document.getElementById('qr-code').innerHTML = '';
+                    new QRCode(document.getElementById('qr-code'), { text: link, width:120, height:120 });
                     currentChildLink = link;
+                    document.getElementById('wa-btn-new').onclick = () => window.open(`https://wa.me/${phone}?text=${encodeURIComponent(link)}`, '_blank');
                 });
             };
         }
 
-        // Search
-        searchInput.addEventListener('input', filterList);
-        function filterList() {
-            const q = searchInput.value.toLowerCase();
-            document.querySelectorAll('.kid-card').forEach(card => {
-                card.style.display = card.getAttribute('data-search').includes(q) ? 'flex' : 'none';
-            });
-        }
-
-        // --- ORDERS SYSTEM (NEW) ---
-        window.openOrderModal = (id, name) => {
-            currentOrderChildId = id;
-            document.getElementById('order-child-name').innerText = `الطفل: ${name}`;
-            document.getElementById('product-name').value = '';
-            document.getElementById('product-price').value = '';
-            renderOrderList(id);
-            document.getElementById('orders-modal').style.display = 'flex';
-        };
-
-        window.addProductToChild = () => {
-            const name = document.getElementById('product-name').value;
-            const price = document.getElementById('product-price').value;
-            if(!name || !price) return;
-
-            push(ref(db, `children/${currentOrderChildId}/orders`), {
-                item: name, price: parseFloat(price), time: Date.now()
-            }).then(() => {
-                document.getElementById('product-name').value = '';
-                document.getElementById('product-price').value = '';
-                showToast("تمت إضافة المنتج");
-                renderOrderList(currentOrderChildId);
-            });
-        };
-
-        function renderOrderList(childId) {
-            get(ref(db, `children/${childId}/orders`)).then(snap => {
-                const list = document.getElementById('current-orders-list');
-                const totalDisplay = document.getElementById('modal-orders-total');
-                list.innerHTML = '';
-                let total = 0;
-                if(snap.exists()){
-                    snap.forEach(child => {
-                        const o = child.val();
-                        total += o.price;
-                        list.innerHTML += `
-                            <div class="order-item">
-                                <span>${o.item}</span>
-                                <span>${o.price} ج.م</span>
-                            </div>
-                        `;
-                    });
-                }
-                totalDisplay.innerText = total;
-            });
-        }
-        window.closeOrderModal = () => document.getElementById('orders-modal').style.display = 'none';
-
-        // --- CHAT SYSTEM (UPDATED) ---
-        
-        // Render Message Logic (Generic)
+        // --- CHAT LOGIC (FIXED) ---
         function createMessageElement(msg, isMyMsg, msgId, childId, isParentView) {
             const div = document.createElement('div');
-            div.className = `message ${isMyMsg ? (isParentView ? 'parent' : 'admin') : (isParentView ? 'admin' : 'parent')}`;
+            div.className = `message ${isMyMsg ? (isParentView?'parent':'admin') : (isParentView?'admin':'parent')}`;
             
-            // Reaction Logic
-            const reaction = msg.reaction ? `<span class="msg-reaction">${msg.reaction}</span>` : '';
+            // Reaction
+            const reactionHtml = msg.reaction ? `<span class="msg-reaction">${msg.reaction}</span>` : '';
             
-            // Ticks Logic (Only for my messages)
-            let ticks = '';
+            // Ticks Logic (For My Messages Only)
+            let ticksHtml = '';
             if (isMyMsg) {
-                const tickIcon = msg.status === 'read' ? '<i class="fas fa-check-double"></i>' : '<i class="fas fa-check"></i>';
-                const tickClass = msg.status === 'read' ? 'ticks read' : 'ticks sent';
-                ticks = `<span class="${tickClass}">${tickIcon}</span>`;
+                // If status is read, double green. If sent, single grey (or double grey if delivered, but here simple logic)
+                const isRead = msg.status === 'read';
+                const icon = isRead ? '<i class="fas fa-check-double"></i>' : '<i class="fas fa-check"></i>';
+                const cls = isRead ? 'ticks read' : 'ticks sent';
+                ticksHtml = `<span class="${cls}">${icon}</span>`;
             }
 
             const senderTitle = isMyMsg ? 'أنت' : (isParentView ? 'الإدارة' : 'الوالد');
             
             div.innerHTML = `
-                <span class="sender-name">${senderTitle}</span>
+                <div style="font-size:0.75rem; font-weight:bold; margin-bottom:2px; opacity:0.8;">${senderTitle}</div>
                 ${msg.text}
                 <div class="msg-meta">
-                    <span>${new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                    ${ticks}
+                    <span>${new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
+                    ${ticksHtml}
                 </div>
-                ${reaction}
+                ${reactionHtml}
             `;
             
-            // Add click event for reaction
             if (!isMyMsg) {
                 div.onclick = (e) => showReactionPopup(e, childId, msgId);
             }
-            
             return div;
         }
 
-        // Reaction Popup
-        window.showReactionPopup = (e, childId, msgId) => {
+        window.showReactionPopup = (e, cid, mid) => {
             e.stopPropagation();
-            // Remove existing popups
-            document.querySelectorAll('.reaction-popup').forEach(el => el.remove());
-            
-            const popup = document.createElement('div');
-            popup.className = 'reaction-popup';
-            popup.innerHTML = `
-                <button class="reaction-btn" onclick="setReaction('${childId}', '${msgId}', '👍')">👍</button>
-                <button class="reaction-btn" onclick="setReaction('${childId}', '${msgId}', '👎')">👎</button>
-            `;
-            e.currentTarget.appendChild(popup);
+            document.querySelectorAll('.reaction-popup').forEach(e=>e.remove());
+            const p = document.createElement('div');
+            p.className = 'reaction-popup';
+            p.innerHTML = `<button class="reaction-btn" onclick="setReact('${cid}','${mid}','👍')">👍</button><button class="reaction-btn" onclick="setReact('${cid}','${mid}','❤️')">❤️</button>`;
+            e.currentTarget.appendChild(p);
         };
+        window.setReact = (c,m,r) => { update(ref(db, `children/${c}/messages/${m}`), {reaction:r}); document.querySelectorAll('.reaction-popup').forEach(e=>e.remove()); };
+        document.onclick = () => document.querySelectorAll('.reaction-popup').forEach(e=>e.remove());
 
-        window.setReaction = (childId, msgId, reaction) => {
-            update(ref(db, `children/${childId}/messages/${msgId}`), { reaction: reaction });
-            document.querySelectorAll('.reaction-popup').forEach(el => el.remove());
-        };
-
-        // Close popups on click elsewhere
-        document.addEventListener('click', () => document.querySelectorAll('.reaction-popup').forEach(el => el.remove()));
-
-        // --- Admin Chat ---
+        // Admin Chat
         window.openAdminChat = (id, name) => {
             currentChatId = id;
             document.getElementById('chat-modal-title').innerText = name;
             document.getElementById('admin-chat-modal').style.display = 'flex';
             
-            // Mark parent messages as read
+            // Mark ALL parent messages as read
             get(ref(db, `children/${id}/messages`)).then(snap => {
                 if(!snap.exists()) return;
                 const updates = {};
@@ -749,79 +607,37 @@
                         updates[`children/${id}/messages/${m.key}/status`] = 'read';
                     }
                 });
-                update(ref(db), updates);
+                if(Object.keys(updates).length > 0) update(ref(db), updates);
             });
 
-            const chatRef = ref(db, `children/${id}/messages`);
-            onValue(chatRef, (snapshot) => {
-                const container = document.getElementById('admin-chat-history');
-                container.innerHTML = '';
+            onValue(ref(db, `children/${id}/messages`), snapshot => {
+                const c = document.getElementById('admin-chat-history');
+                c.innerHTML = '';
                 if(!snapshot.exists()) return;
-                
                 const msgs = [];
-                snapshot.forEach(c => { msgs.push({key:c.key, ...c.val()}) });
-                msgs.sort((a,b) => a.timestamp - b.timestamp);
-
-                msgs.forEach(msg => {
-                    const isMe = msg.sender === 'admin';
-                    container.appendChild(createMessageElement(msg, isMe, msg.key, id, false));
+                snapshot.forEach(x => msgs.push({key:x.key, ...x.val()}));
+                msgs.sort((a,b)=>a.timestamp - b.timestamp);
+                
+                msgs.forEach(m => {
+                    const isMe = m.sender === 'admin';
+                    c.appendChild(createMessageElement(m, isMe, m.key, id, false));
                 });
-                container.scrollTop = container.scrollHeight;
+                c.scrollTop = c.scrollHeight;
             });
-        };
-
-        window.sendAdminMessage = () => {
-            const txt = document.getElementById('admin-chat-input').value;
-            if(!txt || !currentChatId) return;
-            push(ref(db, `children/${currentChatId}/messages`), {
-                text: txt, sender: 'admin', timestamp: Date.now(), status: 'sent'
-            });
-            document.getElementById('admin-chat-input').value = '';
         };
         window.closeAdminChat = () => { document.getElementById('admin-chat-modal').style.display = 'none'; currentChatId = null; };
-
-        // --- Checkout & Status Logic ---
-        window.pauseChild = (id) => update(ref(db, `children/${id}`), { status:'paused', pauseStartTime: Date.now() });
-        window.resumeChild = (id) => {
-            get(ref(db, `children/${id}`)).then(snap => {
-                const d = snap.val();
-                const paused = Date.now() - d.pauseStartTime;
-                update(ref(db, `children/${id}`), { status:'in', totalPausedTime: (d.totalPausedTime||0) + paused });
-            });
-        };
-        
-        window.prepareCheckout = (id) => {
-            currentChildId = id;
-            get(ref(db, `children/${id}`)).then(s => {
-                const c = s.val();
-                const costs = calculateDetailedCost(c);
-                
-                document.getElementById('modal-duration').innerText = costs.durationStr;
-                document.getElementById('modal-play-cost').innerText = costs.playCost + ' ج.م';
-                document.getElementById('modal-products-cost').innerText = costs.productCost + ' ج.م';
-                document.getElementById('modal-total-price').innerText = costs.total + ' ج.م';
-                document.getElementById('checkout-modal').style.display = 'flex';
-            });
+        window.sendAdminMessage = () => {
+            const t = document.getElementById('admin-chat-input').value;
+            if(!t || !currentChatId) return;
+            push(ref(db, `children/${currentChatId}/messages`), { text:t, sender:'admin', timestamp:Date.now(), status:'sent' });
+            document.getElementById('admin-chat-input').value = '';
         };
 
-        window.confirmCheckout = () => {
-            get(ref(db, `children/${currentChildId}`)).then(s => {
-                const c = s.val();
-                const costs = calculateDetailedCost(c);
-                update(ref(db, `children/${currentChildId}`), {
-                    status: 'out', exitTime: Date.now(), totalCost: costs.total
-                });
-                closeCheckoutModal();
-                showToast("تم تسجيل الخروج");
-            });
-        };
-        window.closeCheckoutModal = () => document.getElementById('checkout-modal').style.display = 'none';
-
-        // --- PARENT VIEW LOGIC ---
+        // --- PARENT VIEW ---
         function initParentView(id) {
-            parentView.classList.remove('hidden');
+            document.getElementById('parent-view').classList.remove('hidden');
             
-            // Mark Admin messages as read when parent enters
+            // Mark ALL Admin messages as read
             const markRead = () => {
                 get(ref(db, `children/${id}/messages`)).then(snap => {
                     if(!snap.exists()) return;
@@ -831,22 +647,20 @@
                             updates[`children/${id}/messages/${m.key}/status`] = 'read';
                         }
                     });
-                    update(ref(db), updates);
+                    if(Object.keys(updates).length > 0) update(ref(db), updates);
                 });
             };
-            markRead();
-            // Call it periodically or when chat updates to ensure realtime "read" receipt
-            
+            markRead(); // Run on init
+            // Could add a listener here to mark read if chat is open, but init is enough for now.
+
             onValue(ref(db, `children/${id}`), s => {
                 const c = s.val();
                 if(!c) return;
-                
                 document.getElementById('p-child-name').innerText = c.name;
-                document.getElementById('p-child-id').innerText = '#' + c.childId;
-                
-                // Status & Timer
+                document.getElementById('p-child-id').innerText = '#'+c.childId;
+
                 const badge = document.getElementById('p-status-badge');
-                if(c.status === 'in') {
+                if (c.status === 'in') {
                     document.getElementById('session-ended-card').classList.add('hidden');
                     document.querySelector('.parent-view-card').style.display='block';
                     badge.innerText = 'متواجد حالياً'; badge.style.background = 'var(--success)';
@@ -864,84 +678,127 @@
                     if(parentInterval) clearInterval(parentInterval);
                 }
 
-                // Orders Display
-                const orderContainer = document.getElementById('parent-orders-container');
-                const orderList = document.getElementById('parent-orders-list');
+                // Orders
+                const oList = document.getElementById('parent-orders-list');
                 if(c.orders) {
-                    orderContainer.classList.remove('hidden');
-                    orderList.innerHTML = '';
+                    document.getElementById('parent-orders-container').classList.remove('hidden');
+                    oList.innerHTML = '';
                     Object.values(c.orders).forEach(o => {
-                        orderList.innerHTML += `
-                            <div style="display:flex; justify-content:space-between; font-size:0.9rem; border-bottom:1px solid #eee; padding:5px 0;">
-                                <span>${o.item}</span><span>${o.price} ج.م</span>
-                            </div>
-                        `;
+                        oList.innerHTML += `<div class="order-item"><span>${o.item}</span><span>${o.price} ج.م</span></div>`;
                     });
                 } else {
-                    orderContainer.classList.add('hidden');
+                    document.getElementById('parent-orders-container').classList.add('hidden');
                 }
 
-                // Chat
-                const chatContainer = document.getElementById('parent-chat-messages');
-                chatContainer.innerHTML = '';
+                // Chat Render
+                const chatDiv = document.getElementById('parent-chat-messages');
+                chatDiv.innerHTML = '';
                 if(c.messages) {
                     const msgs = [];
                     Object.keys(c.messages).forEach(k => msgs.push({key:k, ...c.messages[k]}));
-                    msgs.sort((a,b) => a.timestamp - b.timestamp);
-                    
-                    msgs.forEach(msg => {
-                        const isMe = msg.sender === 'parent';
-                        chatContainer.appendChild(createMessageElement(msg, isMe, msg.key, id, true));
+                    msgs.sort((a,b)=>a.timestamp - b.timestamp);
+                    msgs.forEach(m => {
+                        const isMe = m.sender === 'parent';
+                        chatDiv.appendChild(createMessageElement(m, isMe, m.key, id, true));
                     });
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
-
-                    // Unread Badge
-                    const unread = msgs.filter(m => m.sender === 'admin' && m.status !== 'read').length; // Actually status logic handled by markRead
+                    chatDiv.scrollTop = chatDiv.scrollHeight;
                 }
             });
         }
-
         window.sendParentMessage = () => {
-            const txt = document.getElementById('parent-message-input').value;
-            const childId = urlParams.get('id');
-            if(!txt) return;
-            push(ref(db, `children/${childId}/messages`), {
-                text: txt, sender: 'parent', timestamp: Date.now(), status: 'sent'
-            });
+            const t = document.getElementById('parent-message-input').value;
+            const id = urlParams.get('id');
+            if(!t) return;
+            push(ref(db, `children/${id}/messages`), { text:t, sender:'parent', timestamp:Date.now(), status:'sent' });
             document.getElementById('parent-message-input').value = '';
         };
 
-        // --- Common Utils ---
-        window.closeQR = () => document.getElementById('new-child-qr').classList.add('hidden');
-        window.copyLink = () => { navigator.clipboard.writeText(currentChildLink); showToast("تم النسخ"); };
-        window.showToast = (m) => {
-            const t = document.createElement('div'); t.style.cssText = 'background:var(--secondary); color:white; padding:10px 20px; border-radius:8px; margin-top:10px; position:fixed; bottom:20px; left:20px; z-index:2000; animation: fadeIn 0.3s;';
-            t.innerText = m; document.body.appendChild(t); setTimeout(() => t.remove(), 3000);
+        // --- Orders Modal ---
+        window.openOrderModal = (id, name) => {
+            currentOrderChildId = id;
+            document.getElementById('order-child-name').innerText = name;
+            renderOrderList(id);
+            document.getElementById('orders-modal').style.display = 'flex';
         };
-        
-        // --- Finance View (Simple Fetch) ---
-        window.openFinanceModal = () => { document.getElementById('finance-modal').style.display='flex'; } 
-        window.closeFinanceModal = () => { document.getElementById('finance-modal').style.display='none'; }
-        
-        function initFinancialView() {
-            financialView.classList.remove('hidden');
-            const logs = document.getElementById('financial-logs');
-            get(ref(db, 'children')).then(s => {
-                if(!s.exists()) { logs.innerHTML = 'لا يوجد بيانات'; return; }
-                let total = 0;
-                s.forEach(c => {
-                    const d = c.val();
-                    if(d.status === 'out' && d.exitTime) {
-                        total += parseFloat(d.totalCost);
-                        const row = document.createElement('div');
-                        row.style.cssText = "background:white; padding:15px; margin-bottom:10px; border-radius:10px; display:flex; justify-content:space-between;";
-                        row.innerHTML = `<span>${d.name}</span><span style="font-weight:bold; color:green;">${d.totalCost} ج.م</span>`;
-                        logs.appendChild(row);
-                    }
-                });
-                document.getElementById('grand-total-display').innerText = total + ' ج.م';
+        window.addProductToChild = () => {
+            const n = document.getElementById('product-name').value;
+            const p = document.getElementById('product-price').value;
+            if(!n || !p) return;
+            push(ref(db, `children/${currentOrderChildId}/orders`), { item:n, price:parseFloat(p), time:Date.now() });
+            document.getElementById('product-name').value = '';
+            document.getElementById('product-price').value = '';
+            renderOrderList(currentOrderChildId);
+        };
+        function renderOrderList(id) {
+            get(ref(db, `children/${id}/orders`)).then(s => {
+                const list = document.getElementById('current-orders-list');
+                list.innerHTML = '';
+                let t = 0;
+                if(s.exists()) {
+                    s.forEach(o => {
+                        const val = o.val();
+                        t += val.price;
+                        list.innerHTML += `<div class="order-item"><span>${val.item}</span><span>${val.price}</span></div>`;
+                    });
+                }
+                document.getElementById('modal-orders-total').innerText = t;
             });
         }
+        window.closeOrderModal = () => document.getElementById('orders-modal').style.display = 'none';
+
+        // --- Checkout Logic ---
+        window.pauseChild = (id) => update(ref(db, `children/${id}`), { status:'paused', pauseStartTime:Date.now() });
+        window.resumeChild = (id) => {
+            get(ref(db, `children/${id}`)).then(s=>{
+                const d = s.val();
+                const diff = Date.now() - d.pauseStartTime;
+                update(ref(db, `children/${id}`), { status:'in', totalPausedTime:(d.totalPausedTime||0)+diff });
+            });
+        };
+        window.prepareCheckout = (id) => {
+            currentChildId = id;
+            get(ref(db, `children/${id}`)).then(s => {
+                const costs = calculateDetailedCost(s.val());
+                document.getElementById('modal-duration').innerText = costs.durationStr;
+                document.getElementById('modal-play-cost').innerText = costs.playCost + ' ج.م';
+                document.getElementById('modal-products-cost').innerText = costs.productCost + ' ج.م';
+                document.getElementById('modal-total-price').innerText = costs.total + ' ج.م';
+                document.getElementById('checkout-modal').style.display = 'flex';
+            });
+        };
+        window.confirmCheckout = () => {
+            get(ref(db, `children/${currentChildId}`)).then(s => {
+                const costs = calculateDetailedCost(s.val());
+                update(ref(db, `children/${currentChildId}`), { status:'out', exitTime:Date.now(), totalCost:costs.total });
+                window.closeCheckoutModal();
+                showToast("تم الخروج");
+            });
+        };
+        window.closeCheckoutModal = () => document.getElementById('checkout-modal').style.display = 'none';
+
+        // --- Finance ---
+        window.closeFinanceModal = () => document.getElementById('finance-modal').style.display = 'none';
+        window.openFinanceModal = () => document.getElementById('finance-modal').style.display = 'block';
+        function initFinancialView() {
+            document.getElementById('financial-view').classList.remove('hidden');
+            const log = document.getElementById('financial-logs');
+            get(ref(db, 'children')).then(s => {
+                if(!s.exists()) { log.innerHTML='لا يوجد بيانات'; return; }
+                let gt = 0;
+                s.forEach(c => {
+                    const d = c.val();
+                    if(d.status==='out' && d.exitTime) {
+                        gt += parseFloat(d.totalCost);
+                        log.innerHTML += `<div style="background:white; padding:10px; margin-bottom:10px; border-radius:10px; display:flex; justify-content:space-between;"><span>${d.name}</span><b>${d.totalCost} ج.م</b></div>`;
+                    }
+                });
+                document.getElementById('grand-total-display').innerText = gt + ' ج.م';
+            });
+        }
+
+        // Shared
+        window.copyLink = () => { navigator.clipboard.writeText(currentChildLink); showToast("تم النسخ"); };
+        window.closeQR = () => document.getElementById('new-child-qr').classList.add('hidden');
     </script>
 </body>
 </html>
