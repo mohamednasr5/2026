@@ -2,19 +2,19 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أوبرا عاشور للألعاب والترفيه</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>أوبرا عاشور - Opera Ashour</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* إعدادات الصفحة العامة */
         :root {
-            --primary-color: #0f0c29;
-            --secondary-color: #302b63;
-            --accent-1: #ff0076; /* لون نيون وردي */
-            --accent-2: #00eaff; /* لون نيون سماوي */
-            --text-color: #ffffff;
+            --bg-dark: #09090b;
+            --neon-blue: #00f3ff;
+            --neon-pink: #ff0099;
+            --neon-purple: #bd00ff;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
         * {
@@ -22,255 +22,306 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Cairo', sans-serif;
+            user-select: none; /* منع تحديد النص لجمالية أكثر */
         }
 
         body {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), #24243e);
-            min-height: 100vh;
+            background-color: var(--bg-dark);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* منع السكرول نهائياً */
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            overflow-x: hidden;
-            perspective: 1000px; /* تفعيل البعد الثالث */
+            justify-content: space-between;
+            position: relative;
+            color: white;
+            padding: 1vh 2vw;
         }
 
-        /* خلفية متحركة */
-        .background-anim {
-            position: absolute;
+        /* --- تأثير الإضاءة التفاعلية خلفية --- */
+        #spotlight {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(255, 0, 118, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(0, 234, 255, 0.15) 0%, transparent 50%);
-            z-index: -1;
-            animation: bgShift 10s infinite alternate;
+            pointer-events: none;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(29, 29, 41, 0) 0%, rgba(0, 0, 0, 0.8) 100%);
+            z-index: 1;
         }
 
-        @keyframes bgShift {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.1); }
+        /* أشكال هندسية متحركة في الخلفية */
+        .shape {
+            position: absolute;
+            filter: blur(50px);
+            opacity: 0.6;
+            animation: floatShape 20s infinite linear;
+            z-index: 0;
+        }
+        .shape-1 {
+            top: -10%; left: -10%; width: 50vw; height: 50vw;
+            background: var(--neon-purple);
+            animation-duration: 25s;
+        }
+        .shape-2 {
+            bottom: -10%; right: -10%; width: 40vw; height: 40vw;
+            background: var(--neon-blue);
+            animation-duration: 30s;
+        }
+        .shape-3 {
+            top: 40%; left: 40%; width: 20vw; height: 20vw;
+            background: var(--neon-pink);
+            animation-duration: 20s;
         }
 
-        /* الحاوية الرئيسية */
-        .container {
-            text-align: center;
+        @keyframes floatShape {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(50px, 50px) rotate(180deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+
+        /* --- الحاوية الرئيسية --- */
+        .main-container {
             z-index: 10;
-            width: 90%;
-            max-width: 800px;
-            padding: 20px;
-        }
-
-        /* العنوان الرئيسي */
-        header h1 {
-            font-size: 3rem;
-            color: var(--text-color);
-            text-shadow: 0 0 10px var(--accent-1), 0 0 20px var(--accent-1);
-            margin-bottom: 10px;
-            animation: textGlow 2s infinite alternate;
-        }
-
-        header h2 {
-            font-size: 1.5rem;
-            color: #ccc;
-            margin-bottom: 40px;
-            font-weight: 300;
-            letter-spacing: 1px;
-        }
-
-        .manager-name {
-            color: var(--accent-2);
-            font-weight: bold;
-            position: relative;
-            display: inline-block;
-        }
-
-        @keyframes textGlow {
-            from { text-shadow: 0 0 10px var(--accent-1); }
-            to { text-shadow: 0 0 25px var(--accent-1), 0 0 5px white; }
-        }
-
-        /* بطاقات الروابط 3D */
-        .cards-wrapper {
             display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
-            gap: 30px;
+            flex-grow: 1;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* --- الهيدر --- */
+        header {
+            text-align: center;
+            margin-bottom: 2vh;
+            animation: slideDown 1s ease-out;
+        }
+
+        .logo-icon {
+            font-size: clamp(3rem, 6vw, 5rem);
+            background: -webkit-linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1vh;
+            filter: drop-shadow(0 0 10px rgba(0, 243, 255, 0.5));
+        }
+
+        h1 {
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(255, 0, 153, 0.5);
+        }
+
+        .manager {
+            margin-top: 10px;
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            color: #ccc;
+            background: rgba(0,0,0,0.3);
+            padding: 5px 15px;
+            border-radius: 50px;
+            border: 1px solid var(--glass-border);
+        }
+
+        /* --- الكروت (الروابط) --- */
+        .cards-grid {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            justify-content: center;
             flex-wrap: wrap;
-            margin-bottom: 50px;
+            padding: 20px;
+            perspective: 1000px;
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            flex: 1;
+            min-width: 280px;
+            max-width: 400px;
+            height: clamp(180px, 25vh, 250px);
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
             border-radius: 20px;
-            padding: 30px;
-            width: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-decoration: none;
             color: white;
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-            position: relative;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             overflow: hidden;
-            transform-style: preserve-3d;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
         .card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
-        }
-
-        .card:hover::before {
-            left: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: 0.4s;
         }
 
         .card:hover {
-            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4), 
+                        0 0 20px var(--glow-color);
         }
 
-        /* تخصيص الألوان لكل كارت */
-        .card.am {
-            border-bottom: 5px solid var(--accent-2);
-        }
-        .card.am:hover {
-            box-shadow: 0 0 30px var(--accent-2);
+        .card:hover::before { opacity: 1; }
+
+        .card i {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            color: var(--glow-color);
+            transition: 0.4s;
         }
 
-        .card.pm {
-            border-bottom: 5px solid var(--accent-1);
-        }
-        .card.pm:hover {
-            box-shadow: 0 0 30px var(--accent-1);
-        }
-
-        .card-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            display: block;
-            transition: 0.3s;
-        }
-
-        .card.am .card-icon { color: var(--accent-2); }
-        .card.pm .card-icon { color: var(--accent-1); }
-
-        .card:hover .card-icon {
-            transform: scale(1.2) translateZ(20px);
+        .card:hover i {
+            transform: scale(1.2) rotate(10deg);
+            text-shadow: 0 0 20px var(--glow-color);
         }
 
         .card h3 {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-            transform: translateZ(10px);
-        }
-        
-        .card p {
-            font-size: 1rem;
-            color: #ddd;
-            transform: translateZ(10px);
+            font-size: 1.5rem;
+            font-weight: 700;
+            z-index: 2;
         }
 
-        /* الفوتر */
+        /* تخصيص الألوان */
+        .am-card { --glow-color: var(--neon-blue); }
+        .pm-card { --glow-color: var(--neon-pink); }
+
+        /* --- الفوتر --- */
         footer {
-            margin-top: auto;
-            padding: 20px;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 10;
             width: 100%;
-            background: rgba(0,0,0,0.2);
+            text-align: center;
+            padding: 10px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            border-top: 1px solid var(--glass-border);
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px 20px 0 0;
         }
 
-        .heart-icon {
+        .dev-box {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-top: 5px;
+        }
+
+        .heart {
             color: red;
-            animation: heartbeat 1.2s infinite;
             display: inline-block;
+            animation: beat 1s infinite;
         }
 
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            15% { transform: scale(1.3); }
-            30% { transform: scale(1); }
-            45% { transform: scale(1.3); }
-            100% { transform: scale(1); }
-        }
-
-        .dev-info {
-            margin-top: 10px;
-        }
-
-        .dev-link {
-            color: var(--accent-2);
+        .contact-link {
+            color: var(--neon-blue);
             text-decoration: none;
             font-weight: bold;
             transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
+        }
+        .contact-link:hover { text-shadow: 0 0 10px var(--neon-blue); }
+
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
         }
 
-        .dev-link:hover {
-            color: var(--accent-1);
-            text-shadow: 0 0 10px var(--accent-1);
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
-        /* تجاوب للموبايل */
-        @media (max-width: 768px) {
-            header h1 { font-size: 2rem; }
-            .cards-wrapper { flex-direction: column; align-items: center; }
-            .card { width: 100%; max-width: 350px; }
+        /* تعديلات الموبايل لضمان عدم السكرول */
+        @media (max-height: 700px) {
+            h1 { font-size: 1.5rem; margin-bottom: 0; }
+            .logo-icon { font-size: 2.5rem; margin-bottom: 0; }
+            .card { height: 140px; }
+            .card i { font-size: 2rem; margin-bottom: 5px; }
+            .cards-grid { gap: 10px; padding: 10px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="background-anim"></div>
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+    
+    <div id="spotlight"></div>
 
-    <div class="container">
+    <div class="main-container">
         <header>
-            <div style="margin-bottom: 20px; font-size: 4rem; color: #fff;">
-                <i class="fas fa-gamepad fa-bounce" style="--fa-animation-duration: 3s;"></i>
+            <div class="logo-icon">
+                <i class="fas fa-gamepad"></i>
             </div>
-            <h1>مرحباً بكم فى عالم أوبرا عاشور</h1>
-            <h1>للألعاب والترفيه</h1>
-            <h2>إدارة / <span class="manager-name">أحمد عاشور ( بازوكا )</span></h2>
+            <h1>عالم أوبرا عاشور</h1>
+            <h2 style="font-size: 1rem; opacity: 0.8; letter-spacing: 3px; margin-bottom: 5px;">ENTERTAINMENT WORLD</h2>
+            <div class="manager">
+                إدارة / <span style="color:var(--neon-blue); font-weight:bold;">أحمد عاشور (بازوكا)</span>
+            </div>
         </header>
 
-        <main class="cards-wrapper">
-            <a href="https://mohamednasr5.github.io/2026/am.html" class="card am">
-                <i class="fas fa-headset card-icon"></i>
+        <div class="cards-grid">
+            <a href="https://mohamednasr5.github.io/2026/am.html" class="card am-card">
+                <i class="fas fa-headset"></i>
                 <h3>استضافة أوبرا عاشور</h3>
-                <p>اضغط هنا للدخول</p>
+                <span style="font-size: 0.8rem; opacity: 0.7;">اضغط للدخول</span>
             </a>
 
-            <a href="https://mohamednasr5.github.io/2026/pm.html" class="card pm">
-                <i class="fas fa-ticket-alt card-icon"></i>
+            <a href="https://mohamednasr5.github.io/2026/pm.html" class="card pm-card">
+                <i class="fas fa-rocket"></i>
                 <h3>ملاهي أوبرا عاشور</h3>
-                <p>اضغط هنا للدخول</p>
+                <span style="font-size: 0.8rem; opacity: 0.7;">اضغط للدخول</span>
             </a>
-        </main>
+        </div>
     </div>
 
     <footer>
-        <p>تمت البرمجة والتطوير بكل حب <i class="fas fa-heart heart-icon"></i></p>
-        <div class="dev-info">
-            <p>المهندس محمد حماد</p>
-            <p style="margin: 5px 0; direction: ltr;">01279934735</p>
-            <a href="https://www.facebook.com/en.mohamed.nasr" target="_blank" class="dev-link">
+        <div>تمت البرمجة والتطوير بكل حب <i class="fas fa-heart heart"></i></div>
+        <div class="dev-box">
+            <span>المهندس محمد حماد | 01279934735</span>
+            <a href="https://www.facebook.com/en.mohamed.nasr" target="_blank" class="contact-link">
                 <i class="fab fa-facebook"></i> En. Mohamed Nasr
             </a>
         </div>
     </footer>
 
+    <script>
+        // كود جافاسكريبت لجعل الإضاءة تتبع الماوس
+        const spotlight = document.getElementById('spotlight');
+        
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+            
+            // تحريك الإضاءة الخلفية
+            spotlight.style.setProperty('--x', x + 'px');
+            spotlight.style.setProperty('--y', y + 'px');
+        });
+
+        // تأثير إمالة بسيط للكروت عند تحريك الماوس في الصفحة (Parallax خفيف)
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.card');
+            const x = (window.innerWidth - e.pageX * 2) / 100;
+            const y = (window.innerHeight - e.pageY * 2) / 100;
+
+            cards.forEach(card => {
+                card.style.transform = `translateX(${x}px) translateY(${y}px)`;
+            });
+        });
+    </script>
 </body>
 </html>
