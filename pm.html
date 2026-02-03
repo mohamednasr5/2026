@@ -18,12 +18,12 @@
             --success: #2ed573;
             --warning: #ffa502;
             --danger: #ff4757;
-            --purple: #a55eea; /* لون سلة المنتجات */
-            --bg-body: #e5ddd5; /* خلفية شبيهة بواتساب */
+            --purple: #a55eea;
+            --bg-body: #e5ddd5;
             --surface: #ffffff;
-            --chat-sent: #dcf8c6; /* لون رسالة المرسل (واتساب) */
-            --chat-recv: #ffffff; /* لون رسالة المستلم */
-            --blue-tick: #34B7F1; /* لون الصح الأزرق */
+            --chat-sent: #dcf8c6;
+            --chat-recv: #ffffff;
+            --blue-tick: #34B7F1;
             --radius: 16px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -67,7 +67,7 @@
         .btn-danger { background: var(--danger); color: white; }
         .btn-warning { background: var(--warning); color: white; }
         .btn-whatsapp { background: #25D366; color: white; }
-        .btn-product { background: var(--purple); color: white; } /* زر المنتجات */
+        .btn-product { background: var(--purple); color: white; } 
         .btn-success { background: var(--success); color: white; }
         .btn-outline { background: transparent; border: 2px solid #ddd; color: #666; }
 
@@ -86,11 +86,18 @@
         .controls { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
         .controls .btn { padding: 8px 12px; font-size: 0.85rem; }
 
+        /* --- Stats View Styles --- */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: white; padding: 20px; border-radius: 16px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .stat-value { font-size: 2.5rem; font-weight: 800; color: var(--secondary); margin: 10px 0; }
+        .stat-label { color: #888; font-size: 0.9rem; }
+        .stat-icon { font-size: 1.5rem; margin-bottom: 10px; color: var(--primary); }
+        
         /* --- WHATSAPP STYLE CHAT --- */
         .chat-container { 
             margin-top: 1rem; border-radius: 16px; overflow: hidden; 
-            background: #e5ddd5; /* Whatsapp BG Color */
-            background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"); /* Whatsapp Pattern */
+            background: #e5ddd5; 
+            background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"); 
             display: flex; flex-direction: column; height: 350px;
             border: 1px solid #ddd;
         }
@@ -101,74 +108,35 @@
             font-size: 0.95rem; line-height: 1.4; position: relative; 
             box-shadow: 0 1px 1px rgba(0,0,0,0.1); 
             display: flex; flex-direction: column;
-            user-select: none; /* prevent text selection on double click */
+            user-select: none;
         }
         
-        /* رسائل الطرف الآخر (أبيض) */
-        .message.recv { 
-            align-self: flex-start; background: var(--chat-recv); color: #000; 
-            border-top-left-radius: 0; 
-        }
-        /* رسائل المستخدم الحالي (أخضر فاتح) */
-        .message.sent { 
-            align-self: flex-end; background: var(--chat-sent); color: #000; 
-            border-top-right-radius: 0; 
-        }
+        .message.recv { align-self: flex-start; background: var(--chat-recv); color: #000; border-top-left-radius: 0; }
+        .message.sent { align-self: flex-end; background: var(--chat-sent); color: #000; border-top-right-radius: 0; }
 
-        /* ذيل الرسالة */
-        .message.recv::before {
-            content: ""; position: absolute; top: 0; left: -8px; width: 0; height: 0;
-            border-top: 8px solid var(--chat-recv); border-left: 8px solid transparent;
-        }
-        .message.sent::before {
-            content: ""; position: absolute; top: 0; right: -8px; width: 0; height: 0;
-            border-top: 8px solid var(--chat-sent); border-right: 8px solid transparent;
-        }
+        .message.recv::before { content: ""; position: absolute; top: 0; left: -8px; width: 0; height: 0; border-top: 8px solid var(--chat-recv); border-left: 8px solid transparent; }
+        .message.sent::before { content: ""; position: absolute; top: 0; right: -8px; width: 0; height: 0; border-top: 8px solid var(--chat-sent); border-right: 8px solid transparent; }
 
         .msg-content { margin-bottom: 2px; }
-        .msg-meta { 
-            align-self: flex-end; display: flex; align-items: center; gap: 4px; 
-            font-size: 0.7rem; color: #999; margin-top: -2px; margin-left: 5px;
-        }
+        .msg-meta { align-self: flex-end; display: flex; align-items: center; gap: 4px; font-size: 0.7rem; color: #999; margin-top: -2px; margin-left: 5px; }
         .tick-icon { font-size: 0.75rem; }
         .tick-read { color: var(--blue-tick) !important; }
 
         .chat-input-area { padding: 10px; background: #f0f0f0; display: flex; gap: 10px; align-items: center; }
         .chat-input-area input { flex: 1; padding: 10px 15px; border-radius: 20px; border: none; background: white; }
 
-        /* Reaction Heart */
-        .reaction-badge {
-            position: absolute; bottom: -8px; left: -5px; 
-            background: white; border-radius: 50%; padding: 2px;
-            font-size: 0.9rem; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-            animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+        .reaction-badge { position: absolute; bottom: -8px; left: -5px; background: white; border-radius: 50%; padding: 2px; font-size: 0.9rem; box-shadow: 0 1px 3px rgba(0,0,0,0.2); animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
 
-        /* Notification Badge on Button */
-        .badge-count {
-            position: absolute; top: -5px; right: -5px;
-            background: var(--danger); color: white;
-            border-radius: 50%; width: 18px; height: 18px;
-            font-size: 0.7rem; display: flex; align-items: center; justify-content: center;
-            border: 2px solid white;
-        }
+        .badge-count { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
 
         /* --- Modals --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 20px; border-radius: 16px; width: 95%; max-width: 450px; }
         
         /* --- Parent View Specifics --- */
-        .parent-header-card { 
-            background: white; border-radius: 20px; padding: 20px; text-align: center; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 20px;
-        }
-        .big-timer-circle {
-            width: 180px; height: 180px; border-radius: 50%; border: 6px solid var(--primary);
-            display: flex; align-items: center; justify-content: center;
-            margin: 20px auto; font-size: 2.5rem; font-weight: 800; color: var(--secondary);
-            background: #fff;
-        }
+        .parent-header-card { background: white; border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .big-timer-circle { width: 180px; height: 180px; border-radius: 50%; border: 6px solid var(--primary); display: flex; align-items: center; justify-content: center; margin: 20px auto; font-size: 2.5rem; font-weight: 800; color: var(--secondary); background: #fff; }
 
         /* Utils */
         .hidden { display: none !important; }
@@ -232,6 +200,41 @@
                     <div id="kids-list-active"></div>
                     <h3 style="margin:20px 0 10px; color:#777;">سجل الخروج اليوم</h3>
                     <div id="kids-list-history"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="stats-view" class="hidden">
+            <h2 style="margin-bottom:20px; border-bottom:2px solid var(--primary); padding-bottom:10px; display:inline-block;">📊 الإحصائيات المالية</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-coins"></i></div>
+                    <div class="stat-value" id="stat-total-income">0</div>
+                    <div class="stat-label">إجمالي الإيرادات (الكل)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
+                    <div class="stat-value" style="color:var(--success);" id="stat-today-income">0</div>
+                    <div class="stat-label">إيرادات اليوم</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-value" id="stat-total-kids">0</div>
+                    <div class="stat-label">إجمالي الزوار</div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-shopping-basket"></i></div>
+                    <div class="stat-value" style="color:var(--purple);" id="stat-products-income">0</div>
+                    <div class="stat-label">مبيعات المنتجات (الكل)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-stopwatch"></i></div>
+                    <div class="stat-value" id="stat-time-income">0</div>
+                    <div class="stat-label">إيرادات الوقت فقط</div>
                 </div>
             </div>
         </div>
@@ -343,7 +346,7 @@
         let currentLink = "";
         let adminTimer = null;
         let parentTimer = null;
-        let activeChatId = null; // ID of the child actively being chatted with by admin
+        let activeChatId = null;
         let productTargetId = null;
         let lastMsgCounts = {};
         
@@ -353,6 +356,7 @@
 
         // --- Auth ---
         window.handleEnter = (e) => { if(e.key === 'Enter') checkLogin(); }
+        
         window.checkLogin = () => {
             const pass = document.getElementById('login-pass').value;
             if(pass === '0100') {
@@ -360,10 +364,16 @@
                 document.getElementById('admin-view').classList.remove('hidden');
                 document.getElementById('logout-btn').classList.remove('hidden');
                 initAdmin();
+            } else if (pass === '521988') { // كلمة سر الاحصائيات
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('stats-view').classList.remove('hidden');
+                document.getElementById('logout-btn').classList.remove('hidden');
+                initStats();
             } else {
                 showToast('كلمة المرور خطأ');
             }
         };
+        
         window.logout = () => location.reload();
 
         // --- Routing ---
@@ -372,6 +382,51 @@
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('parent-view').classList.remove('hidden');
             initParent(urlParams.get('id'));
+        }
+
+        // --- Stats Logic (New) ---
+        function initStats() {
+            onValue(ref(db, 'children'), (snap) => {
+                const data = snap.val() || {};
+                let totalIncome = 0;
+                let todayIncome = 0;
+                let totalKids = 0;
+                let productIncome = 0;
+                let timeIncome = 0;
+
+                const todayStr = new Date().toLocaleDateString('en-US');
+
+                Object.values(data).forEach(child => {
+                    // Count only finished sessions for income
+                    if(child.status === 'out' && child.totalCost) {
+                        const cost = parseFloat(child.totalCost);
+                        totalIncome += cost;
+                        
+                        // Check if today
+                        if(child.exitTime) {
+                            const exitDate = new Date(child.exitTime).toLocaleDateString('en-US');
+                            if(exitDate === todayStr) {
+                                todayIncome += cost;
+                            }
+                        }
+
+                        // Calculate product vs time split
+                        let pCost = 0;
+                        if(child.products) {
+                            Object.values(child.products).forEach(p => pCost += p.price);
+                        }
+                        productIncome += pCost;
+                        timeIncome += (cost - pCost);
+                    }
+                    totalKids++;
+                });
+
+                document.getElementById('stat-total-income').innerText = totalIncome + ' ج.م';
+                document.getElementById('stat-today-income').innerText = todayIncome + ' ج.م';
+                document.getElementById('stat-total-kids').innerText = totalKids;
+                document.getElementById('stat-products-income').innerText = productIncome + ' ج.م';
+                document.getElementById('stat-time-income').innerText = timeIncome + ' ج.م';
+            });
         }
 
         // --- Admin Logic ---
@@ -460,14 +515,9 @@
                 });
             });
 
-            // Update Timers UI
             if(adminTimer) clearInterval(adminTimer);
             adminTimer = setInterval(() => {
-                // Just force re-render via onValue in a real app, 
-                // but here we let the onValue snapshot handle updates or use simple DOM manipulation if performance needed.
-                // For simplicity in this single-file setup, onValue fires often enough or we can rely on static updates.
-                // To keep clocks moving smoothly:
-                initAdmin(); // Brute force refresh for timer accuracy (okay for small lists)
+                initAdmin(); 
             }, 1000);
 
             // Add Child
@@ -519,8 +569,7 @@
             closeProductModal();
         };
 
-        // --- Chat Logic (WhatsApp Style) ---
-        // 1. Admin Side
+        // --- Chat Logic ---
         window.openAdminChat = (id, name) => {
             activeChatId = id;
             document.getElementById('chat-modal-title').innerText = name;
@@ -530,7 +579,6 @@
             onValue(msgsRef, (snap) => {
                 const msgs = snap.val();
                 renderChat(msgs, 'admin-chat-history', 'admin');
-                // Mark as read immediately when viewed
                 if(msgs) {
                     Object.keys(msgs).forEach(key => {
                         if(msgs[key].sender === 'parent' && !msgs[key].read) {
@@ -553,13 +601,11 @@
             document.getElementById('admin-chat-input').value = '';
         };
 
-        // 2. Parent Side
         function initParent(id) {
             onValue(ref(db, `children/${id}`), (snap) => {
                 const data = snap.val();
                 if(!data) return;
 
-                // Status & Time
                 if(data.status === 'out') {
                     document.getElementById('parent-view').classList.add('hidden');
                     document.getElementById('session-ended-view').classList.remove('hidden');
@@ -570,7 +616,6 @@
                 document.getElementById('p-child-name').innerText = data.name;
                 document.getElementById('p-child-id').innerText = '#' + data.childId;
                 
-                // Products
                 const prods = data.products ? Object.values(data.products) : [];
                 let pTotal = 0;
                 let pHtml = '';
@@ -580,7 +625,6 @@
                 });
                 document.getElementById('p-products-list').innerText = pHtml ? '🛒 ' + pHtml.slice(0, -3) : '';
 
-                // Timer & Cost
                 let timeMs = 0;
                 if(data.status === 'in') timeMs = Date.now() - data.entryTime - (data.totalPausedTime||0);
                 else timeMs = data.pauseStartTime - data.entryTime - (data.totalPausedTime||0);
@@ -593,15 +637,13 @@
                 document.getElementById('live-cost').innerText = totalCost;
 
                 if(data.status === 'in') {
-                    if(!parentTimer) parentTimer = setInterval(() => initParent(id), 1000); // self-refresh
+                    if(!parentTimer) parentTimer = setInterval(() => initParent(id), 1000); 
                 } else {
                     if(parentTimer) clearInterval(parentTimer);
                 }
 
-                // Chat Render
                 renderChat(data.messages, 'parent-chat-messages', 'parent');
                 
-                // Mark admin messages as read logic
                 if(data.messages) {
                     let needsUpdate = false;
                     const updates = {};
@@ -624,10 +666,7 @@
                 document.getElementById('parent-message-input').value = '';
             };
             
-            // For reaction toggling on parent side
             window.toggleReaction = (msgId) => {
-               // We need current reaction state to toggle. 
-               // Simplified: Just set heart. Real toggle requires reading state first.
                get(ref(db, `children/${id}/messages/${msgId}/reaction`)).then(s => {
                    const curr = s.val();
                    update(ref(db, `children/${id}/messages/${msgId}`), { reaction: curr ? '' : '❤️' });
@@ -635,7 +674,6 @@
             };
         }
 
-        // --- Shared Chat Render Logic ---
         function renderChat(msgsObj, containerId, viewer) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
@@ -649,10 +687,7 @@
                 const div = document.createElement('div');
                 div.className = `message ${isMe ? 'sent' : 'recv'}`;
                 
-                // Double click to react logic requires passing ID
-                // Note: In module type script, inline onclick needs window scope or event listener
                 div.addEventListener('dblclick', () => {
-                    // Logic to toggle reaction in DB
                     let pathId = viewer === 'admin' ? activeChatId : urlParams.get('id');
                     get(ref(db, `children/${pathId}/messages/${key}/reaction`)).then(s => {
                         const r = s.val();
@@ -660,10 +695,8 @@
                     });
                 });
 
-                // Time format 10:30 PM
                 const time = new Date(msg.timestamp).toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
                 
-                // Ticks (Only for sent messages)
                 let ticks = '';
                 if(isMe) {
                     const colorClass = msg.read ? 'tick-read' : '';
@@ -671,7 +704,6 @@
                     ticks = `<i class="fas ${icon} tick-icon ${colorClass}"></i>`;
                 }
 
-                // Reaction HTML
                 const reactionHtml = msg.reaction ? `<div class="reaction-badge">${msg.reaction}</div>` : '';
 
                 div.innerHTML = `
@@ -709,7 +741,6 @@
                 let timeMs = d.status === 'in' ? Date.now() - d.entryTime - (d.totalPausedTime||0) : d.pauseStartTime - d.entryTime - (d.totalPausedTime||0);
                 const timeCost = Math.ceil(timeMs/3600000) * 50;
                 
-                // Products
                 const prods = d.products ? Object.values(d.products) : [];
                 let pTotal = 0;
                 let summary = `<div>الوقت: ${timeCost} ج.م</div>`;
