@@ -601,10 +601,30 @@
         </div>
 
         <div id="financial-view" class="hidden financial-container">
+            <div class="stats-summary-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px;">
+                <div class="stat-box" style="background:white; padding:20px; border-radius:16px; text-align:center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                    <div style="font-size:2rem; color:var(--success); margin-bottom:5px;"><i class="fas fa-calendar-day"></i></div>
+                    <h4 style="color:#7f8c8d; font-size:0.95rem; margin-bottom:5px;">إيراد اليوم</h4>
+                    <div id="display-today" style="font-size:1.6rem; font-weight:800; color:var(--success);">0</div>
+                </div>
+                <div class="stat-box" style="background:white; padding:20px; border-radius:16px; text-align:center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                    <div style="font-size:2rem; color:var(--accent); margin-bottom:5px;"><i class="fas fa-calendar-alt"></i></div>
+                    <h4 style="color:#7f8c8d; font-size:0.95rem; margin-bottom:5px;">إيراد الشهر</h4>
+                    <div id="display-month" style="font-size:1.6rem; font-weight:800; color:var(--accent);">0</div>
+                </div>
+                 <div class="stat-box" style="background:white; padding:20px; border-radius:16px; text-align:center; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                    <div style="font-size:2rem; color:var(--warning); margin-bottom:5px;"><i class="fas fa-users"></i></div>
+                    <h4 style="color:#7f8c8d; font-size:0.95rem; margin-bottom:5px;">عدد الأطفال</h4>
+                    <div id="display-count" style="font-size:1.6rem; font-weight:800; color:var(--secondary);">0</div>
+                </div>
+            </div>
+
             <div class="grand-total-box">
-                <h2>الإجمالي العام</h2>
+                <h2>الإجمالي العام (كل الأوقات)</h2>
                 <div class="big-number" id="grand-total-display">0 ج.م</div>
             </div>
+            
+            <h3 class="section-title">سجل العمليات اليومي</h3>
             <div id="financial-logs"></div>
 
             <div class="developer-footer" style="background: transparent;">
@@ -1253,15 +1273,34 @@
                 }
                 const records = {}; 
                 let grandTotal = 0;
+                
+                // متغيرات الاحصائيات الجديدة
+                let todayTotal = 0;
+                let monthTotal = 0;
+                let childCount = 0;
+                
+                const now = new Date();
+                const todayStr = now.toDateString(); // e.g. "Mon Feb 02 2026"
+                const currentMonthStr = `${now.getFullYear()}-${now.getMonth()}`; // e.g. "2026-1"
+
                 Object.keys(data).forEach(key => {
                     const child = data[key];
                     if (child.status === 'out' && child.exitTime) {
+                        childCount++;
                         const cost = parseFloat(child.totalCost);
                         const dateObj = new Date(child.exitTime);
                         const dateKey = `${dateObj.getFullYear()}-${dateObj.getMonth()+1}-${dateObj.getDate()}`; 
                         const dateDisplay = dateObj.toLocaleDateString('ar-EG', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
                         const exitTime = dateObj.toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
                         
+                        // حساب الاحصائيات الزمنية
+                        if(dateObj.toDateString() === todayStr) {
+                            todayTotal += cost;
+                        }
+                        if(`${dateObj.getFullYear()}-${dateObj.getMonth()}` === currentMonthStr) {
+                            monthTotal += cost;
+                        }
+
                         // تجهيز نص المنتجات
                         let productDetails = "";
                         if(child.products) {
@@ -1282,7 +1321,14 @@
                         grandTotal += cost;
                     }
                 });
+
+                // تحديث واجهة الاحصائيات في الأعلى
+                document.getElementById('display-today').innerText = todayTotal.toFixed(1) + ' ج.م';
+                document.getElementById('display-month').innerText = monthTotal.toFixed(1) + ' ج.م';
+                document.getElementById('display-count').innerText = childCount;
                 document.getElementById('grand-total-display').innerText = grandTotal.toFixed(1) + ' ج.م';
+                
+                // عرض السجلات
                 logsContainer.innerHTML = '';
                 if (Object.keys(records).length === 0) {
                     logsContainer.innerHTML = '<div style="text-align:center;">لا توجد سجلات خروج مكتملة.</div>';
