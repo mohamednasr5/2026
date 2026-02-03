@@ -30,7 +30,7 @@
 
         /* --- General Reset --- */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { background-color: #f1f2f6; color: var(--secondary); min-height: 100vh; display: flex; flex-direction: column; font-size: 16px; overflow-x: hidden; }
+        body { background-color: #f1f2f6; color: var(--secondary); min-height: 100vh; display: flex; flex-direction: column; font-size: 16px; overflow-x: hidden; padding-bottom: 100px; /* Space for footer */ }
 
         /* --- Scrollbar --- */
         ::-webkit-scrollbar { width: 6px; }
@@ -138,6 +138,21 @@
         .parent-header-card { background: white; border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 20px; }
         .big-timer-circle { width: 180px; height: 180px; border-radius: 50%; border: 6px solid var(--primary); display: flex; align-items: center; justify-content: center; margin: 20px auto; font-size: 2.5rem; font-weight: 800; color: var(--secondary); background: #fff; }
 
+        /* --- Custom Footer --- */
+        .dev-footer {
+            margin-top: 30px;
+            padding: 20px;
+            text-align: center;
+            background: #fff;
+            border-top: 1px solid #eee;
+            color: #555;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+        .dev-footer p { margin: 5px 0; }
+        .dev-footer a { color: var(--accent); text-decoration: none; font-weight: bold; }
+        .dev-footer i { margin-left: 5px; }
+
         /* Utils */
         .hidden { display: none !important; }
     </style>
@@ -175,8 +190,8 @@
                         <input type="text" id="child-name" class="form-control" placeholder="اسم الطفل" required>
                         <input type="tel" id="parent-phone" class="form-control" placeholder="رقم الموبايل" required>
                         <select id="child-snack" class="form-control">
-                            <option value="غزل بنات">غزل بنات 🍭</option>
-                            <option value="فشار">فشار 🍿</option>
+                            <option value="غزل بنات">غزل بنات (مجاني) 🍭</option>
+                            <option value="فشار">فشار (مجاني) 🍿</option>
                         </select>
                         <button type="submit" class="btn btn-primary" style="width:100%">تسجيل</button>
                     </form>
@@ -248,9 +263,9 @@
                 <div class="big-timer-circle" id="live-timer">00:00:00</div>
                 
                 <div style="font-size:1.5rem; font-weight:bold; color:var(--primary); margin-top:10px;">
-                    التكلفة: <span id="live-cost">0</span> ج.م
+                    التكلفة الحالية: <span id="live-cost">0</span> ج.م
                 </div>
-                <div id="p-products-list" style="margin-top:10px; color:var(--purple); font-size:0.9rem;"></div>
+                <div id="p-products-list" style="margin-top:15px; padding:10px; background:#f9f9f9; border-radius:10px; color:var(--purple); font-size:0.95rem; line-height:1.6;"></div>
             </div>
 
             <div class="card" style="padding:0; overflow:hidden;">
@@ -273,10 +288,18 @@
             <div style="font-size:3rem; font-weight:800; color:var(--secondary); margin-bottom:10px;">
                 <span id="final-cost-display">0</span> ج.م
             </div>
-            <p>شكراً لزيارتكم أوبرا عاشور ❤️</p>
+            <p style="font-size:1.2rem; margin-bottom:10px;">شكراً لزيارتكم أوبرا عاشور ❤️</p>
+            <p style="font-size:1.1rem; color:var(--primary); font-weight:bold;">من هنا تبدأ الحكاية ✨</p>
         </div>
 
     </main>
+
+    <div class="dev-footer">
+        <p>برمجة وتطوير بكل حب ❤️</p>
+        <p><strong>المهندس محمد حماد</strong></p>
+        <p><a href="tel:01279934735"><i class="fas fa-phone"></i> 01279934735</a></p>
+        <p><a href="https://www.facebook.com/en.mohamed.nasr" target="_blank"><i class="fab fa-facebook"></i> Facebook</a></p>
+    </div>
 
     <div id="admin-chat-modal" class="modal">
         <div class="modal-content" style="height:80vh; display:flex; flex-direction:column; padding:0; overflow:hidden;">
@@ -384,7 +407,7 @@
             initParent(urlParams.get('id'));
         }
 
-        // --- Stats Logic (New) ---
+        // --- Stats Logic ---
         function initStats() {
             onValue(ref(db, 'children'), (snap) => {
                 const data = snap.val() || {};
@@ -537,12 +560,20 @@
                     entryTime: Date.now(), status: 'in', 
                     products: [], messages: [], totalPausedTime: 0, lastHourAlert: 0
                 }).then(() => {
+                    // *** ADDED: Free Snack Logic ***
+                    if(snack) {
+                        push(ref(db, `children/${newRef.key}/products`), { 
+                            name: `${snack} (مجاني)`, 
+                            price: 0 
+                        });
+                    }
+                    
                     document.getElementById('checkin-form').reset();
                     document.getElementById('new-child-qr').classList.remove('hidden');
                     document.getElementById('qr-code').innerHTML = '';
                     new QRCode(document.getElementById('qr-code'), { text: link, width:100, height:100 });
                     document.getElementById('wa-btn-new').onclick = () => openWhatsApp(phone, newRef.key, link);
-                    showToast('تم تسجيل الطفل');
+                    showToast('تم تسجيل الطفل واضافة الهدية المجانية');
                 });
             };
 
@@ -621,9 +652,20 @@
                 let pHtml = '';
                 prods.forEach(p => {
                     pTotal += p.price;
-                    pHtml += `${p.name} (${p.price}) + `;
+                    // *** ADDED: Show price if > 0, else show text only ***
+                    if(p.price > 0) {
+                        pHtml += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding:5px 0;"><span>${p.name}</span><span>${p.price} ج.م</span></div>`;
+                    } else {
+                        pHtml += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding:5px 0; color:var(--success);"><span>${p.name}</span><span>مجاناً</span></div>`;
+                    }
                 });
-                document.getElementById('p-products-list').innerText = pHtml ? '🛒 ' + pHtml.slice(0, -3) : '';
+                
+                if(pHtml) {
+                    document.getElementById('p-products-list').innerHTML = `<div style="font-weight:bold; margin-bottom:5px;">📋 الطلبات:</div>` + pHtml;
+                    document.getElementById('p-products-list').style.display = 'block';
+                } else {
+                    document.getElementById('p-products-list').style.display = 'none';
+                }
 
                 let timeMs = 0;
                 if(data.status === 'in') timeMs = Date.now() - data.entryTime - (data.totalPausedTime||0);
@@ -748,7 +790,9 @@
                     summary += '<hr style="margin:5px 0;">';
                     prods.forEach(p => {
                         pTotal += p.price;
-                        summary += `<div>${p.name}: ${p.price}</div>`;
+                        // *** Modified Checkout Summary ***
+                        const priceTxt = p.price > 0 ? `${p.price} ج.م` : 'مجاناً';
+                        summary += `<div style="display:flex; justify-content:space-between;"><span>${p.name}</span><span>${priceTxt}</span></div>`;
                     });
                 }
                 
