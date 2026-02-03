@@ -19,6 +19,7 @@
             --success: #2ed573;       /* أخضر نيون هادئ */
             --warning: #ffa502;       /* برتقالي ذهبي */
             --danger: #ff4757;
+            --purple: #a55eea;        /* بنفسجي للمنتجات */
             --bg-body: #f1f2f6;       /* خلفية رمادية فاتحة جداً */
             --surface: #ffffff;       /* لون الكروت */
             --whatsapp: #25D366;
@@ -162,6 +163,10 @@
         .btn-warning { background: var(--warning); color: white; }
         .btn-whatsapp { background: var(--whatsapp); color: white; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); }
         
+        /* New Product Button */
+        .btn-product { background: var(--purple); color: white; box-shadow: 0 4px 15px rgba(165, 94, 234, 0.3); }
+        .btn-product:hover { background: #8854d0; transform: translateY(-2px); }
+
         .btn-stats { background: var(--success); color: white; padding: 6px 15px; border-radius: 20px; font-size: 0.85rem; }
         .btn-outline { background: transparent; border: 2px solid var(--secondary); color: var(--secondary); }
         .btn-logout { background: rgba(255,255,255,0.2); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3); color: white; }
@@ -204,6 +209,22 @@
         .timer-display { font-family: 'Courier New', monospace; font-weight: 800; color: var(--primary); font-size: 1.1rem; background: rgba(255, 71, 87, 0.05); padding: 5px 10px; border-radius: 8px; display: inline-block;}
         .timer-paused { color: var(--warning); background: rgba(255, 165, 2, 0.1); }
         
+        /* Product List in Card */
+        .products-list-mini {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--purple);
+            font-weight: bold;
+        }
+        .product-badge {
+            background: #f3e5f5;
+            padding: 2px 8px;
+            border-radius: 6px;
+            margin-left: 5px;
+            display: inline-block;
+            margin-bottom: 2px;
+        }
+
         /* Control Buttons in Card */
         .controls { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; width: 100%; }
         @media (min-width: 600px) { .controls { width: auto; } }
@@ -299,6 +320,8 @@
         .record-name { font-weight: 700; color: var(--secondary); display: block; }
         .record-time { font-size: 0.8rem; color: #a4b0be; margin-top: 3px; display: block; }
         .record-cost { font-weight: 800; color: var(--primary); font-size: 1.1rem; }
+        .record-products { font-size: 0.85rem; color: var(--purple); margin-top: 5px; display: block; border-top: 1px dashed #eee; padding-top: 4px;}
+        
         .day-total { background: rgba(46, 213, 115, 0.1); color: #218c74; padding: 15px 20px; font-weight: 800; text-align: right; }
 
         /* --- MODALS --- */
@@ -656,6 +679,23 @@
         </div>
     </div>
 
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom:15px; color:var(--purple);">🛍️ إضافة منتج</h3>
+            <p id="product-child-name" style="margin-bottom:15px; color:#666; font-weight:bold;"></p>
+            <div class="form-group">
+                <input type="text" id="prod-name" class="form-control" placeholder="اسم المنتج (مثال: عصير، لعبة..)">
+            </div>
+            <div class="form-group">
+                <input type="number" id="prod-price" class="form-control" placeholder="السعر (ج.م)">
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-product" onclick="addProduct()">إضافة</button>
+                <button class="btn btn-outline" onclick="closeProductModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
     <div id="finance-modal" class="modal">
         <div class="modal-content">
             <h2 style="margin-bottom:15px; color: var(--secondary);">ملخص سريع</h2>
@@ -681,8 +721,10 @@
         <div class="modal-content">
             <h2 style="color:var(--danger);">إنهاء جلسة</h2>
             <p>المدة: <span id="modal-duration" style="font-weight:bold; font-family:monospace;"></span></p>
+            <div id="checkout-products-list" style="margin: 10px 0; text-align: right; background: #f9f9f9; padding: 10px; border-radius: 8px; font-size: 0.9rem;">
+                </div>
             <div style="font-size:2.5rem; font-weight:800; color:var(--secondary); margin:15px 0;" id="modal-price">0 ج.م</div>
-            <p style="font-size:0.8rem; color:#666; margin-bottom:1.5rem;">(50 ج.م لكل ساعة كاملة)</p>
+            <p style="font-size:0.8rem; color:#666; margin-bottom:1.5rem;">(شامل الوقت والمنتجات)</p>
             <div style="display:flex; gap:10px; justify-content:center;">
                 <button class="btn btn-danger" onclick="confirmCheckout()">تأكيد</button>
                 <button class="btn btn-outline" onclick="closeModal()">إلغاء</button>
@@ -748,6 +790,7 @@
         let currentChatId = null; 
         let lastMessageCounts = {}; 
         let searchQuery = ""; 
+        let productAddId = null; // To store which child we are adding product to
         
         // DOM Elements
         const adminView = document.getElementById('admin-view');
@@ -847,6 +890,19 @@
                     const link = `${window.location.origin}${window.location.pathname}?mode=parent&id=${key}`;
                     let billableTime = 0;
 
+                    // Products Logic
+                    const products = child.products ? Object.values(child.products) : [];
+                    let productsHtml = '';
+                    let productsCost = 0;
+                    if(products.length > 0) {
+                        productsHtml = '<div class="products-list-mini">🛒 ';
+                        products.forEach(p => {
+                            productsHtml += `<span class="product-badge">${p.name} (${p.price})</span>`;
+                            productsCost += parseFloat(p.price);
+                        });
+                        productsHtml += '</div>';
+                    }
+
                     if (child.status === 'in') {
                         billableTime = Date.now() - child.entryTime - (child.totalPausedTime || 0);
                         const div = document.createElement('div');
@@ -878,10 +934,12 @@
                                     <span class="kid-tag">📱 ${child.phone}</span>
                                     <span class="kid-tag">🍽️ ${child.snack}</span>
                                 </div>
-                                <div class="timer-display">⏰ <span class="time-text" data-name="${child.name}" data-billable="${billableTime}" data-last-hour="0">${formatDuration(billableTime)}</span></div>
+                                ${productsHtml}
+                                <div class="timer-display" style="margin-top:5px;">⏰ <span class="time-text" data-name="${child.name}" data-billable="${billableTime}" data-last-hour="0">${formatDuration(billableTime)}</span></div>
                             </div>
                             <div class="controls">
                                 <button class="btn btn-whatsapp" onclick="sendToWhatsApp('${child.phone}', '${encodeURIComponent(link)}')"><i class="fab fa-whatsapp"></i></button>
+                                <button class="btn btn-product" onclick="openProductModal('${key}', '${child.name}')" title="إضافة منتج"><i class="fas fa-gift"></i></button>
                                 <button class="btn btn-warning" onclick="pauseChild('${key}')" title="خروج مؤقت"><i class="fas fa-pause"></i></button>
                                 <button class="btn btn-primary" style="position:relative;" onclick="openAdminChat('${key}', '${child.name}')" title="محادثة">
                                     <i class="fas fa-comments"></i> ${badgeHtml}
@@ -902,9 +960,11 @@
                             <div class="kid-info">
                                 <h3>${child.name} <span class="kid-id-badge">#${child.childId || '0000'}</span></h3>
                                 <div class="kid-meta"><span class="status-badge-paused">خروج مؤقت</span></div>
+                                ${productsHtml}
                                 <div class="timer-display timer-paused">⏰ ${formatDuration(billableTime)}</div>
                             </div>
                             <div class="controls">
+                                <button class="btn btn-product" onclick="openProductModal('${key}', '${child.name}')" title="إضافة منتج"><i class="fas fa-gift"></i></button>
                                 <button class="btn btn-success" style="color:white; background:var(--success);" onclick="resumeChild('${key}')">▶️ استكمال</button>
                                 <button class="btn btn-danger" onclick="prepareCheckout('${key}')">خروج نهائي</button>
                             </div>
@@ -921,6 +981,7 @@
                                     <span class="kid-tag">⏳ ${formatDuration(diff)}</span>
                                     <span class="kid-tag">📅 ${new Date(child.exitTime).toLocaleDateString('ar-EG')}</span>
                                 </div>
+                                ${productsHtml}
                                 <div class="price-tag" style="font-weight:bold; color:var(--primary);">💰 ${child.totalCost} ج.م</div>
                             </div>
                         `;
@@ -962,7 +1023,7 @@
                 const link = `${window.location.origin}${window.location.pathname}?mode=parent&id=${newRef.key}`;
                 set(newRef, {
                     name, phone, snack, entryTime: Date.now(), status:'in', messages:[], totalPausedTime:0,
-                    childId: randomId
+                    childId: randomId, products: []
                 }).then(() => {
                     showToast(`تم تسجيل ${name} (رقم الطفل: ${randomId})`);
                     document.getElementById('child-name').value = '';
@@ -977,6 +1038,38 @@
                 });
             };
         }
+
+        // --- PRODUCT SYSTEM ---
+        window.openProductModal = (id, name) => {
+            productAddId = id;
+            document.getElementById('product-child-name').innerText = `للطفل: ${name}`;
+            document.getElementById('product-modal').style.display = 'flex';
+            document.getElementById('prod-name').focus();
+        };
+
+        window.closeProductModal = () => {
+            document.getElementById('product-modal').style.display = 'none';
+            document.getElementById('prod-name').value = '';
+            document.getElementById('prod-price').value = '';
+            productAddId = null;
+        };
+
+        window.addProduct = () => {
+            const name = document.getElementById('prod-name').value;
+            const price = document.getElementById('prod-price').value;
+            if(!name || !price || !productAddId) {
+                showToast("يرجى إدخال البيانات");
+                return;
+            }
+            push(ref(db, `children/${productAddId}/products`), {
+                name: name,
+                price: parseFloat(price)
+            }).then(() => {
+                showToast("تمت إضافة المنتج ✅");
+                closeProductModal();
+            });
+        };
+
 
         // --- CHAT SYSTEM ---
         window.openAdminChat = (id, name) => {
@@ -1039,8 +1132,20 @@
                         const dateKey = `${dateObj.getFullYear()}-${dateObj.getMonth()+1}-${dateObj.getDate()}`; 
                         const dateDisplay = dateObj.toLocaleDateString('ar-EG', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
                         const exitTime = dateObj.toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
+                        
+                        // Products string
+                        let productsStr = "";
+                        if(child.products) {
+                            productsStr = Object.values(child.products).map(p => `${p.name} (${p.price})`).join('، ');
+                        }
+
                         if (!records[dateKey]) { records[dateKey] = { display: dateDisplay, total: 0, items: [] }; }
-                        records[dateKey].items.push({ name: child.name + ' (#'+(child.childId || '0000')+')', cost: cost, time: exitTime });
+                        records[dateKey].items.push({ 
+                            name: child.name + ' (#'+(child.childId || '0000')+')', 
+                            cost: cost, 
+                            time: exitTime,
+                            products: productsStr
+                        });
                         records[dateKey].total += cost;
                         grandTotal += cost;
                     }
@@ -1057,11 +1162,13 @@
                     dayHtml.className = 'day-group';
                     let itemsHtml = '';
                     dayData.items.forEach(item => {
+                        const productDiv = item.products ? `<span class="record-products">🛍️ ${item.products}</span>` : '';
                         itemsHtml += `
                             <div class="record-row">
                                 <div class="record-info">
                                     <span class="record-name">${item.name}</span>
                                     <span class="record-time">وقت الخروج: ${item.time}</span>
+                                    ${productDiv}
                                 </div>
                                 <span class="record-cost">${item.cost.toFixed(1)} ج.م</span>
                             </div>`;
@@ -1084,22 +1191,50 @@
                 update(ref(db, `children/${id}`), { status:'in', totalPausedTime: (d.totalPausedTime||0) + pauseDur });
             });
         };
+        
+        // CHECKOUT LOGIC UPDATED
         window.prepareCheckout = (id) => {
             currentChildId = id;
             get(ref(db, `children/${id}`)).then(s => {
                 const c = s.val();
-                let bill = c.status === 'paused' ? c.pauseStartTime - c.entryTime - (c.totalPausedTime||0) : Date.now() - c.entryTime - (c.totalPausedTime||0);
-                const cost = calculateFlatCost(bill);
-                document.getElementById('modal-duration').innerText = formatDuration(bill);
-                document.getElementById('modal-price').innerText = cost + ' ج.م';
+                let billTime = c.status === 'paused' ? c.pauseStartTime - c.entryTime - (c.totalPausedTime||0) : Date.now() - c.entryTime - (c.totalPausedTime||0);
+                const timeCost = parseFloat(calculateFlatCost(billTime));
+                
+                // Calculate Products
+                let productCost = 0;
+                let productListHtml = '';
+                if(c.products) {
+                    productListHtml = '<ul style="list-style:none; padding:0;">';
+                    Object.values(c.products).forEach(p => {
+                        productCost += parseFloat(p.price);
+                        productListHtml += `<li>${p.name}: <b>${p.price} ج.م</b></li>`;
+                    });
+                    productListHtml += `<li style="border-top:1px solid #ddd; margin-top:5px; padding-top:5px;">إجمالي المنتجات: <b>${productCost} ج.م</b></li></ul>`;
+                } else {
+                    productListHtml = 'لا توجد منتجات إضافية';
+                }
+
+                const total = timeCost + productCost;
+
+                document.getElementById('modal-duration').innerText = formatDuration(billTime);
+                document.getElementById('checkout-products-list').innerHTML = productListHtml;
+                document.getElementById('modal-price').innerText = total.toFixed(1) + ' ج.م';
                 document.getElementById('checkout-modal').style.display = 'flex';
             });
         };
+
         window.confirmCheckout = () => {
             get(ref(db, `children/${currentChildId}`)).then(s => {
                 const c = s.val();
-                let bill = c.status === 'paused' ? c.pauseStartTime - c.entryTime - (c.totalPausedTime||0) : Date.now() - c.entryTime - (c.totalPausedTime||0);
-                update(ref(db, `children/${currentChildId}`), { status:'out', exitTime: Date.now(), totalCost: calculateFlatCost(bill) });
+                let billTime = c.status === 'paused' ? c.pauseStartTime - c.entryTime - (c.totalPausedTime||0) : Date.now() - c.entryTime - (c.totalPausedTime||0);
+                const timeCost = parseFloat(calculateFlatCost(billTime));
+                let productCost = 0;
+                if(c.products) {
+                    Object.values(c.products).forEach(p => productCost += parseFloat(p.price));
+                }
+                const totalFinal = timeCost + productCost;
+
+                update(ref(db, `children/${currentChildId}`), { status:'out', exitTime: Date.now(), totalCost: totalFinal.toFixed(1) });
                 closeModal();
                 showToast("تم تسجيل الخروج");
             });
