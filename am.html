@@ -229,18 +229,79 @@
         }
         @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
 
-        /* --- CHAT STYLES --- */
-        .chat-container { margin-top: 1.5rem; border: 1px solid #f1f2f6; border-radius: 16px; overflow: hidden; background: #fff; }
-        .chat-messages { height: 250px; overflow-y: auto; padding: 20px; background: #f7f9fc; display: flex; flex-direction: column; gap: 12px; }
+        /* --- CHAT STYLES (WHATSAPP LOOK) --- */
+        .chat-container { 
+            margin-top: 1.5rem; 
+            border: 1px solid #d1d7db; 
+            border-radius: 16px; 
+            overflow: hidden; 
+            background: #e5ddd5; /* خلفية واتساب البيج */
+            background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"); /* خلفية زخرفية */
+            display: flex; flex-direction: column;
+        }
         
-        .message { max-width: 75%; padding: 12px 18px; border-radius: 18px; font-size: 0.95rem; line-height: 1.5; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .chat-messages { 
+            height: 350px; 
+            overflow-y: auto; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+        }
+
+        .message { 
+            max-width: 80%; 
+            padding: 6px 10px 8px 10px; 
+            border-radius: 8px; 
+            font-size: 0.95rem; 
+            line-height: 1.4; 
+            position: relative; 
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            min-width: 100px;
+        }
+
+        /* رسائل الطرف الآخر (أبيض) */
+        .message.received { 
+            align-self: flex-start; 
+            background: white; 
+            color: #111; 
+            border-top-left-radius: 0;
+        }
+
+        /* رسائلي أنا (أخضر) */
+        .message.sent { 
+            align-self: flex-end; 
+            background: #dcf8c6; 
+            color: #111; 
+            border-top-right-radius: 0;
+        }
+
+        .sender-name { display: none; } /* لا داعي للاسم في نمط واتساب */
+
+        .msg-meta {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 4px;
+            margin-top: 2px;
+            font-size: 0.65rem;
+            color: #999;
+        }
+
+        .ticks {
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
         
-        .message.parent { align-self: flex-start; background: white; color: var(--secondary); border-bottom-right-radius: 4px; }
-        .message.admin { align-self: flex-end; background: linear-gradient(135deg, var(--secondary) 0%, #4b5563 100%); color: white; border-bottom-left-radius: 4px; }
-        .message .sender-name { font-size: 0.7rem; opacity: 0.6; margin-bottom: 4px; display: block; font-weight: bold; }
-        
-        .chat-input-area { padding: 15px; background: white; display: flex; gap: 10px; border-top: 1px solid #f1f2f6; }
-        .chat-input-area input { background: #f1f2f6; border: none; }
+        /* لون الصحين (رمادي) */
+        .ticks.grey { color: #999; }
+        /* لون الصحين (أزرق - تمت القراءة) */
+        .ticks.blue { color: #34b7f1; }
+
+        .chat-input-area { padding: 15px; background: #f0f0f0; display: flex; gap: 10px; border-top: 1px solid #d1d7db; }
+        .chat-input-area input { background: white; border: none; border-radius: 20px; padding: 10px 15px; }
 
         /* --- PARENT VIEW (APP STYLE) --- */
         .parent-view-card {
@@ -321,7 +382,7 @@
         .section-title { font-size: 1.2rem; margin-bottom: 1.2rem; color: var(--secondary); position: relative; padding-right: 15px; border: none; }
         .section-title::before { content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 6px; height: 25px; background: var(--warning); border-radius: 10px; }
         
-        /* --- FOOTER STYLING (UPDATED) --- */
+        /* --- FOOTER STYLING --- */
         .developer-footer { 
             margin-top: auto;
             text-align: center; padding: 1.5rem; 
@@ -771,6 +832,49 @@
             }
         }
 
+        // --- Helper Functions for Chat ---
+        function getMessageHTML(msg, isMe) {
+            const time = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            let ticksHtml = '';
+            
+            // إذا كانت الرسالة مرسلة مني، أظهر علامات الصح
+            if (isMe) {
+                const tickClass = msg.status === 'read' ? 'blue' : 'grey';
+                // ✔ تعني صح واحد (سيرفر)، ✔✔ تعني صحين (استلام/قراءة)
+                const icon = '<i class="fas fa-check-double"></i>'; 
+                ticksHtml = `<span class="ticks ${tickClass}">${icon}</span>`;
+            }
+
+            return `
+                <div>${msg.text}</div>
+                <div class="msg-meta">
+                    <span>${time}</span>
+                    ${ticksHtml}
+                </div>
+            `;
+        }
+
+        function markMessagesAsRead(childId, senderType) {
+            // senderType: 'admin' (إذا كان الأب هو اللي فاتح) أو 'parent' (إذا الادارة هي اللي فاتحة)
+            // نريد تحديث رسائل "الطرف الآخر" لتصبح read
+            const chatRef = ref(db, `children/${childId}/messages`);
+            get(chatRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const updates = {};
+                    snapshot.forEach((childSnap) => {
+                        const msg = childSnap.val();
+                        // إذا كانت الرسالة من الطرف الآخر وليست مقروءة بعد
+                        if (msg.sender === senderType && msg.status !== 'read') {
+                            updates[`${childSnap.key}/status`] = 'read';
+                        }
+                    });
+                    if (Object.keys(updates).length > 0) {
+                        update(chatRef, updates);
+                    }
+                }
+            });
+        }
+
         // Global State
         let currentChildId = null;
         let currentChildLink = "";
@@ -1081,26 +1185,35 @@
         };
 
 
-        // --- CHAT SYSTEM ---
+        // --- CHAT SYSTEM (UPDATED) ---
         window.openAdminChat = (id, name) => {
             currentChatId = id;
-            document.getElementById('chat-modal-title').innerText = `محادثة مع والد/ة الطفل: ${name}`;
+            document.getElementById('chat-modal-title').innerText = `${name}`;
             document.getElementById('admin-chat-modal').style.display = 'flex';
-            document.getElementById('admin-chat-input').focus();
+            
+            // تحديث الرسائل القادمة من الأب لتصبح "مقروءة" فور الفتح
+            markMessagesAsRead(id, 'parent');
+
             const chatRef = ref(db, `children/${id}/messages`);
+            
             onValue(chatRef, (snapshot) => {
                 const messages = snapshot.val();
                 const historyEl = document.getElementById('admin-chat-history');
                 historyEl.innerHTML = '';
                 if(!messages) return;
+
                 Object.values(messages).sort((a,b) => a.timestamp - b.timestamp).forEach(msg => {
                     const div = document.createElement('div');
-                    div.className = `message ${msg.sender}`;
-                    const senderName = msg.sender === 'admin' ? 'أنت' : 'الوالد';
-                    div.innerHTML = `<span class="sender-name">${senderName}</span>${msg.text}`;
+                    // admin = sent (me), parent = received
+                    const isMe = msg.sender === 'admin';
+                    div.className = `message ${isMe ? 'sent' : 'received'}`;
+                    div.innerHTML = getMessageHTML(msg, isMe);
                     historyEl.appendChild(div);
                 });
                 historyEl.scrollTop = historyEl.scrollHeight;
+                
+                // إذا كنا فاتحين الشات ووصلت رسالة جديدة، نحدثها لمقروءة فوراً
+                markMessagesAsRead(id, 'parent');
             });
         };
 
@@ -1113,8 +1226,14 @@
             const input = document.getElementById('admin-chat-input');
             const text = input.value.trim();
             if(!text || !currentChatId) return;
-            push(ref(db, `children/${currentChatId}/messages`), { text: text, sender: 'admin', timestamp: Date.now() });
+            push(ref(db, `children/${currentChatId}/messages`), { 
+                text: text, 
+                sender: 'admin', 
+                timestamp: Date.now(),
+                status: 'delivered' 
+            });
             input.value = '';
+            input.focus();
         };
 
         // ==========================================
@@ -1287,31 +1406,38 @@
             let prevMsgCount = 0;
             
             // 1. Chat Listener
-            onValue(ref(db, `children/${id}/messages`), (snapshot) => {
+            const chatRefParent = ref(db, `children/${id}/messages`);
+            onValue(chatRefParent, (snapshot) => {
                 const messages = snapshot.val();
                 const container = document.getElementById('parent-chat-messages');
                 container.innerHTML = '';
+                
+                // تحديث رسائل الإدارة لتصبح مقروءة لأن الأب يشاهدها الآن
+                markMessagesAsRead(id, 'admin');
+
                 let currentCount = 0;
                 let msgsArray = [];
                 if (messages) {
                     msgsArray = Object.values(messages).sort((a,b) => a.timestamp - b.timestamp);
                     msgsArray.forEach(msg => {
                         const div = document.createElement('div');
-                        div.className = `message ${msg.sender === 'admin' ? 'admin' : 'parent'}`;
-                        const senderName = msg.sender === 'admin' ? 'الإدارة' : 'أنت';
-                        div.innerHTML = `<span class="sender-name">${senderName}</span>${msg.text}`;
+                        // parent = sent (me), admin = received
+                        const isMe = msg.sender === 'parent';
+                        div.className = `message ${isMe ? 'sent' : 'received'}`;
+                        div.innerHTML = getMessageHTML(msg, isMe);
                         container.appendChild(div);
                         currentCount++;
                     });
                 }
+                
                 // NOTIFICATION (PARENT)
                 if (currentCount > prevMsgCount && currentCount > 0) {
-                    const lastMsg = msgsArray[msgsArray.length - 1];
-                    if (lastMsg.sender === 'admin') {
-                        playSound('msg');
-                        sendBrowserNotification("رسالة من الإدارة 💬", lastMsg.text);
-                        showToast("📩 رسالة جديدة من الإدارة");
-                    }
+                     const lastMsg = msgsArray[msgsArray.length - 1];
+                     if (lastMsg.sender === 'admin') {
+                         playSound('msg');
+                         sendBrowserNotification("رسالة من الإدارة 💬", lastMsg.text);
+                         showToast("📩 رسالة جديدة من الإدارة");
+                     }
                 }
                 // BADGE
                 const badge = document.getElementById('parent-msg-badge');
@@ -1397,7 +1523,12 @@
         window.sendParentMessage = () => {
             const t = document.getElementById('parent-message-input').value;
             if(!t) return;
-            push(ref(db, `children/${childIdParam}/messages`), { text:t, sender:'parent', timestamp:Date.now() });
+            push(ref(db, `children/${childIdParam}/messages`), { 
+                text:t, 
+                sender:'parent', 
+                timestamp:Date.now(),
+                status: 'delivered'
+            });
             document.getElementById('parent-message-input').value = '';
         };
 
