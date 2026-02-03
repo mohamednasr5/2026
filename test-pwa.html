@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اختبار PWA - أوبرا كافيه</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Cairo', sans-serif;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: white;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2rem;
+    }
+    .section {
+      background: rgba(255,255,255,0.15);
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+    }
+    .section h2 {
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+      border-bottom: 2px solid rgba(255,255,255,0.3);
+      padding-bottom: 10px;
+    }
+    .status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      margin: 10px 0;
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+    }
+    .status-label {
+      font-weight: 600;
+    }
+    .status-value {
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+    .status-value.success {
+      background: #4CAF50;
+    }
+    .status-value.error {
+      background: #f44336;
+    }
+    .status-value.warning {
+      background: #ff9800;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .info-box {
+      background: rgba(33, 150, 243, 0.2);
+      border-right: 4px solid #2196F3;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 10px 0;
+    }
+    .code {
+      background: rgba(0,0,0,0.4);
+      padding: 10px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      margin: 10px 0;
+    }
+    .test-result {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+    }
+    .test-result.show {
+      display: block;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      text-decoration: none;
+      color: white;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 اختبار PWA</h1>
+    
+    <div class="section">
+      <h2>📱 حالة التطبيق</h2>
+      <div class="status">
+        <span class="status-label">Manifest متوفر:</span>
+        <span class="status-value" id="manifestStatus">جاري الفحص...</span>
+      </div>
+      <div class="status">
+        <span class="status-label">Service Worker:</span>
+        <span class="status-value" id="swStatus">جاري الفحص...</span>
+      </div>
+      <div class="status">
+        <span class="status-label">قابل للتثبيت:</span>
+        <span class="status-value" id="installableStatus">جاري الفحص...</span>
+      </div>
+      <div class="status">
+        <span class="status-label">HTTPS فعّال:</span>
+        <span class="status-value" id="httpsStatus">جاري الفحص...</span>
+      </div>
+      <div class="status">
+        <span class="status-label">Offline Support:</span>
+        <span class="status-value" id="offlineStatus">جاري الفحص...</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>🛠️ أدوات الاختبار</h2>
+      
+      <button class="btn" onclick="testNotifications()">
+        اختبار الإشعارات
+      </button>
+      <div class="test-result" id="notifResult"></div>
+
+      <button class="btn" onclick="testCache()">
+        اختبار التخزين المؤقت
+      </button>
+      <div class="test-result" id="cacheResult"></div>
+
+      <button class="btn" onclick="testShare()">
+        اختبار المشاركة
+      </button>
+      <div class="test-result" id="shareResult"></div>
+
+      <button class="btn" onclick="clearCache()">
+        مسح الذاكرة المؤقتة
+      </button>
+      <div class="test-result" id="clearResult"></div>
+    </div>
+
+    <div class="section">
+      <h2>📊 معلومات الجهاز</h2>
+      <div class="code" id="deviceInfo"></div>
+    </div>
+
+    <div class="section">
+      <h2>💡 نصائح</h2>
+      <div class="info-box">
+        <strong>للحصول على أفضل نتيجة:</strong>
+        <ul style="margin-top: 10px; margin-right: 20px;">
+          <li>تأكد أن الموقع يعمل على HTTPS</li>
+          <li>تأكد من وجود ملف manifest.json</li>
+          <li>Service Worker يجب أن يكون مسجل</li>
+          <li>الأيقونات بالأحجام الصحيحة (192×192 و 512×512)</li>
+        </ul>
+      </div>
+    </div>
+
+    <a href="index.html" class="back-link">← العودة للصفحة الرئيسية</a>
+  </div>
+
+  <script>
+    // Check Manifest
+    fetch('manifest.json')
+      .then(response => {
+        const status = document.getElementById('manifestStatus');
+        if (response.ok) {
+          status.textContent = '✓ متوفر';
+          status.className = 'status-value success';
+        } else {
+          status.textContent = '✗ غير موجود';
+          status.className = 'status-value error';
+        }
+      })
+      .catch(() => {
+        const status = document.getElementById('manifestStatus');
+        status.textContent = '✗ خطأ';
+        status.className = 'status-value error';
+      });
+
+    // Check Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        const status = document.getElementById('swStatus');
+        if (registrations.length > 0) {
+          status.textContent = '✓ مسجل';
+          status.className = 'status-value success';
+        } else {
+          status.textContent = '✗ غير مسجل';
+          status.className = 'status-value warning';
+        }
+      });
+    } else {
+      const status = document.getElementById('swStatus');
+      status.textContent = '✗ غير مدعوم';
+      status.className = 'status-value error';
+    }
+
+    // Check if installable
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      deferredPrompt = e;
+      const status = document.getElementById('installableStatus');
+      status.textContent = '✓ نعم';
+      status.className = 'status-value success';
+    });
+
+    setTimeout(() => {
+      const status = document.getElementById('installableStatus');
+      if (!deferredPrompt) {
+        status.textContent = '✗ لا / مثبت بالفعل';
+        status.className = 'status-value warning';
+      }
+    }, 2000);
+
+    // Check HTTPS
+    const httpsStatus = document.getElementById('httpsStatus');
+    if (window.location.protocol === 'https:') {
+      httpsStatus.textContent = '✓ نعم';
+      httpsStatus.className = 'status-value success';
+    } else {
+      httpsStatus.textContent = '✗ لا';
+      httpsStatus.className = 'status-value error';
+    }
+
+    // Check Offline Support
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then(() => {
+        const status = document.getElementById('offlineStatus');
+        status.textContent = '✓ مفعّل';
+        status.className = 'status-value success';
+      });
+    }
+
+    // Test Notifications
+    async function testNotifications() {
+      const result = document.getElementById('notifResult');
+      result.classList.add('show');
+      
+      if (!('Notification' in window)) {
+        result.style.background = 'rgba(244, 67, 54, 0.2)';
+        result.textContent = '✗ الإشعارات غير مدعومة في هذا المتصفح';
+        return;
+      }
+
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        new Notification('أوبرا كافيه', {
+          body: 'الإشعارات تعمل بنجاح! 🎉',
+          icon: 'icon-192.png'
+        });
+        result.style.background = 'rgba(76, 175, 80, 0.2)';
+        result.textContent = '✓ تم إرسال إشعار تجريبي';
+      } else {
+        result.style.background = 'rgba(255, 152, 0, 0.2)';
+        result.textContent = '⚠ يجب السماح بالإشعارات أولاً';
+      }
+    }
+
+    // Test Cache
+    async function testCache() {
+      const result = document.getElementById('cacheResult');
+      result.classList.add('show');
+
+      if ('caches' in window) {
+        const cacheNames = await caches.keys();
+        result.style.background = 'rgba(76, 175, 80, 0.2)';
+        result.innerHTML = `✓ الذاكرة المؤقتة تعمل<br>عدد الـ Caches: ${cacheNames.length}<br>الأسماء: ${cacheNames.join(', ')}`;
+      } else {
+        result.style.background = 'rgba(244, 67, 54, 0.2)';
+        result.textContent = '✗ التخزين المؤقت غير مدعوم';
+      }
+    }
+
+    // Test Share
+    async function testShare() {
+      const result = document.getElementById('shareResult');
+      result.classList.add('show');
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'أوبرا كافيه',
+            text: 'تحقق من هذا التطبيق الرائع!',
+            url: window.location.href
+          });
+          result.style.background = 'rgba(76, 175, 80, 0.2)';
+          result.textContent = '✓ تمت المشاركة بنجاح';
+        } catch (err) {
+          result.style.background = 'rgba(255, 152, 0, 0.2)';
+          result.textContent = '⚠ تم إلغاء المشاركة';
+        }
+      } else {
+        result.style.background = 'rgba(244, 67, 54, 0.2)';
+        result.textContent = '✗ المشاركة غير مدعومة في هذا المتصفح';
+      }
+    }
+
+    // Clear Cache
+    async function clearCache() {
+      const result = document.getElementById('clearResult');
+      result.classList.add('show');
+
+      if ('caches' in window) {
+        const cacheNames = await caches.keys();
+        await Promise.all(cacheNames.map(name => caches.delete(name)));
+        
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.map(reg => reg.unregister()));
+        }
+
+        result.style.background = 'rgba(76, 175, 80, 0.2)';
+        result.textContent = '✓ تم مسح جميع البيانات المؤقتة. أعد تحميل الصفحة.';
+        
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      } else {
+        result.style.background = 'rgba(244, 67, 54, 0.2)';
+        result.textContent = '✗ لا يمكن مسح الذاكرة المؤقتة';
+      }
+    }
+
+    // Device Info
+    const deviceInfo = document.getElementById('deviceInfo');
+    deviceInfo.innerHTML = `
+المتصفح: ${navigator.userAgent}
+اللغة: ${navigator.language}
+Online: ${navigator.onLine}
+نوع الاتصال: ${navigator.connection ? navigator.connection.effectiveType : 'غير متاح'}
+الشاشة: ${screen.width}×${screen.height}
+    `.trim();
+  </script>
+</body>
+</html>

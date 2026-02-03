@@ -1,0 +1,50 @@
+{
+  "name": "منطقة الألعاب - أوبرا كافيه",
+  "short_name": "أوبرا كافيه",
+  "description": "منطقة الألعاب - أوبرا كافيه - مرح للجميع",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1cb5e0",
+  "theme_color": "#1cb5e0",
+  "orientation": "portrait-primary",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot.png",
+      "sizes": "540x720",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["entertainment", "games", "lifestyle"],
+  "shortcuts": [
+    {
+      "name": "الاستضافة",
+      "short_name": "استضافة",
+      "description": "الذهاب لقسم الاستضافة",
+      "url": "/am.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "الملاهي",
+      "short_name": "ملاهي",
+      "description": "الذهاب لقسم الملاهي",
+      "url": "/pm.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
