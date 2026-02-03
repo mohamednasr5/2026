@@ -5,47 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>منطقة الألعاب - أوبرا كافيه 🎈🎪</title>
   
-  <!-- استيراد خطوط عربية عصرية -->
+  <!-- استيراد الخطوط -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
   
-  <!-- مكتبة Particles.js للخلفية -->
+  <!-- مكتبة Particles.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
   
-  <!-- مكتبة VanillaTilt لتأثير الميل ثلاثي الأبعاد -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
-  
   <style>
-    /* المتغيرات الأساسية للألوان */
     :root {
-      --primary-gradient: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 99%, #FECFEF 100%);
-      --secondary-gradient: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
-      --glass-bg: rgba(255, 255, 255, 0.15);
-      --glass-border: rgba(255, 255, 255, 0.4);
-      --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
-      --text-color: #ffffff;
-      --accent-color: #ffe66d;
-      --btn-gradient: linear-gradient(45deg, #ffffff, #ffe066);
+      --primary-bg: linear-gradient(-45deg, #1cb5e0, #000046, #e73c7e, #23d5ab);
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.3);
+      --text-glow: 0 0 20px rgba(255, 255, 255, 0.5);
     }
 
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent; /* إزالة لون النقر الأزرق في الموبايل */
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
       font-family: 'Cairo', sans-serif;
-      color: var(--text-color);
-      min-height: 100vh;
-      overflow-x: hidden;
-      /* خلفية متدرجة متحركة */
-      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      color: #fff;
+      height: 100vh;
+      overflow: hidden; /* منع التمرير في الـ body */
+      background: var(--primary-bg);
       background-size: 400% 400%;
       animation: gradientBG 15s ease infinite;
       display: flex;
       flex-direction: column;
-      position: relative;
     }
 
     @keyframes gradientBG {
@@ -54,324 +44,270 @@
       100% { background-position: 0% 50%; }
     }
 
-    /* خلفية الجسيمات */
+    /* الخلفية الثابتة */
     #particles-js {
-      position: absolute;
-      width: 100%;
-      height: 100%;
+      position: fixed;
       top: 0;
       left: 0;
+      width: 100%;
+      height: 100%;
       z-index: 0;
-      pointer-events: none; /* يسمح بالضغط على العناصر خلفه */
+      pointer-events: none;
     }
 
-    /* الحاوية الرئيسية */
-    .container {
+    /* الحاوية التي تحتوي المحتوى وتسمح بالتمرير إذا لزم الأمر */
+    .scroll-container {
       position: relative;
       z-index: 10;
       flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
+      justify-content: center; /* توسيط رأسي */
+      align-items: center; /* توسيط أفقي */
+      overflow-y: auto;
       padding: 20px;
       width: 100%;
       max-width: 1200px;
       margin: 0 auto;
     }
 
-    /* تنسيق العنوان */
+    /* إخفاء شريط التمرير */
+    .scroll-container::-webkit-scrollbar { width: 0px; background: transparent; }
+
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      padding-bottom: 40px;
+    }
+
+    /* العناوين والانيميشن */
     header {
+      text-align: center;
       margin-bottom: 3rem;
-      animation: fadeInDown 1s ease-out;
+      animation: fadeInDown 1s ease-out forwards;
     }
 
     h1 {
-      font-size: clamp(2.5rem, 6vw, 4.5rem); /* حجم خط متجاوب */
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
       font-weight: 900;
       margin-bottom: 0.5rem;
-      line-height: 1.2;
-      text-shadow: 0 4px 15px rgba(0,0,0,0.2);
-      /* نص متدرج */
-      background: linear-gradient(to right, #fff, #ffe066, #fff);
+      line-height: 1.1;
+      background: linear-gradient(to bottom, #fff, #ffe066);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      background-clip: text;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
     }
 
     .subtitle {
       font-family: 'Tajawal', sans-serif;
-      font-size: clamp(1rem, 2.5vw, 1.5rem);
-      margin-top: 10px;
-      background: rgba(0, 0, 0, 0.2);
-      padding: 8px 20px;
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 10px 25px;
       border-radius: 50px;
-      display: inline-block;
+      border: 1px solid rgba(255,255,255,0.2);
       backdrop-filter: blur(5px);
+      display: inline-block;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
-    /* شبكة الكروت */
+    /* الكروت */
     .cards-wrapper {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 40px;
+      gap: 30px;
       width: 100%;
-      animation: fadeInUp 1s ease-out 0.3s backwards;
     }
 
     .card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
-      box-shadow: var(--glass-shadow);
-      padding: 40px 20px;
+      border-radius: 24px;
+      padding: 35px 20px;
       width: 100%;
-      max-width: 340px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      max-width: 320px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s;
       position: relative;
       overflow: hidden;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out forwards;
     }
 
-    /* تأثيرات التحويم للشاشات الكبيرة فقط */
-    @media (min-width: 769px) {
-      .card:hover {
-        box-shadow: 0 15px 45px rgba(0,0,0,0.25);
-        z-index: 5;
-      }
+    .card:nth-child(1) { animation-delay: 0.2s; }
+    .card:nth-child(2) { animation-delay: 0.4s; }
+
+    .card:hover {
+      transform: translateY(-10px);
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
     }
 
-    .card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-      transform: rotate(45deg);
-      pointer-events: none;
-    }
-
-    .card .icon {
+    /* الأيقونة المتحركة */
+    .icon-wrapper {
       width: 100px;
       height: 100px;
-      margin-bottom: 20px;
+      margin: 0 auto 20px;
+      position: relative;
+    }
+    
+    .icon-wrapper svg {
+      width: 100%;
+      height: 100%;
       filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
-      transition: transform 0.3s ease;
+      animation: float 3s ease-in-out infinite;
     }
 
-    .card:hover .icon {
-      transform: scale(1.1) rotate(5deg);
-    }
+    .card h2 { font-size: 1.8rem; margin-bottom: 10px; text-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+    .card p { font-size: 1rem; color: rgba(255,255,255,0.85); margin-bottom: 25px; line-height: 1.6; }
 
-    .card h2 {
-      font-size: 1.8rem;
-      margin-bottom: 20px;
-      color: #fff;
-    }
-
-    .card p {
-      font-size: 1rem;
-      opacity: 0.9;
-      margin-bottom: 25px;
-      line-height: 1.6;
-    }
-
-    .enter-btn {
-      padding: 14px 40px;
+    /* الأزرار */
+    .btn {
+      display: inline-block;
+      padding: 14px 45px;
       font-size: 1.1rem;
       font-weight: 800;
-      color: #d32f2f;
-      background: var(--btn-gradient);
+      color: #c62828;
+      background: linear-gradient(135deg, #fff 0%, #ffe066 100%);
       border: none;
       border-radius: 50px;
-      cursor: pointer;
       text-decoration: none;
-      box-shadow: 0 4px 15px rgba(255, 230, 102, 0.4);
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      box-shadow: 0 5px 20px rgba(255, 230, 102, 0.4);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
+    .btn:hover { transform: scale(1.05); box-shadow: 0 10px 30px rgba(255, 230, 102, 0.6); }
+    .btn:active { transform: scale(0.95); }
 
-    .enter-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(255, 230, 102, 0.6);
-      background: #fff;
-    }
-
-    .enter-btn:active {
-      transform: scale(0.95);
-    }
-
-    /* التذييل */
-    .footer {
-      margin-top: auto;
+    /* الفوتر المحسن */
+    footer {
+      position: relative;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.5);
       padding: 20px;
-      font-size: 0.9rem;
-      opacity: 0.9;
       text-align: center;
-      background: rgba(0, 0, 0, 0.2);
-      width: 100%;
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(10px);
       border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .footer p { margin-bottom: 5px; }
-    .footer a { color: var(--accent-color); text-decoration: none; font-weight: bold; transition: color 0.3s; }
-    .footer a:hover { color: #fff; text-decoration: underline; }
-
-    /* حركات الظهور */
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-30px); }
-      to { opacity: 1; transform: translateY(0); }
+    footer p { margin-bottom: 5px; font-size: 0.95rem; }
+    
+    .fb-link {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 20px;
+      background: rgba(24, 119, 242, 0.2);
+      border: 1px solid #1877f2;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      transition: 0.3s;
     }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* تحسينات للجوال */
-    @media (max-width: 768px) {
-      .container { padding: 15px; justify-content: flex-start; padding-top: 60px; padding-bottom: 20px; }
-      .cards-wrapper { gap: 20px; }
-      .card { padding: 30px 15px; max-width: 100%; }
-      h1 { font-size: 2.8rem; }
-      /* تعطيل التأثيرات ثلاثية الأبعاد على الموبايل للتجربة الأفضل */
-      .card { transform: none !important; }
+    
+    .fb-link:hover {
+      background: #1877f2;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(24, 119, 242, 0.4);
     }
 
+    /* الحركات */
+    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+
+    @media (max-height: 600px) {
+      .scroll-container { justify-content: flex-start; padding-top: 20px; }
+      header { margin-bottom: 20px; }
+      h1 { font-size: 2rem; }
+    }
   </style>
 </head>
 <body>
 
 <div id="particles-js"></div>
 
-<div class="container">
-  <header>
-    <h1>منطقة الألعاب 🎈🎪</h1>
-    <p class="subtitle">أوبرا كافيه – حيث يصنع الأطفال ذكرياتهم</p>
-  </header>
+<div class="scroll-container">
+  <div class="main-content">
+    <header>
+      <h1>منطقة الألعاب 🎈🎪</h1>
+      <div class="subtitle">أوبرا كافيه – مرح للجميع</div>
+    </header>
 
-  <div class="cards-wrapper">
-    <!-- كارت 1: الاستضافة -->
-    <div class="card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-scale="1.03">
-      <!-- أيقونة SVG محسنة -->
-      <svg class="icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="40" r="30" fill="#ff6b6b"/>
-        <path d="M50 70 Q50 85 50 90" stroke="#fff" stroke-width="3" fill="none"/>
-        <circle cx="40" cy="50" r="5" fill="rgba(255,255,255,0.3)"/>
-        <rect x="35" y="90" width="30" height="5" rx="2" fill="#fff"/>
-      </svg>
-      <h2>الاستضافة</h2>
-      <p>احتفلات مميزة، كراسي مريحة، وجبات خفيفة وأجواء عائلية دافئة.</p>
-      <a href="https://mohamednasr5.github.io/2026/am.html" target="_blank" class="enter-btn">
-        دخول القسم
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
-    
-    <!-- كارت 2: الملاهي -->
-    <div class="card" data-tilt data-tilt-max="15" data-tilt-speed="400" data-tilt-scale="1.03">
-      <!-- أيقونة SVG محسنة -->
-      <svg class="icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="50,10 90,90 10,90" fill="#ffe66d" stroke="#fff" stroke-width="2"/>
-        <circle cx="50" cy="60" r="15" fill="#fff" opacity="0.4"/>
-        <rect x="20" y="90" width="60" height="4" rx="2" fill="#4ecdc4"/>
-        <circle cx="20" cy="92" r="8" fill="#ff9a9e"/>
-        <circle cx="80" cy="92" r="8" fill="#ff9a9e"/>
-      </svg>
-      <h2>الملاهي والألعاب</h2>
-      <p>عالم من المرح والتشويق مع أحدث الألعاب الإلكترونية وأرجوحات الحديقة.</p>
-      <a href="https://mohamednasr5.github.io/2026/pm.html" target="_blank" class="enter-btn">
-        دخول القسم
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
+    <div class="cards-wrapper">
+      <div class="card">
+        <div class="icon-wrapper">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="40" r="30" fill="#ff6b6b"/>
+            <path d="M50 70 Q50 85 50 90" stroke="#fff" stroke-width="3" fill="none"/>
+            <circle cx="40" cy="50" r="5" fill="rgba(255,255,255,0.3)"/>
+            <rect x="35" y="90" width="30" height="5" rx="2" fill="#fff"/>
+          </svg>
+        </div>
+        <h2>الاستضافة</h2>
+        <p>منطقة استضافة راحة ومميزة مع خدمة متميزة وأجواء عائلية.</p>
+        <a href="https://mohamednasr5.github.io/2026/am.html" target="_blank" class="btn">الدخول الآن</a>
+      </div>
+      
+      <div class="card">
+        <div class="icon-wrapper">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="50,10 90,90 10,90" fill="#ffe66d" stroke="#fff" stroke-width="2"/>
+            <circle cx="50" cy="60" r="15" fill="#fff" opacity="0.4"/>
+            <rect x="20" y="90" width="60" height="4" rx="2" fill="#4ecdc4"/>
+            <circle cx="20" cy="92" r="8" fill="#ff9a9e"/>
+            <circle cx="80" cy="92" r="8" fill="#ff9a9e"/>
+          </svg>
+        </div>
+        <h2>الملاهي</h2>
+        <p>ألعاب ترفيهية مبهرة وأجهزة حديثة لتوفير أقصى درجات المتعة.</p>
+        <a href="https://mohamednasr5.github.io/2026/pm.html" target="_blank" class="btn">الدخول الآن</a>
+      </div>
     </div>
   </div>
 </div>
 
-<footer class="footer">
-  <p>برمجة وتطوير بكل حب ❤️</p>
-  <p>المهندس محمد حماد</p>
-  <p style="direction: ltr; margin-top:5px;">01279934735</p>
-  <a href="https://www.facebook.com/en.mohamed.nasr" target="_blank">facebook.com/en.mohamed.nasr</a>
+<footer>
+  <p>برمجة وتطوير: المهندس محمد حماد ❤️</p>
+  <p style="direction: ltr; margin-top: 5px; font-size: 0.9rem;">01279934735</p>
+  <!-- رابط الفيسبوك المضاف هنا -->
+  <a href="https://www.facebook.com/en.mohamed.nasr" target="_blank" class="fb-link">
+    تواصل معنا على فيسبوك
+  </a>
 </footer>
 
-<!-- ملفات الصوت (أضع روابط بديلة شغالة كمثال) -->
 <audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
 
 <script>
-// إعدادات Particles.js محسنة
 document.addEventListener("DOMContentLoaded", function() {
-  const isMobile = window.innerWidth <= 768;
-  
   particlesJS("particles-js", {
     "particles": {
-      "number": { 
-        "value": isMobile ? 30 : 80, // تقليل العدد في الموبايل للأداء
-        "density": { "enable": true, "value_area": 800 } 
-      },
-      "color": { "value": ["#ffffff", "#ffe66d", "#ff6b6b"] },
+      "number": { "value": 40, "density": { "enable": true, "value_area": 800 } },
+      "color": { "value": ["#ffffff", "#ffe06d", "#ff6b6b"] },
       "shape": { "type": "circle" },
       "opacity": { "value": 0.5, "random": true },
       "size": { "value": 4, "random": true },
-      "line_linked": { "enable": false }, // إلغاء الخطوط لجعلها أنظف
-      "move": {
-        "enable": true,
-        "speed": isMobile ? 1 : 2,
-        "direction": "none",
-        "random": false,
-        "straight": false,
-        "out_mode": "out",
-        "bounce": false
-      }
+      "line_linked": { "enable": false },
+      "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "out_mode": "out" }
     },
     "interactivity": {
       "detect_on": "canvas",
-      "events": {
-        "onhover": { "enable": !isMobile, "mode": "bubble" }, // تعطيل الهوفر في الموبايل
-        "onclick": { "enable": true, "mode": "repulse" },
-        "resize": true
-      },
-      "modes": {
-        "bubble": { "distance": 200, "size": 6, "duration": 2, "opacity": 0.8 },
-        "repulse": { "distance": 100, "duration": 0.4 }
-      }
+      "events": { "onhover": { "enable": false }, "onclick": { "enable": true, "mode": "repulse" } },
+      "modes": { "repulse": { "distance": 100, "duration": 0.4 } }
     },
     "retina_detect": true
   });
 
-  // تفعيل VanillaTilt فقط على الشاشات الكبيرة
-  if (!isMobile) {
-    VanillaTilt.init(document.querySelectorAll(".card"), {
-      max: 15,
-      speed: 400,
-      scale: 1.03,
-      glare: true,
-      "max-glare": 0.2
-    });
-  }
-
-  // تشغيل الصوت عند الضغط
   const sound = document.getElementById('clickSound');
-  document.querySelectorAll('.enter-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      // تشغيل الصوت بسرعة وبشكل خفيف
+  document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('click', () => {
       if(sound) {
         sound.currentTime = 0;
-        sound.volume = 0.5;
-        sound.play().catch(error => {
-          console.log("Audio play failed (browser policy):", error);
-        });
+        sound.play().catch(e => console.log('Audio error', e));
       }
     });
   });
