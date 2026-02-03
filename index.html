@@ -3,31 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <meta name="theme-color" content="#1cb5e0"/>
+  <meta name="description" content="منطقة الألعاب - أوبرا كافيه - مرح للجميع"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="أوبرا كافيه">
+  
   <title>منطقة الألعاب - أوبرا كافيه 🎈🎪</title>
-
+  
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- Icons -->
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
-
+  
   <!-- Particles -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
-
+  
   <style>
     :root {
       --primary-bg: linear-gradient(-45deg, #1cb5e0, #000046, #e73c7e, #23d5ab);
       --glass-border: rgba(255,255,255,0.3);
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
     }
-
     html, body {
       min-height: 100svh;
     }
-
     body {
       font-family: 'Cairo', sans-serif;
       color: #fff;
@@ -39,20 +50,17 @@
       display: flex;
       flex-direction: column;
     }
-
     @keyframes gradientBG {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-
     #particles-js {
       position: fixed;
       inset: 0;
       z-index: 0;
       pointer-events: none;
     }
-
     .scroll-container {
       position: relative;
       z-index: 10;
@@ -63,7 +71,6 @@
       padding: 20px;
       overflow-y: auto;
     }
-
     .main-content {
       width: 100%;
       max-width: 1200px;
@@ -71,21 +78,68 @@
       flex-direction: column;
       align-items: center;
     }
-
+    
+    /* Install Button */
+    .install-container {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      display: none;
+      animation: slideUp 0.5s ease forwards;
+    }
+    .install-container.show {
+      display: block;
+    }
+    .install-btn {
+      background: linear-gradient(135deg, #4CAF50, #45a049);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Cairo', sans-serif;
+      transition: transform 0.2s;
+    }
+    .install-btn:active {
+      transform: scale(0.95);
+    }
+    .install-btn svg {
+      width: 24px;
+      height: 24px;
+    }
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+    
     header {
       text-align: center;
       margin-bottom: 2.5rem;
       animation: fadeInDown 1s ease forwards;
     }
-
     h1 {
       font-size: clamp(2.2rem, 6vw, 4.5rem);
       font-weight: 900;
       background: linear-gradient(to bottom, #fff, #ffe066);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
     }
-
     .subtitle {
       margin-top: 10px;
       font-family: 'Tajawal', sans-serif;
@@ -94,8 +148,8 @@
       border-radius: 30px;
       background: rgba(0,0,0,0.35);
       backdrop-filter: blur(5px);
+      display: inline-block;
     }
-
     .cards-wrapper {
       display: flex;
       flex-wrap: wrap;
@@ -103,7 +157,6 @@
       justify-content: center;
       width: 100%;
     }
-
     .card {
       width: 100%;
       max-width: 320px;
@@ -114,32 +167,34 @@
       border: 1px solid var(--glass-border);
       backdrop-filter: blur(16px);
       animation: fadeInUp 0.8s ease forwards;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
     .icon-wrapper {
       width: 90px;
       height: 90px;
       margin: 0 auto 18px;
     }
-
     .icon-wrapper svg {
       width: 100%;
       height: 100%;
       animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
     }
-
     .card h2 {
       font-size: 1.6rem;
       margin-bottom: 8px;
+      font-weight: 800;
     }
-
     .card p {
       font-size: 0.95rem;
       line-height: 1.6;
       margin-bottom: 20px;
       color: rgba(255,255,255,0.9);
     }
-
     .btn {
       display: inline-flex;
       align-items: center;
@@ -153,20 +208,24 @@
       border-radius: 50px;
       text-decoration: none;
       touch-action: manipulation;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 15px rgba(255, 230, 102, 0.3);
     }
-
+    .btn:active {
+      transform: scale(0.95);
+    }
     footer {
       background: rgba(0,0,0,0.55);
       padding: 18px;
       text-align: center;
       backdrop-filter: blur(8px);
+      position: relative;
+      z-index: 100;
     }
-
     footer p {
       font-size: 0.9rem;
       margin-bottom: 6px;
     }
-
     .fb-link {
       display: inline-block;
       padding: 7px 18px;
@@ -176,86 +235,147 @@
       color: #fff;
       font-size: 0.85rem;
       text-decoration: none;
+      transition: background 0.3s;
     }
-
+    .fb-link:hover {
+      background: rgba(24,119,242,0.4);
+    }
+    
     @media (hover: none) {
-      .card:hover,
+      .card:hover {
+        transform: none;
+        box-shadow: none;
+      }
       .btn:hover {
         transform: none;
       }
     }
-
     @media (max-width: 480px) {
       .card p { font-size: 0.9rem; }
+      .install-btn {
+        font-size: 1rem;
+        padding: 12px 24px;
+      }
     }
-
     @keyframes fadeInDown {
       from { opacity: 0; transform: translateY(-20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
     @keyframes float {
       0%,100% { transform: translateY(0); }
       50% { transform: translateY(-8px); }
     }
   </style>
 </head>
-
 <body>
+
+<!-- Install Button -->
+<div class="install-container" id="installContainer">
+  <button class="install-btn" id="installBtn">
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+    </svg>
+    <span>تثبيت التطبيق</span>
+  </button>
+</div>
 
 <div id="particles-js"></div>
 
 <div class="scroll-container">
   <div class="main-content">
-
     <header>
       <h1>منطقة الألعاب 🎈🎪</h1>
       <div class="subtitle">أوبرا كافيه – مرح للجميع</div>
     </header>
-
+    
     <div class="cards-wrapper">
-
-      <div class="card">
+      <div class="card" style="animation-delay: 0.1s;">
         <div class="icon-wrapper">
           <svg viewBox="0 0 100 100">
             <circle cx="50" cy="40" r="30" fill="#ff6b6b"/>
+            <circle cx="50" cy="40" r="20" fill="#ff5252" opacity="0.5"/>
+            <circle cx="50" cy="40" r="10" fill="#fff" opacity="0.3"/>
           </svg>
         </div>
         <h2>الاستضافة</h2>
-        <p>منطقة استضافة مريحة بأجواء عائلية وخدمة راقية.</p>
+        <p>منطقة استضافة مريحة بأجواء عائلية وخدمة راقية تناسب جميع المناسبات.</p>
         <a class="btn" href="https://mohamednasr5.github.io/2026/am.html" target="_blank">الدخول الآن</a>
       </div>
-
-      <div class="card">
+      
+      <div class="card" style="animation-delay: 0.2s;">
         <div class="icon-wrapper">
           <svg viewBox="0 0 100 100">
             <polygon points="50,10 90,90 10,90" fill="#ffe66d"/>
+            <polygon points="50,25 75,75 25,75" fill="#ffd93d" opacity="0.6"/>
+            <circle cx="50" cy="50" r="8" fill="#fff" opacity="0.4"/>
           </svg>
         </div>
         <h2>الملاهي</h2>
-        <p>ألعاب حديثة ومبهرة لتجربة ترفيهية متكاملة.</p>
+        <p>ألعاب حديثة ومبهرة لتجربة ترفيهية متكاملة مع أحدث التقنيات.</p>
         <a class="btn" href="https://mohamednasr5.github.io/2026/pm.html" target="_blank">الدخول الآن</a>
       </div>
-
     </div>
-
   </div>
 </div>
 
 <footer>
   <p>برمجة وتطوير: المهندس محمد حماد ❤️</p>
   <p dir="ltr">01279934735</p>
-  <a class="fb-link" href="https://www.facebook.com/en.mohamed.nasr" target="_blank">تواصل معنا على فيسبوك</a>
+  <a class="fb-link" href="https://www.facebook.com/en.mohamed.nasr" target="_blank">
+    تواصل معنا على فيسبوك
+  </a>
 </footer>
 
 <audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
 
 <script>
+// PWA Installation
+let deferredPrompt;
+const installContainer = document.getElementById('installContainer');
+const installBtn = document.getElementById('installBtn');
+
+// Listen for beforeinstallprompt event
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installContainer.classList.add('show');
+});
+
+// Handle install button click
+installBtn.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  
+  if (outcome === 'accepted') {
+    console.log('تم قبول التثبيت');
+  }
+  
+  deferredPrompt = null;
+  installContainer.classList.remove('show');
+});
+
+// Hide install button after installation
+window.addEventListener('appinstalled', () => {
+  installContainer.classList.remove('show');
+  deferredPrompt = null;
+});
+
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(reg => console.log('Service Worker مسجل'))
+      .catch(err => console.log('خطأ في Service Worker:', err));
+  });
+}
+
+// Particles configuration
 const isMobile = window.innerWidth < 768;
 let soundEnabled = false;
 
@@ -265,19 +385,39 @@ document.body.addEventListener('touchstart', () => {
 
 particlesJS("particles-js", {
   particles: {
-    number: { value: isMobile ? 20 : 40 },
-    color: { value: ["#fff", "#ffe066", "#ff6b6b"] },
-    size: { value: isMobile ? 3 : 4 },
-    move: { speed: isMobile ? 1 : 2 }
+    number: { value: isMobile ? 30 : 50 },
+    color: { value: ["#fff", "#ffe066", "#ff6b6b", "#23d5ab"] },
+    shape: { type: ["circle", "triangle"] },
+    size: { 
+      value: isMobile ? 3 : 4,
+      random: true
+    },
+    move: { 
+      speed: isMobile ? 1.5 : 2.5,
+      direction: "none",
+      random: true,
+      straight: false,
+      out_mode: "out"
+    },
+    opacity: {
+      value: 0.6,
+      random: true
+    }
   },
   interactivity: {
     events: {
-      onclick: { enable: !isMobile, mode: "repulse" }
+      onclick: { enable: !isMobile, mode: "push" },
+      onhover: { enable: !isMobile, mode: "repulse" }
+    },
+    modes: {
+      push: { particles_nb: 3 },
+      repulse: { distance: 100, duration: 0.4 }
     }
   },
   retina_detect: true
 });
 
+// Sound effect on button click
 document.querySelectorAll('.btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const sound = document.getElementById('clickSound');
