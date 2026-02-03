@@ -2,21 +2,19 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
   <title>منطقة الألعاب - أوبرا كافيه 🎈🎪</title>
-  
-  <!-- استيراد الخطوط -->
+
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
-  
-  <!-- مكتبة Particles.js -->
+
+  <!-- Particles -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
-  
+
   <style>
     :root {
       --primary-bg: linear-gradient(-45deg, #1cb5e0, #000046, #e73c7e, #23d5ab);
-      --glass-bg: rgba(255, 255, 255, 0.1);
-      --glass-border: rgba(255, 255, 255, 0.3);
-      --text-glow: 0 0 20px rgba(255, 255, 255, 0.5);
+      --glass-border: rgba(255,255,255,0.3);
     }
 
     * {
@@ -26,14 +24,18 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    html, body {
+      min-height: 100svh;
+    }
+
     body {
       font-family: 'Cairo', sans-serif;
       color: #fff;
-      height: 100vh;
-      overflow: hidden; /* منع التمرير في الـ body */
       background: var(--primary-bg);
       background-size: 400% 400%;
       animation: gradientBG 15s ease infinite;
+      overflow-x: hidden;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
     }
@@ -44,272 +46,245 @@
       100% { background-position: 0% 50%; }
     }
 
-    /* الخلفية الثابتة */
     #particles-js {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       z-index: 0;
       pointer-events: none;
     }
 
-    /* الحاوية التي تحتوي المحتوى وتسمح بالتمرير إذا لزم الأمر */
     .scroll-container {
       position: relative;
       z-index: 10;
       flex: 1;
       display: flex;
-      flex-direction: column;
-      justify-content: center; /* توسيط رأسي */
-      align-items: center; /* توسيط أفقي */
-      overflow-y: auto;
+      justify-content: center;
+      align-items: center;
       padding: 20px;
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
+      overflow-y: auto;
     }
 
-    /* إخفاء شريط التمرير */
-    .scroll-container::-webkit-scrollbar { width: 0px; background: transparent; }
-
     .main-content {
+      width: 100%;
+      max-width: 1200px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 100%;
-      padding-bottom: 40px;
     }
 
-    /* العناوين والانيميشن */
     header {
       text-align: center;
-      margin-bottom: 3rem;
-      animation: fadeInDown 1s ease-out forwards;
+      margin-bottom: 2.5rem;
+      animation: fadeInDown 1s ease forwards;
     }
 
     h1 {
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-size: clamp(2.2rem, 6vw, 4.5rem);
       font-weight: 900;
-      margin-bottom: 0.5rem;
-      line-height: 1.1;
       background: linear-gradient(to bottom, #fff, #ffe066);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
     }
 
     .subtitle {
+      margin-top: 10px;
       font-family: 'Tajawal', sans-serif;
-      font-size: clamp(1rem, 2.5vw, 1.4rem);
-      background: rgba(0, 0, 0, 0.3);
-      padding: 10px 25px;
-      border-radius: 50px;
-      border: 1px solid rgba(255,255,255,0.2);
+      font-size: 1rem;
+      padding: 8px 18px;
+      border-radius: 30px;
+      background: rgba(0,0,0,0.35);
       backdrop-filter: blur(5px);
-      display: inline-block;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
-    /* الكروت */
     .cards-wrapper {
       display: flex;
       flex-wrap: wrap;
+      gap: 25px;
       justify-content: center;
-      gap: 30px;
       width: 100%;
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
-      border-radius: 24px;
-      padding: 35px 20px;
       width: 100%;
       max-width: 320px;
+      padding: 30px 20px;
       text-align: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s;
-      position: relative;
-      overflow: hidden;
-      opacity: 0;
-      animation: fadeInUp 0.8s ease-out forwards;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      animation: fadeInUp 0.8s ease forwards;
     }
 
-    .card:nth-child(1) { animation-delay: 0.2s; }
-    .card:nth-child(2) { animation-delay: 0.4s; }
-
-    .card:hover {
-      transform: translateY(-10px);
-      background: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-    }
-
-    /* الأيقونة المتحركة */
     .icon-wrapper {
-      width: 100px;
-      height: 100px;
-      margin: 0 auto 20px;
-      position: relative;
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 18px;
     }
-    
+
     .icon-wrapper svg {
       width: 100%;
       height: 100%;
-      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
       animation: float 3s ease-in-out infinite;
     }
 
-    .card h2 { font-size: 1.8rem; margin-bottom: 10px; text-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-    .card p { font-size: 1rem; color: rgba(255,255,255,0.85); margin-bottom: 25px; line-height: 1.6; }
+    .card h2 {
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+    }
 
-    /* الأزرار */
+    .card p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      color: rgba(255,255,255,0.9);
+    }
+
     .btn {
-      display: inline-block;
-      padding: 14px 45px;
-      font-size: 1.1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 40px;
+      font-size: 1.05rem;
       font-weight: 800;
       color: #c62828;
-      background: linear-gradient(135deg, #fff 0%, #ffe066 100%);
-      border: none;
+      background: linear-gradient(135deg, #fff, #ffe066);
       border-radius: 50px;
       text-decoration: none;
-      box-shadow: 0 5px 20px rgba(255, 230, 102, 0.4);
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      touch-action: manipulation;
     }
-    .btn:hover { transform: scale(1.05); box-shadow: 0 10px 30px rgba(255, 230, 102, 0.6); }
-    .btn:active { transform: scale(0.95); }
 
-    /* الفوتر المحسن */
     footer {
-      position: relative;
-      z-index: 10;
-      background: rgba(0, 0, 0, 0.5);
-      padding: 20px;
+      background: rgba(0,0,0,0.55);
+      padding: 18px;
       text-align: center;
-      backdrop-filter: blur(10px);
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
     }
 
-    footer p { margin-bottom: 5px; font-size: 0.95rem; }
-    
+    footer p {
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
     .fb-link {
       display: inline-block;
-      margin-top: 10px;
-      padding: 8px 20px;
-      background: rgba(24, 119, 242, 0.2);
-      border: 1px solid #1877f2;
-      color: #fff;
-      text-decoration: none;
+      padding: 7px 18px;
       border-radius: 20px;
-      font-weight: bold;
-      font-size: 0.9rem;
-      transition: 0.3s;
-    }
-    
-    .fb-link:hover {
-      background: #1877f2;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(24, 119, 242, 0.4);
+      border: 1px solid #1877f2;
+      background: rgba(24,119,242,0.2);
+      color: #fff;
+      font-size: 0.85rem;
+      text-decoration: none;
     }
 
-    /* الحركات */
-    @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+    @media (hover: none) {
+      .card:hover,
+      .btn:hover {
+        transform: none;
+      }
+    }
 
-    @media (max-height: 600px) {
-      .scroll-container { justify-content: flex-start; padding-top: 20px; }
-      header { margin-bottom: 20px; }
-      h1 { font-size: 2rem; }
+    @media (max-width: 480px) {
+      .card p { font-size: 0.9rem; }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
     }
   </style>
 </head>
+
 <body>
 
 <div id="particles-js"></div>
 
 <div class="scroll-container">
   <div class="main-content">
+
     <header>
       <h1>منطقة الألعاب 🎈🎪</h1>
       <div class="subtitle">أوبرا كافيه – مرح للجميع</div>
     </header>
 
     <div class="cards-wrapper">
+
       <div class="card">
         <div class="icon-wrapper">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <svg viewBox="0 0 100 100">
             <circle cx="50" cy="40" r="30" fill="#ff6b6b"/>
-            <path d="M50 70 Q50 85 50 90" stroke="#fff" stroke-width="3" fill="none"/>
-            <circle cx="40" cy="50" r="5" fill="rgba(255,255,255,0.3)"/>
-            <rect x="35" y="90" width="30" height="5" rx="2" fill="#fff"/>
           </svg>
         </div>
         <h2>الاستضافة</h2>
-        <p>منطقة استضافة راحة ومميزة مع خدمة متميزة وأجواء عائلية.</p>
-        <a href="https://mohamednasr5.github.io/2026/am.html" target="_blank" class="btn">الدخول الآن</a>
+        <p>منطقة استضافة مريحة بأجواء عائلية وخدمة راقية.</p>
+        <a class="btn" href="https://mohamednasr5.github.io/2026/am.html" target="_blank">الدخول الآن</a>
       </div>
-      
+
       <div class="card">
         <div class="icon-wrapper">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="50,10 90,90 10,90" fill="#ffe66d" stroke="#fff" stroke-width="2"/>
-            <circle cx="50" cy="60" r="15" fill="#fff" opacity="0.4"/>
-            <rect x="20" y="90" width="60" height="4" rx="2" fill="#4ecdc4"/>
-            <circle cx="20" cy="92" r="8" fill="#ff9a9e"/>
-            <circle cx="80" cy="92" r="8" fill="#ff9a9e"/>
+          <svg viewBox="0 0 100 100">
+            <polygon points="50,10 90,90 10,90" fill="#ffe66d"/>
           </svg>
         </div>
         <h2>الملاهي</h2>
-        <p>ألعاب ترفيهية مبهرة وأجهزة حديثة لتوفير أقصى درجات المتعة.</p>
-        <a href="https://mohamednasr5.github.io/2026/pm.html" target="_blank" class="btn">الدخول الآن</a>
+        <p>ألعاب حديثة ومبهرة لتجربة ترفيهية متكاملة.</p>
+        <a class="btn" href="https://mohamednasr5.github.io/2026/pm.html" target="_blank">الدخول الآن</a>
       </div>
+
     </div>
+
   </div>
 </div>
 
 <footer>
   <p>برمجة وتطوير: المهندس محمد حماد ❤️</p>
-  <p style="direction: ltr; margin-top: 5px; font-size: 0.9rem;">01279934735</p>
-  <!-- رابط الفيسبوك المضاف هنا -->
-  <a href="https://www.facebook.com/en.mohamed.nasr" target="_blank" class="fb-link">
-    تواصل معنا على فيسبوك
-  </a>
+  <p dir="ltr">01279934735</p>
+  <a class="fb-link" href="https://www.facebook.com/en.mohamed.nasr" target="_blank">تواصل معنا على فيسبوك</a>
 </footer>
 
 <audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  particlesJS("particles-js", {
-    "particles": {
-      "number": { "value": 40, "density": { "enable": true, "value_area": 800 } },
-      "color": { "value": ["#ffffff", "#ffe06d", "#ff6b6b"] },
-      "shape": { "type": "circle" },
-      "opacity": { "value": 0.5, "random": true },
-      "size": { "value": 4, "random": true },
-      "line_linked": { "enable": false },
-      "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "out_mode": "out" }
-    },
-    "interactivity": {
-      "detect_on": "canvas",
-      "events": { "onhover": { "enable": false }, "onclick": { "enable": true, "mode": "repulse" } },
-      "modes": { "repulse": { "distance": 100, "duration": 0.4 } }
-    },
-    "retina_detect": true
-  });
+const isMobile = window.innerWidth < 768;
+let soundEnabled = false;
 
-  const sound = document.getElementById('clickSound');
-  document.querySelectorAll('.btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if(sound) {
-        sound.currentTime = 0;
-        sound.play().catch(e => console.log('Audio error', e));
-      }
-    });
+document.body.addEventListener('touchstart', () => {
+  soundEnabled = true;
+}, { once: true });
+
+particlesJS("particles-js", {
+  particles: {
+    number: { value: isMobile ? 20 : 40 },
+    color: { value: ["#fff", "#ffe066", "#ff6b6b"] },
+    size: { value: isMobile ? 3 : 4 },
+    move: { speed: isMobile ? 1 : 2 }
+  },
+  interactivity: {
+    events: {
+      onclick: { enable: !isMobile, mode: "repulse" }
+    }
+  },
+  retina_detect: true
+});
+
+document.querySelectorAll('.btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const sound = document.getElementById('clickSound');
+    if (sound && soundEnabled) {
+      sound.currentTime = 0;
+      sound.play().catch(()=>{});
+    }
   });
 });
 </script>
