@@ -132,7 +132,26 @@
 
         /* --- Modals --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 20px; border-radius: 16px; width: 95%; max-width: 450px; }
+        .modal-content { background: white; padding: 20px; border-radius: 16px; width: 95%; max-width: 450px; position: relative; }
+        
+        /* --- Receipt Styles (New) --- */
+        .receipt-card {
+            background: #fff;
+            border: 1px dashed #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: relative;
+            background-image: radial-gradient(circle at 0 0, transparent 0, transparent 0), radial-gradient(circle at 100% 0, transparent 0, transparent 0);
+        }
+        .receipt-header { text-align: center; border-bottom: 2px dashed #eee; padding-bottom: 15px; margin-bottom: 15px; }
+        .receipt-logo { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 5px; }
+        .receipt-welcome { font-size: 0.9rem; color: #555; margin-bottom: 5px; }
+        .receipt-title { font-weight: 800; font-size: 1.2rem; color: var(--primary); }
+        .receipt-details { margin-bottom: 15px; font-size: 0.95rem; }
+        .receipt-row { display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dotted #f0f0f0; padding-bottom: 2px; }
+        .receipt-row.total-row { border-top: 2px solid #333; border-bottom: none; padding-top: 10px; margin-top: 10px; font-weight: bold; font-size: 1.2rem; }
+        .receipt-footer { text-align: center; margin-top: 20px; font-size: 0.85rem; color: #777; border-top: 2px dashed #eee; padding-top: 10px; }
         
         /* --- Parent View Specifics --- */
         .parent-header-card { background: white; border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 20px; }
@@ -331,17 +350,52 @@
     </div>
 
     <div id="checkout-modal" class="modal">
-        <div class="modal-content" style="text-align:center;">
-            <h2 style="color:var(--danger); margin-bottom:10px;">إنهاء الجلسة؟</h2>
-            <div style="background:#f9f9f9; padding:10px; border-radius:10px; text-align:right; font-size:0.9rem; margin-bottom:10px;" id="checkout-summary"></div>
-            <div style="font-size:2rem; font-weight:bold; color:var(--secondary); margin-bottom:20px;" id="checkout-total">0 ج.م</div>
-            <div style="display:flex; gap:10px;">
-                <button class="btn btn-danger" style="flex:1;" onclick="confirmCheckout()">تأكيد الخروج</button>
-                <button class="btn btn-outline" style="flex:1;" onclick="closeModal()">إلغاء</button>
+        <div class="modal-content" style="padding:15px;">
+            <div class="receipt-card" id="receipt-print-area">
+                <div class="receipt-header">
+                    <img src="https://raw.githubusercontent.com/mohamednasr5/opera/main/01.png" class="receipt-logo">
+                    <div class="receipt-welcome">لقد استمتع طفلكم باللعب معنا</div>
+                    <div class="receipt-title">أوبرا عاشور للأطفال</div>
+                    <div style="font-size:0.8rem; color:#999; margin-top:5px;" id="bill-date-line"></div>
+                </div>
+                
+                <div class="receipt-details">
+                    <div class="receipt-row">
+                        <span>اسم الطفل:</span>
+                        <span id="bill-child-name" style="font-weight:bold;">-</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>عدد الساعات:</span>
+                        <span id="bill-duration">-</span>
+                    </div>
+                    
+                    <div id="bill-products-container" style="margin: 10px 0; border-top:1px dotted #ccc; padding-top:5px;">
+                        </div>
+
+                    <div class="receipt-row total-row">
+                        <span>إجمالي المبلغ:</span>
+                        <span id="bill-total-amount" style="color:var(--primary);">-</span>
+                    </div>
+                </div>
+
+                <div class="receipt-footer">
+                    <p>شكراً لزيارتكم منطقة العاب أوبرا عاشور</p>
+                    <p>ننتظر عودتكم لنا ❤️</p>
+                </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <button id="btn-send-bill-wa" class="btn btn-whatsapp" style="width:100%">
+                    <i class="fab fa-whatsapp"></i> إرسال الفاتورة لولي الأمر
+                </button>
+                
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-danger" style="flex:1;" onclick="confirmCheckout()">تأكيد الخروج</button>
+                    <button class="btn btn-outline" style="flex:1;" onclick="closeModal()">إلغاء</button>
+                </div>
             </div>
         </div>
     </div>
-
     <div id="toast-container" style="position:fixed; bottom:20px; left:20px; z-index:3000;"></div>
     
     <audio id="msg-sound" src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_3f32527b79.mp3"></audio>
@@ -372,6 +426,7 @@
         let activeChatId = null;
         let productTargetId = null;
         let lastMsgCounts = {};
+        let currentBillPhone = ""; // Store phone for bill
         
         // --- Sounds ---
         const playMsgSound = () => document.getElementById('msg-sound').play().catch(()=>{});
@@ -652,7 +707,6 @@
                 let pHtml = '';
                 prods.forEach(p => {
                     pTotal += p.price;
-                    // *** ADDED: Show price if > 0, else show text only ***
                     if(p.price > 0) {
                         pHtml += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding:5px 0;"><span>${p.name}</span><span>${p.price} ج.م</span></div>`;
                     } else {
@@ -776,34 +830,90 @@
             });
         };
         
+        // --- CHECKOUT LOGIC (MODIFIED FOR BILL) ---
         window.checkout = (id) => {
             currentChildId = id;
             get(ref(db, `children/${id}`)).then(s => {
                 const d = s.val();
+                currentBillPhone = d.phone;
+
+                // 1. Calculate Time & Cost
                 let timeMs = d.status === 'in' ? Date.now() - d.entryTime - (d.totalPausedTime||0) : d.pauseStartTime - d.entryTime - (d.totalPausedTime||0);
-                const timeCost = Math.ceil(timeMs/3600000) * 50;
+                const hours = Math.ceil(timeMs/3600000); // Rounded up hours
+                const exactHours = Math.floor(timeMs/3600000);
+                const exactMins = Math.floor((timeMs % 3600000) / 60000);
+                
+                const timeCost = hours * 50;
                 
                 const prods = d.products ? Object.values(d.products) : [];
                 let pTotal = 0;
-                let summary = `<div>الوقت: ${timeCost} ج.م</div>`;
-                if(prods.length > 0) {
-                    summary += '<hr style="margin:5px 0;">';
-                    prods.forEach(p => {
-                        pTotal += p.price;
-                        // *** Modified Checkout Summary ***
-                        const priceTxt = p.price > 0 ? `${p.price} ج.م` : 'مجاناً';
-                        summary += `<div style="display:flex; justify-content:space-between;"><span>${p.name}</span><span>${priceTxt}</span></div>`;
-                    });
-                }
+                let productsHTML = '';
                 
-                document.getElementById('checkout-summary').innerHTML = summary;
-                document.getElementById('checkout-total').innerText = (timeCost + pTotal) + ' ج.م';
+                // For WhatsApp Text Construction
+                let waProductsText = "";
+                
+                prods.forEach(p => {
+                    pTotal += p.price;
+                    const priceTxt = p.price > 0 ? `${p.price} ج.م` : 'مجاناً';
+                    productsHTML += `
+                        <div class="receipt-row">
+                            <span>${p.name}</span>
+                            <span>${priceTxt}</span>
+                        </div>`;
+                    waProductsText += `▫️ ${p.name}: ${priceTxt}%0a`;
+                });
+
+                if(productsHTML === '') {
+                    productsHTML = '<div style="text-align:center; color:#ccc; font-size:0.8rem;">لا توجد طلبات إضافية</div>';
+                    waProductsText = "لا توجد طلبات إضافية%0a";
+                }
+
+                const totalAmount = timeCost + pTotal;
+                
+                // 2. Date Formatting
+                const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+                const now = new Date();
+                const dayName = days[now.getDay()];
+                const dateStr = now.toLocaleDateString('ar-EG');
+                const fullDate = `${dayName}، ${dateStr}`;
+
+                // 3. Populate HTML Bill
+                document.getElementById('bill-child-name').innerText = d.name;
+                document.getElementById('bill-duration').innerText = `${hours} ساعة (${timeCost} ج.م)`;
+                document.getElementById('bill-date-line').innerText = fullDate;
+                document.getElementById('bill-products-container').innerHTML = productsHTML;
+                document.getElementById('bill-total-amount').innerText = totalAmount + ' ج.م';
+
+                // 4. Prepare WhatsApp Message
+                const waMessage = `*فاتورة منطقة ألعاب أوبرا عاشور* 🎪%0a` +
+                                  `--------------------------------%0a` +
+                                  `لقد استمتع طفلكم *${d.name}* باللعب معنا 😍%0a%0a` +
+                                  `⏳ *الوقت:* ${exactHours} ساعة و ${exactMins} دقيقة%0a` +
+                                  `💰 *حساب الوقت:* ${timeCost} ج.م%0a` +
+                                  `--------------------------------%0a` +
+                                  `📋 *المنتجات:*%0a` +
+                                  waProductsText +
+                                  `--------------------------------%0a` +
+                                  `💵 *المبلغ الإجمالي:* *${totalAmount} ج.م*%0a` +
+                                  `📅 *التاريخ:* ${fullDate}%0a` +
+                                  `--------------------------------%0a` +
+                                  `شكراً لزيارتكم منطقة ألعاب أوبرا عاشور ❤️%0a` +
+                                  `ننتظر عودتكم لنا ✨`;
+
+                // 5. Setup Button
+                const btn = document.getElementById('btn-send-bill-wa');
+                btn.onclick = () => {
+                     const url = `https://wa.me/${currentBillPhone.replace(/[^0-9]/g,'')}?text=${waMessage}`;
+                     window.open(url, '_blank');
+                };
+
+                // Show Modal
                 document.getElementById('checkout-modal').style.display = 'flex';
             });
         };
 
         window.confirmCheckout = () => {
-            const total = document.getElementById('checkout-total').innerText.replace(' ج.م','');
+            const total = document.getElementById('bill-total-amount').innerText.replace(' ج.م','');
             update(ref(db, `children/${currentChildId}`), { status:'out', exitTime: Date.now(), totalCost: total });
             closeModal();
             showToast('تم الخروج');
@@ -822,7 +932,7 @@
             const t = document.createElement('div');
             t.style.cssText = "background:#333; color:white; padding:10px 20px; border-radius:5px; margin-top:10px; box-shadow:0 3px 10px rgba(0,0,0,0.2);";
             t.innerText = msg;
-            document.getElementById('toast-container').appendChild(t);
+            t.getElementById('toast-container').appendChild(t);
             setTimeout(() => t.remove(), 3000);
         }
         
