@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>أوبرا عاشور - Kids Area PRO</title>
+    <title>أوبرا عاشور - Kids Area System</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -11,264 +11,263 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
+        /* --- المتغيرات والألوان --- */
         :root {
-            --primary: #6c5ce7;
-            --secondary: #2d3436;
-            --accent: #00cec9;
-            --success: #00b894;
-            --warning: #fdcb6e;
-            --danger: #d63031;
-            --bg-body: #f0f3f7;
-            --glass: rgba(255, 255, 255, 0.8);
-            --glass-border: rgba(255, 255, 255, 0.4);
-            --radius: 20px;
-            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            --primary: #ff4757;
+            --primary-hover: #ff6b81;
+            --secondary: #2f3542;
+            --accent: #1e90ff;
+            --success: #2ed573;
+            --warning: #ffa502;
+            --bg-body: #f1f2f6;
+            --surface: #ffffff;
+            --radius: 16px;
+            --shadow: 0 8px 24px rgba(149, 157, 165, 0.1);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        /* --- التنسيقات العامة --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; outline: none; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-body); color: var(--secondary); min-height: 100vh; overflow-x: hidden; position: relative; }
         
-        body { 
-            background: linear-gradient(135deg, #f0f3f7 0%, #dfe6e9 100%); 
-            color: var(--secondary); 
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+        /* --- خلفية السحب المتحركة (من التصميم الأول) --- */
+        .scene-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: -1; background: linear-gradient(to bottom, #87CEEB 0%, #E0F7FA 100%); }
+        .cloud { position: absolute; background: #fff; border-radius: 100px; opacity: 0.8; animation: floatCloud 40s linear infinite; }
+        .cloud::after, .cloud::before { content: ''; position: absolute; background: #fff; border-radius: 50%; }
+        .cloud-1 { width: 120px; height: 50px; top: 10%; left: -150px; } .cloud-1::after { width: 50px; height: 50px; top: -25px; left: 20px; } .cloud-1::before { width: 60px; height: 60px; top: -35px; left: 45px; }
+        .cloud-2 { width: 100px; height: 40px; top: 30%; left: -120px; animation-delay: -20s; opacity: 0.6; } .cloud-2::after { width: 40px; height: 40px; top: -20px; left: 15px; }
+        .ground-hill { position: absolute; bottom: -60px; left: 0; width: 100%; height: 120px; background: #55efc4; border-radius: 50% 50% 0 0 / 100% 100% 0 0; z-index: -1; }
+        @keyframes floatCloud { 0% { left: -150px; } 100% { left: 110%; } }
 
-        /* --- Glassmorphism Elements --- */
-        .glass-card {
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        /* --- Animations --- */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate { animation: fadeIn 0.5s ease forwards; }
-
-        /* --- Header --- */
-        header { 
-            background: rgba(255, 255, 255, 0.9);
-            padding: 15px 20px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid var(--glass-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo-area { display: flex; align-items: center; gap: 12px; }
-        .logo-img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary); }
-
-        /* --- Login --- */
-        #login-screen {
-            position: fixed; inset: 0;
-            background: linear-gradient(45deg, #6c5ce7, #a29bfe);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 9999;
-        }
-        .login-box {
-            background: white; padding: 3rem; border-radius: 30px;
-            text-align: center; width: 90%; max-width: 400px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-
-        /* --- Buttons --- */
-        .btn {
-            padding: 12px 24px; border: none; border-radius: 14px;
-            cursor: pointer; font-weight: 700; transition: all 0.3s;
-            display: inline-flex; align-items: center; gap: 8px;
-            font-size: 0.9rem;
-        }
+        /* --- الهيدر --- */
+        header { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px); position: sticky; top: 0; z-index: 100; padding: 10px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .logo-section { display: flex; align-items: center; gap: 10px; }
+        .logo-img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #eee; }
+        
+        /* --- البطاقات والعناصر --- */
+        main { padding: 20px; max-width: 1200px; margin: 0 auto; padding-bottom: 80px; }
+        .card { background: var(--surface); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); margin-bottom: 20px; animation: slideUp 0.4s ease; }
+        
+        .form-control { width: 100%; padding: 12px; background: #f8f9fa; border: 1px solid #dfe4ea; border-radius: 12px; margin-bottom: 10px; transition: 0.3s; }
+        .form-control:focus { border-color: var(--accent); background: white; }
+        
+        .btn { padding: 10px 20px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center; }
         .btn:active { transform: scale(0.95); }
-        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary { background: var(--secondary); color: white; }
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
-        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
-        
-        /* --- Kid Cards --- */
-        .kid-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px; background: white; border-radius: 18px;
-            margin-bottom: 12px; border: 1px solid #eee;
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-info { background: var(--accent); color: white; }
+        .btn-whatsapp { background: #25D366; color: white; }
+        .btn-outline { background: transparent; border: 2px solid var(--secondary); color: var(--secondary); }
+
+        /* --- بطاقة الطفل (الاحترافية) --- */
+        .kid-card { 
+            background: white; border-radius: 16px; padding: 15px; margin-bottom: 15px; 
+            border: 1px solid #f1f2f6; position: relative; overflow: hidden; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 10px;
             transition: 0.3s;
         }
-        .kid-item:hover { border-color: var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .timer-badge {
-            background: rgba(108, 92, 231, 0.1);
-            color: var(--primary); padding: 5px 12px;
-            border-radius: 10px; font-weight: 800; font-family: monospace;
-        }
+        .kid-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+        
+        /* شريط الحالة الملون على اليمين */
+        .kid-card::before { content: ''; position: absolute; top: 0; right: 0; width: 6px; height: 100%; }
+        .status-in::before { background: var(--success); }
+        .status-paused::before { background: var(--warning); }
+        .status-out::before { background: #bdc3c7; }
 
-        /* --- Chat UI --- */
-        .chat-window { height: 300px; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; background: #f9f9f9; border-radius: 12px; }
-        .msg { max-width: 80%; padding: 10px 15px; border-radius: 18px; font-size: 0.9rem; position: relative; }
-        .msg.admin { align-self: flex-end; background: var(--primary); color: white; border-bottom-left-radius: 2px; }
+        .kid-header { display: flex; justify-content: space-between; align-items: center; }
+        .kid-timer { font-family: monospace; font-size: 1.2rem; font-weight: 800; color: var(--primary); background: #fff0f1; padding: 4px 10px; border-radius: 8px; }
+        .paused-badge { background: var(--warning); color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; margin-right: 5px; }
+
+        .controls-row { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; }
+        .controls-row .btn { padding: 8px 12px; font-size: 0.85rem; flex: 1; }
+
+        /* --- مودال وتقارير --- */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
+        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 95%; max-width: 500px; animation: popIn 0.3s; max-height: 90vh; overflow-y: auto; }
+        
+        /* Chat Improvements */
+        .chat-box { height: 250px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 10px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .msg { padding: 8px 12px; border-radius: 12px; font-size: 0.9rem; max-width: 80%; }
+        .msg.admin { align-self: flex-end; background: #e3f2fd; color: #2c3e50; border-bottom-left-radius: 2px; }
         .msg.parent { align-self: flex-start; background: white; border: 1px solid #eee; border-bottom-right-radius: 2px; }
         
-        .quick-replies { display: flex; gap: 8px; padding: 10px 0; overflow-x: auto; }
-        .reply-chip { 
-            background: white; border: 1px solid var(--primary); color: var(--primary);
-            padding: 6px 15px; border-radius: 20px; font-size: 0.8rem; cursor: pointer;
-            white-space: nowrap; transition: 0.3s;
-        }
-        .reply-chip:hover { background: var(--primary); color: white; }
+        /* Quick Replies Chips */
+        .quick-replies { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 5px; margin-bottom: 5px; }
+        .chip { background: white; border: 1px solid #dfe4ea; padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; cursor: pointer; white-space: nowrap; }
+        .chip:hover { background: var(--accent); color: white; border-color: var(--accent); }
 
-        /* --- Financial Modal --- */
+        /* Stats Grid */
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .stat-card { background: #f8f9fa; padding: 15px; border-radius: 15px; text-align: center; }
-        .stat-card h4 { font-size: 0.8rem; color: #636e72; margin-bottom: 5px; }
-        .stat-card div { font-weight: 800; color: var(--success); }
+        .stat-box { background: #f1f2f6; padding: 15px; border-radius: 12px; text-align: center; }
+        .stat-val { font-weight: bold; color: var(--success); font-size: 1.1rem; }
 
+        /* Animations */
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
         .hidden { display: none !important; }
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: none; justify-content: center; align-items: center; padding: 15px; }
-        .modal-content { background: white; padding: 25px; border-radius: 25px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
-        
-        /* Parent specific UI */
-        .parent-hero { text-align: center; padding: 2rem 0; }
-        .cost-display { font-size: 3rem; font-weight: 900; color: var(--primary); margin: 10px 0; }
 
+        /* Parent View Specifics */
+        .big-timer-circle { width: 220px; height: 220px; background: white; border-radius: 50%; margin: 20px auto; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 8px solid #f1f2f6; }
+        .cost-live { font-size: 2.5rem; font-weight: 900; color: var(--secondary); }
     </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <div class="login-box animate">
-            <img src="https://raw.githubusercontent.com/mohamednasr5/opera/main/01.png" style="width: 80px; margin-bottom: 20px;">
-            <h2 style="margin-bottom: 10px;">أوبرا عاشور PRO</h2>
-            <p style="color: #636e72; margin-bottom: 25px;">نظام الإدارة الذكي</p>
-            <input type="password" id="login-pass" style="width: 100%; padding: 15px; border-radius: 15px; border: 2px solid #eee; text-align: center; font-size: 1.5rem; margin-bottom: 20px;" placeholder="****">
-            <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="checkLogin()">دخول</button>
+    <div class="scene-container">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="ground-hill"></div>
+    </div>
+
+    <div id="login-screen" style="position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg, #ff9ff3, #feca57); display:flex; justify-content:center; align-items:center;">
+        <div class="card" style="text-align:center; width:90%; max-width:400px;">
+            <img src="https://raw.githubusercontent.com/mohamednasr5/opera/main/01.png" style="width:100px; margin-bottom:15px; border-radius:50%; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+            <h2 style="margin-bottom:10px;">أوبرا عاشور كيدز</h2>
+            <input type="password" id="login-pass" class="form-control" placeholder="أدخل كلمة المرور" style="text-align:center; font-size:1.2rem; letter-spacing:5px;">
+            <button class="btn btn-primary" onclick="checkLogin()" style="width:100%;">دخول للنظام</button>
         </div>
     </div>
 
     <header>
-        <div class="logo-area">
+        <div class="logo-section">
             <img src="https://raw.githubusercontent.com/mohamednasr5/opera/main/01.png" class="logo-img">
             <div>
-                <h3 style="font-size: 1rem;">أوبرا عاشور</h3>
-                <p style="font-size: 0.7rem; color: #636e72;" id="live-clock">--:--</p>
+                <h3 style="margin:0; font-size:1rem; color:var(--primary);">أوبرا عاشور</h3>
+                <span id="live-clock" style="font-size:0.75rem; color:#777;">00:00</span>
             </div>
         </div>
-        <div id="admin-nav" class="hidden">
-            <button class="btn btn-outline" onclick="openFinance()"><i class="fas fa-chart-line"></i> تقارير</button>
+        <div id="admin-controls" class="hidden" style="display:flex; gap:10px;">
+            <button class="btn btn-info" onclick="openReports()"><i class="fas fa-chart-pie"></i> تقارير</button>
             <button class="btn btn-danger" onclick="location.reload()"><i class="fas fa-sign-out-alt"></i></button>
         </div>
     </header>
 
-    <main id="app" style="padding: 20px; max-width: 1200px; margin: 0 auto;">
-        
+    <main id="app">
         <div id="admin-view" class="hidden">
-            <section class="glass-card animate">
-                <h3 style="margin-bottom: 15px; color: var(--primary);">📝 تسجيل دخول جديد</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-                    <input type="text" id="child-name" placeholder="اسم الطفل" style="padding: 12px; border-radius: 12px; border: 1px solid #ddd;">
-                    <input type="tel" id="parent-phone" placeholder="رقم الموبايل" style="padding: 12px; border-radius: 12px; border: 1px solid #ddd;">
+            
+            <section class="card">
+                <h3 style="margin-bottom:15px; display:flex; align-items:center; gap:10px;"><i class="fas fa-user-plus" style="color:var(--primary);"></i> دخول طفل جديد</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <input type="text" id="child-name" class="form-control" placeholder="اسم الطفل">
+                    <input type="tel" id="child-phone" class="form-control" placeholder="رقم الوالد">
                 </div>
-                <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="registerChild()">بدء الجلسة</button>
-                
-                <div id="qr-result" class="hidden animate" style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px dashed #ccc;">
-                    <div id="qrcode" style="display: inline-block; margin-bottom: 15px;"></div>
-                    <div style="display: flex; gap: 10px; justify-content: center;">
-                        <button class="btn btn-success" id="wa-share"><i class="fab fa-whatsapp"></i> واتساب</button>
-                        <button class="btn btn-outline" onclick="copyLink()"><i class="fas fa-copy"></i> نسخ</button>
+                <button class="btn btn-primary" onclick="checkIn()" style="width:100%; margin-top:10px;">بدء الجلسة</button>
+
+                <div id="qr-area" class="hidden" style="text-align:center; margin-top:20px; border-top:1px dashed #eee; padding-top:15px;">
+                    <div id="qrcode" style="display:flex; justify-content:center; margin-bottom:15px;"></div>
+                    <div style="display:flex; gap:10px; justify-content:center;">
+                        <button class="btn btn-whatsapp" id="wa-share-btn"><i class="fab fa-whatsapp"></i> إرسال</button>
+                        <button class="btn btn-outline" onclick="copyLink()">نسخ الرابط</button>
                     </div>
                 </div>
             </section>
 
-            <div class="glass-card">
-                <input type="text" id="search-input" placeholder="🔍 ابحث بالاسم أو الرقم..." style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ddd;" oninput="filterKids()">
+            <div class="card" style="padding:15px;">
+                <input type="text" id="search-box" class="form-control" placeholder="🔍 بحث عن طفل..." oninput="renderKids()">
             </div>
 
-            <h4 style="margin: 20px 0 10px;">الأطفال النشطون الآن</h4>
+            <h4 style="margin:20px 0 10px; color:#555;">الأطفال النشطون</h4>
             <div id="active-list"></div>
 
-            <h4 style="margin: 30px 0 10px;">السجل الأخير</h4>
+            <h4 style="margin:30px 0 10px; color:#555;">تم الخروج مؤخراً</h4>
             <div id="history-list"></div>
         </div>
 
         <div id="parent-view" class="hidden">
-            <div class="parent-hero animate">
-                <span id="p-status" style="padding: 5px 15px; border-radius: 20px; background: var(--success); color: white; font-size: 0.8rem;">نشط الآن</span>
-                <h1 id="p-name" style="margin-top: 10px;">...</h1>
-                <p id="p-time-start" style="color: #636e72;"></p>
-                <div class="cost-display"><span id="p-total-cost">0</span> <small style="font-size: 1rem;">ج.م</small></div>
-                <div class="timer-badge" id="p-timer" style="font-size: 1.5rem; padding: 10px 25px;">00:00:00</div>
-            </div>
+            <div style="text-align:center; margin-top:20px;">
+                <span id="p-status-badge" style="background:var(--success); color:white; padding:5px 15px; border-radius:20px;">متواجد حالياً</span>
+                <h1 id="p-child-name" style="color:var(--secondary); margin-top:10px;">...</h1>
+                
+                <div class="big-timer-circle">
+                    <div id="p-cost" class="cost-live">0</div>
+                    <div style="color:#777;">جنيه مصري</div>
+                    <div id="p-timer" style="margin-top:10px; font-family:monospace; font-weight:bold; color:var(--primary);">00:00:00</div>
+                </div>
+                
+                <div class="card">
+                    <h3 style="margin-bottom:15px;">🛒 الطلبات</h3>
+                    <div id="p-orders-list" style="text-align:right; color:#555;"></div>
+                </div>
 
-            <div class="glass-card">
-                <h4>💬 تواصل مع الإدارة</h4>
-                <div id="parent-chat" class="chat-window" style="margin: 15px 0;"></div>
-                <div style="display: flex; gap: 8px;">
-                    <input type="text" id="parent-msg-input" placeholder="اكتب رسالة..." style="flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #ddd;">
-                    <button class="btn btn-primary" onclick="sendMessage('parent')"><i class="fas fa-paper-plane"></i></button>
+                <div class="card">
+                    <h3>💬 تواصل مع الإدارة</h3>
+                    <div id="p-chat-box" class="chat-box" style="background:white; border:1px solid #eee;"></div>
+                    <div style="display:flex; gap:5px;">
+                        <input type="text" id="p-msg-input" class="form-control" style="margin:0;" placeholder="اكتب رسالة...">
+                        <button class="btn btn-primary" onclick="sendMsg('parent')">إرسال</button>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
+    <div id="checkout-modal" class="modal">
+        <div class="modal-content" style="text-align:center;">
+            <h2 style="color:var(--danger); margin-bottom:15px;">إنهاء الجلسة</h2>
+            <div style="background:#f9f9f9; padding:15px; border-radius:10px; text-align:right; margin-bottom:15px;">
+                <div style="display:flex; justify-content:space-between;"><span>⏱ مدة اللعب:</span> <span id="out-duration"></span></div>
+                <div style="display:flex; justify-content:space-between;"><span>🎮 تكلفة اللعب:</span> <span id="out-play-cost"></span></div>
+                <div style="display:flex; justify-content:space-between; color:var(--accent);"><span>🍿 طلبات إضافية:</span> <span id="out-orders-cost"></span></div>
+                <hr style="margin:10px 0; border:0; border-top:1px dashed #ccc;">
+                <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.2rem;"><span>الإجمالي:</span> <span id="out-total"></span></div>
+            </div>
+            <button class="btn btn-danger" onclick="confirmCheckout()" style="width:100%;">تأكيد ودفع</button>
+            <button class="btn btn-outline" onclick="closeModals()" style="width:100%; margin-top:10px;">إلغاء</button>
+        </div>
+    </div>
+
+    <div id="orders-modal" class="modal">
+        <div class="modal-content">
+            <h3>🛒 إضافة طلبات</h3>
+            <h5 id="order-cname" style="color:#777; margin-bottom:15px;"></h5>
+            <div style="display:flex; gap:5px; margin-bottom:10px;">
+                <input type="text" id="order-item" class="form-control" placeholder="الصنف (عصير..)">
+                <input type="number" id="order-price" class="form-control" placeholder="السعر" style="width:80px;">
+            </div>
+            <button class="btn btn-success" onclick="addOrder()" style="width:100%;">إضافة للفاتورة</button>
+        </div>
+    </div>
+
     <div id="chat-modal" class="modal">
         <div class="modal-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3 id="admin-chat-title">المحادثة</h3>
-                <button onclick="closeModal('chat-modal')" style="background: none; border: none; font-size: 1.5rem;">&times;</button>
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <h3 id="chat-cname">محادثة</h3>
+                <span onclick="closeModals()" style="cursor:pointer; font-size:1.5rem;">&times;</span>
             </div>
-            <div id="admin-chat-window" class="chat-window"></div>
+            <div id="admin-chat-box" class="chat-box"></div>
             <div class="quick-replies">
-                <div class="reply-chip" onclick="setQuickMsg('الطفل بخير بيلعب ومبسوط ❤️')">الطفل بخير ❤️</div>
-                <div class="reply-chip" onclick="setQuickMsg('يرجى الحضور لاستلام الطفل 🏃‍♂️')">الاستلام 🏃‍♂️</div>
-                <div class="reply-chip" onclick="setQuickMsg('تم طلب وجبة فشار 🍿')">فشار 🍿</div>
-                <div class="reply-chip" onclick="setQuickMsg('الطفل يحتاج لتبديل ملابسه 🧼')">نظافة 🧼</div>
+                <span class="chip" onclick="quickRep('الطفل بخير ومبسوط ❤️')">الطفل بخير ❤️</span>
+                <span class="chip" onclick="quickRep('يرجى الحضور للاستلام 🏃‍♂️')">الاستلام 🏃‍♂️</span>
+                <span class="chip" onclick="quickRep('محتاج يغير ملابس 👕')">ملابس 👕</span>
+                <span class="chip" onclick="quickRep('تم طلب وجبة 🍿')">طلب وجبة 🍿</span>
             </div>
-            <div style="display: flex; gap: 8px;">
-                <input type="text" id="admin-msg-input" placeholder="اكتب ردك هنا..." style="flex: 1; padding: 12px; border-radius: 12px; border: 1px solid #ddd;">
-                <button class="btn btn-primary" onclick="sendMessage('admin')">إرسال</button>
+            <div style="display:flex; gap:5px;">
+                <input type="text" id="admin-msg-input" class="form-control" style="margin:0;" placeholder="الرد...">
+                <button class="btn btn-primary" onclick="sendMsg('admin')">إرسال</button>
             </div>
         </div>
     </div>
 
-    <div id="finance-modal" class="modal">
-        <div class="modal-content" style="max-width: 600px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3>📈 التقارير المالية</h3>
-                <button onclick="closeModal('finance-modal')" style="background: none; border: none; font-size: 1.5rem;">&times;</button>
-            </div>
+    <div id="reports-modal" class="modal">
+        <div class="modal-content" style="max-width:600px;">
+            <h3 style="margin-bottom:20px;">📊 التقارير المالية</h3>
             <div class="stats-grid">
-                <div class="stat-card"><h4>اليوم</h4><div id="stat-today">0</div></div>
-                <div class="stat-card"><h4>الأسبوع</h4><div id="stat-week">0</div></div>
-                <div class="stat-card"><h4>الشهر</h4><div id="stat-month">0</div></div>
+                <div class="stat-box"><h4>اليوم</h4><div id="stat-day" class="stat-val">0</div></div>
+                <div class="stat-box"><h4>الأسبوع</h4><div id="stat-week" class="stat-val">0</div></div>
+                <div class="stat-box"><h4>الشهر</h4><div id="stat-month" class="stat-val">0</div></div>
             </div>
-            <canvas id="financeChart" style="width: 100%; height: 250px; margin-bottom: 20px;"></canvas>
-            <div id="finance-logs" style="max-height: 200px; overflow-y: auto; border-top: 1px solid #eee; padding-top: 10px;"></div>
+            <canvas id="financeChart" style="width:100%; height:250px;"></canvas>
+            <button class="btn btn-outline" onclick="closeModals()" style="width:100%; margin-top:20px;">إغلاق</button>
         </div>
     </div>
 
-    <div id="order-modal" class="modal">
-        <div class="modal-content">
-            <h3>🛒 إضافة مبيعات</h3>
-            <p id="order-child-name" style="color: var(--primary); font-weight: bold; margin-bottom: 15px;"></p>
-            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                <input type="text" id="item-name" placeholder="المنتج" style="flex: 2; padding: 10px; border-radius: 10px; border: 1px solid #ddd;">
-                <input type="number" id="item-price" placeholder="السعر" style="flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #ddd;">
-            </div>
-            <button class="btn btn-success" style="width: 100%; justify-content: center;" onclick="addOrder()">إضافة للمفاتورة</button>
-            <button class="btn btn-outline" style="width: 100%; margin-top: 10px; justify-content: center;" onclick="closeModal('order-modal')">إلغاء</button>
-        </div>
-    </div>
-
-    <audio id="notif-sound" src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_3f32527b79.mp3"></audio>
+    <audio id="sound-notif" src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_3f32527b79.mp3"></audio>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, push, onValue, update, set, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-        // --- Firebase Config ---
         const firebaseConfig = {
             apiKey: "AIzaSyDJ_dnEZP62J871KLAg88_quQdUt01004o",
             authDomain: "operakides.firebaseapp.com",
@@ -281,279 +280,306 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // --- App State ---
-        let currentChatId = null;
-        let activeChildren = {};
-        let currentChildLink = "";
-        let financeChart = null;
+        // --- State ---
+        let allData = {};
+        let currentId = null; // For modals
+        let reportChart = null;
 
-        // --- Utils ---
-        window.closeModal = (id) => document.getElementById(id).style.display = 'none';
-        const playSound = () => document.getElementById('notif-sound').play().catch(e=>{});
-        
-        function formatTime(ms) {
-            const s = Math.floor((ms/1000)%60), m = Math.floor((ms/60000)%60), h = Math.floor(ms/3600000);
-            return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-        }
-
-        // --- Security ---
-        window.checkLogin = () => {
-            const p = document.getElementById('login-pass').value;
-            if(p === '0100') {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('admin-view').classList.remove('hidden');
-                document.getElementById('admin-nav').classList.remove('hidden');
-                initAdmin();
-            } else { alert('كلمة مرور خاطئة'); }
+        // --- Helpers ---
+        const playSound = () => document.getElementById('sound-notif').play().catch(()=>{});
+        const closeModals = () => document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+        const formatTime = (ms) => {
+            const s = Math.floor((ms/1000)%60).toString().padStart(2,'0');
+            const m = Math.floor((ms/60000)%60).toString().padStart(2,'0');
+            const h = Math.floor(ms/3600000).toString().padStart(2,'0');
+            return `${h}:${m}:${s}`;
         };
 
-        // --- Admin Logic ---
+        // --- Login ---
+        window.checkLogin = () => {
+            if(document.getElementById('login-pass').value === '0100') {
+                document.getElementById('login-screen').style.display='none';
+                document.getElementById('admin-view').classList.remove('hidden');
+                document.getElementById('admin-controls').classList.remove('hidden');
+                initAdmin();
+            } else alert('خطأ في كلمة المرور');
+        };
+
+        // --- Calculation Logic (Smart Pause) ---
+        function getDetails(c) {
+            let duration = 0;
+            const now = Date.now();
+            
+            if(c.status === 'out') {
+                duration = c.exitTime - c.entryTime - (c.totalPaused || 0);
+            } else if (c.status === 'paused') {
+                duration = c.pauseStart - c.entryTime - (c.totalPaused || 0);
+            } else {
+                duration = now - c.entryTime - (c.totalPaused || 0);
+            }
+
+            const hours = Math.ceil(duration / 3600000); // 1 hour min, then ceiling
+            const playCost = hours * 50; 
+            
+            let ordersCost = 0;
+            if(c.orders) Object.values(c.orders).forEach(o => ordersCost += parseFloat(o.price));
+
+            return { duration, playCost, ordersCost, total: playCost + ordersCost, str: formatTime(duration) };
+        }
+
+        // --- Admin Functions ---
         function initAdmin() {
-            onValue(ref(db, 'children'), (snap) => {
-                const data = snap.val() || {};
-                const activeCont = document.getElementById('active-list');
-                const historyCont = document.getElementById('history-list');
-                activeCont.innerHTML = '';
-                historyCont.innerHTML = '';
-                activeChildren = data;
-
-                Object.keys(data).reverse().forEach(id => {
-                    const c = data[id];
-                    const isOut = c.status === 'out';
-                    const div = document.createElement('div');
-                    div.className = 'kid-item animate';
-                    div.setAttribute('data-name', c.name + c.phone);
-                    
-                    if(!isOut) {
-                        const costData = calculateCost(c);
-                        div.innerHTML = `
-                            <div>
-                                <strong>${c.name}</strong><br>
-                                <small>${c.phone}</small>
-                            </div>
-                            <div style="text-align: left; display: flex; align-items: center; gap: 10px;">
-                                <div class="timer-badge" id="timer-${id}">${formatTime(Date.now()-c.entryTime)}</div>
-                                <button class="btn btn-outline" style="padding: 5px 10px;" onclick="openOrderModal('${id}', '${c.name}')"><i class="fas fa-plus"></i>🛒</button>
-                                <button class="btn btn-primary" style="padding: 5px 10px;" onclick="openChat('${id}', '${c.name}')"><i class="fas fa-comments"></i></button>
-                                <button class="btn btn-danger" style="padding: 5px 10px;" onclick="checkout('${id}')">خروج</button>
-                            </div>
-                        `;
-                        activeCont.appendChild(div);
-                    } else {
-                        div.style.opacity = '0.7';
-                        div.innerHTML = `
-                            <div><strong>${c.name}</strong> <small>(خروج)</small></div>
-                            <div><b>${c.totalCost} ج.م</b></div>
-                        `;
-                        historyCont.appendChild(div);
-                    }
-                });
+            onValue(ref(db, 'children'), snap => {
+                allData = snap.val() || {};
+                renderKids();
             });
-
-            // Update timers every second
             setInterval(() => {
-                document.querySelectorAll('[id^="timer-"]').forEach(el => {
-                    const id = el.id.replace('timer-', '');
-                    const c = activeChildren[id];
-                    if(c) el.innerText = formatTime(Date.now() - c.entryTime);
-                });
-                document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
+                document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-EG');
+                renderKids(true); // Re-render for timer updates only if needed, better to optimize
             }, 1000);
         }
 
-        function calculateCost(c) {
-            const duration = (c.exitTime || Date.now()) - c.entryTime;
-            const hours = Math.ceil(duration / 3600000); // ساعة أو جزء منها
-            const playCost = hours * 50; 
-            let snackCost = 0;
-            if(c.orders) Object.values(c.orders).forEach(o => snackCost += parseFloat(o.price));
-            return { total: playCost + snackCost, play: playCost, snacks: snackCost, duration };
-        }
-
-        window.registerChild = () => {
-            const name = document.getElementById('child-name').value;
-            const phone = document.getElementById('parent-phone').value;
-            if(!name || !phone) return alert('أكمل البيانات');
-            
-            const newRef = push(ref(db, 'children'));
-            const link = window.location.origin + window.location.pathname + '?id=' + newRef.key;
-            
-            set(newRef, {
-                name, phone, entryTime: Date.now(), status: 'in', messages: {}, orders: {}
-            }).then(() => {
-                document.getElementById('qr-result').classList.remove('hidden');
-                document.getElementById('qrcode').innerHTML = '';
-                new QRCode(document.getElementById('qrcode'), { text: link, width: 120, height: 120 });
-                currentChildLink = link;
-                document.getElementById('wa-share').onclick = () => window.open(`https://wa.me/${phone}?text=رابط متابعة طفلك: ${link}`);
-                document.getElementById('child-name').value = '';
-                document.getElementById('parent-phone').value = '';
-            });
-        };
-
-        window.checkout = (id) => {
-            if(!confirm('تأكيد خروج الطفل؟')) return;
-            const c = activeChildren[id];
-            const cost = calculateCost(c);
-            update(ref(db, `children/${id}`), {
-                status: 'out',
-                exitTime: Date.now(),
-                totalCost: cost.total
-            });
-        };
-
-        // --- Chat System ---
-        window.openChat = (id, name) => {
-            currentChatId = id;
-            document.getElementById('admin-chat-title').innerText = `محادثة: ${name}`;
-            document.getElementById('chat-modal').style.display = 'flex';
-            
-            onValue(ref(db, `children/${id}/messages`), (snap) => {
-                const win = document.getElementById('admin-chat-window');
-                win.innerHTML = '';
-                const msgs = snap.val() || {};
-                Object.values(msgs).forEach(m => {
-                    const d = document.createElement('div');
-                    d.className = `msg ${m.sender}`;
-                    d.innerText = m.text;
-                    win.appendChild(d);
+        window.renderKids = (timerOnly = false) => {
+            if(timerOnly && !document.getElementById('search-box').value) {
+                // Optimize: just update timers text
+                document.querySelectorAll('.live-timer-text').forEach(el => {
+                    const id = el.dataset.id;
+                    if(allData[id]) el.innerText = getDetails(allData[id]).str;
                 });
-                win.scrollTop = win.scrollHeight;
+                return;
+            }
+
+            const q = document.getElementById('search-box').value.toLowerCase();
+            const activeDiv = document.getElementById('active-list');
+            const histDiv = document.getElementById('history-list');
+            activeDiv.innerHTML = ''; histDiv.innerHTML = '';
+
+            Object.keys(allData).reverse().forEach(key => {
+                const c = allData[key];
+                if((c.name+c.phone).toLowerCase().includes(q)) {
+                    const det = getDetails(c);
+                    
+                    if(c.status !== 'out') {
+                        const isPaused = c.status === 'paused';
+                        const div = document.createElement('div');
+                        div.className = `kid-card ${isPaused ? 'status-paused' : 'status-in'}`;
+                        div.innerHTML = `
+                            <div class="kid-header">
+                                <div>
+                                    <h3 style="margin:0;">${c.name}</h3>
+                                    <div style="font-size:0.8rem; color:#777;">${c.phone}</div>
+                                </div>
+                                <div style="text-align:left;">
+                                    ${isPaused ? '<span class="paused-badge">متوقف</span>' : ''}
+                                    <div class="kid-timer live-timer-text" data-id="${key}">${det.str}</div>
+                                    <div style="font-size:0.8rem; font-weight:bold; margin-top:2px;">${det.total} ج.م</div>
+                                </div>
+                            </div>
+                            <div class="controls-row">
+                                <button class="btn btn-info" onclick="openOrders('${key}','${c.name}')"><i class="fas fa-cart-plus"></i></button>
+                                <button class="btn btn-whatsapp" onclick="window.open('https://wa.me/${c.phone}','_blank')"><i class="fab fa-whatsapp"></i></button>
+                                <button class="btn btn-primary" onclick="openChat('${key}','${c.name}')"><i class="fas fa-comments"></i></button>
+                                <button class="btn btn-warning" onclick="togglePause('${key}')">${isPaused ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>'}</button>
+                                <button class="btn btn-danger" onclick="preCheckout('${key}')">خروج</button>
+                            </div>
+                        `;
+                        activeDiv.appendChild(div);
+                    } else {
+                        const div = document.createElement('div');
+                        div.className = 'kid-card status-out';
+                        div.style.opacity = '0.7';
+                        div.innerHTML = `
+                            <div class="kid-header">
+                                <div><h3>${c.name}</h3><small>تم الخروج</small></div>
+                                <div style="font-weight:bold; font-size:1.2rem;">${c.totalCost} ج.م</div>
+                            </div>
+                        `;
+                        histDiv.appendChild(div);
+                    }
+                }
             });
         };
 
-        window.sendMessage = (sender) => {
-            const input = document.getElementById(`${sender}-msg-input`);
-            const text = input.value;
-            if(!text) return;
-            
-            const id = (sender === 'admin') ? currentChatId : new URLSearchParams(window.location.search).get('id');
-            push(ref(db, `children/${id}/messages`), {
-                text, sender, timestamp: Date.now()
+        window.checkIn = () => {
+            const name = document.getElementById('child-name').value;
+            const phone = document.getElementById('child-phone').value;
+            if(!name) return;
+            const newRef = push(ref(db, 'children'));
+            const link = `${location.origin}${location.pathname}?id=${newRef.key}`;
+            set(newRef, { name, phone, entryTime: Date.now(), status: 'in', totalPaused: 0 }).then(()=>{
+                document.getElementById('child-name').value = '';
+                document.getElementById('child-phone').value = '';
+                document.getElementById('qr-area').classList.remove('hidden');
+                document.getElementById('qrcode').innerHTML = '';
+                new QRCode(document.getElementById('qrcode'), {text:link, width:100, height:100});
+                document.getElementById('wa-share-btn').onclick = () => window.open(`https://wa.me/${phone}?text=رابط متابعة طفلك: ${link}`);
+                window.currentLink = link;
             });
-            input.value = '';
+        };
+
+        window.copyLink = () => { navigator.clipboard.writeText(window.currentLink); alert('تم النسخ'); };
+
+        // --- Logic: Pause/Resume ---
+        window.togglePause = (id) => {
+            const c = allData[id];
+            if(c.status === 'in') {
+                update(ref(db, `children/${id}`), { status: 'paused', pauseStart: Date.now() });
+            } else {
+                const diff = Date.now() - c.pauseStart;
+                update(ref(db, `children/${id}`), { status: 'in', totalPaused: (c.totalPaused||0) + diff, pauseStart: null });
+            }
+        };
+
+        // --- Logic: Orders ---
+        window.openOrders = (id, name) => {
+            currentId = id;
+            document.getElementById('order-cname').innerText = name;
+            document.getElementById('orders-modal').style.display = 'flex';
+        };
+        window.addOrder = () => {
+            const item = document.getElementById('order-item').value;
+            const price = document.getElementById('order-price').value;
+            if(!item || !price) return;
+            push(ref(db, `children/${currentId}/orders`), { item, price: parseFloat(price) });
+            document.getElementById('order-item').value = '';
+            document.getElementById('order-price').value = '';
+            closeModals();
+        };
+
+        // --- Logic: Checkout ---
+        window.preCheckout = (id) => {
+            currentId = id;
+            const det = getDetails(allData[id]);
+            document.getElementById('out-duration').innerText = det.str;
+            document.getElementById('out-play-cost').innerText = det.playCost;
+            document.getElementById('out-orders-cost').innerText = det.ordersCost;
+            document.getElementById('out-total').innerText = det.total + ' ج.م';
+            document.getElementById('checkout-modal').style.display = 'flex';
+        };
+        window.confirmCheckout = () => {
+            const det = getDetails(allData[currentId]);
+            update(ref(db, `children/${currentId}`), { status:'out', exitTime: Date.now(), totalCost: det.total });
+            closeModals();
+        };
+
+        // --- Logic: Chat ---
+        window.openChat = (id, name) => {
+            currentId = id;
+            document.getElementById('chat-cname').innerText = name;
+            document.getElementById('chat-modal').style.display = 'flex';
+            onValue(ref(db, `children/${id}/messages`), snap => {
+                const box = document.getElementById('admin-chat-box');
+                box.innerHTML = '';
+                if(snap.exists()) {
+                    Object.values(snap.val()).forEach(m => {
+                        box.innerHTML += `<div class="msg ${m.sender}">${m.text}</div>`;
+                    });
+                    box.scrollTop = box.scrollHeight;
+                }
+            });
+        };
+        window.quickRep = (txt) => document.getElementById('admin-msg-input').value = txt;
+        
+        window.sendMsg = (sender) => {
+            const inp = document.getElementById(sender === 'admin' ? 'admin-msg-input' : 'p-msg-input');
+            const txt = inp.value;
+            if(!txt) return;
+            // if sender is parent, get ID from URL, else use currentId
+            const id = sender === 'admin' ? currentId : new URLSearchParams(location.search).get('id');
+            push(ref(db, `children/${id}/messages`), { text: txt, sender, time: Date.now() });
+            inp.value = '';
             playSound();
         };
 
-        window.setQuickMsg = (t) => document.getElementById('admin-msg-input').value = t;
-
-        // --- Orders ---
-        window.openOrderModal = (id, name) => {
-            currentChatId = id; // reuse for order
-            document.getElementById('order-child-name').innerText = name;
-            document.getElementById('order-modal').style.display = 'flex';
-        };
-
-        window.addOrder = () => {
-            const item = document.getElementById('item-name').value;
-            const price = document.getElementById('item-price').value;
-            if(!item || !price) return;
-            push(ref(db, `children/${currentChatId}/orders`), { item, price });
-            closeModal('order-modal');
-            document.getElementById('item-name').value = '';
-            document.getElementById('item-price').value = '';
-        };
-
-        // --- Reports & Charts ---
-        window.openFinance = () => {
-            document.getElementById('finance-modal').style.display = 'flex';
+        // --- Logic: Reports (Chart.js) ---
+        window.openReports = () => {
+            document.getElementById('reports-modal').style.display = 'flex';
             get(ref(db, 'children')).then(snap => {
-                const data = snap.val() || {};
                 const now = Date.now();
                 let day=0, week=0, month=0;
-                let dailyData = { 'السبت':0, 'الأحد':0, 'الاثنين':0, 'الثلاثاء':0, 'الأربعاء':0, 'الخميس':0, 'الجمعة':0 };
-
-                Object.values(data).forEach(c => {
-                    if(c.status === 'out' && c.exitTime) {
-                        const diff = now - c.exitTime;
+                let dayMap = { 'السبت':0, 'الأحد':0, 'الاثنين':0, 'الثلاثاء':0, 'الأربعاء':0, 'الخميس':0, 'الجمعة':0 };
+                
+                snap.forEach(s => {
+                    const c = s.val();
+                    if(c.status === 'out') {
                         const cost = parseFloat(c.totalCost || 0);
+                        const diff = now - c.exitTime;
                         if(diff < 86400000) day += cost;
                         if(diff < 604800000) week += cost;
                         if(diff < 2592000000) month += cost;
-
-                        const dayName = new Date(c.exitTime).toLocaleDateString('ar-EG', {weekday: 'long'});
-                        if(dailyData[dayName] !== undefined) dailyData[dayName] += cost;
+                        
+                        const dName = new Date(c.exitTime).toLocaleDateString('ar-EG', {weekday:'long'});
+                        if(dayMap[dName] !== undefined) dayMap[dName] += cost;
                     }
                 });
-
-                document.getElementById('stat-today').innerText = day + ' ج.م';
-                document.getElementById('stat-week').innerText = week + ' ج.م';
-                document.getElementById('stat-month').innerText = month + ' ج.م';
-
-                initChart(Object.values(dailyData));
+                
+                document.getElementById('stat-day').innerText = day;
+                document.getElementById('stat-week').innerText = week;
+                document.getElementById('stat-month').innerText = month;
+                
+                // Chart
+                const ctx = document.getElementById('financeChart').getContext('2d');
+                if(reportChart) reportChart.destroy();
+                reportChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(dayMap),
+                        datasets: [{ label: 'الأرباح', data: Object.values(dayMap), backgroundColor: '#ff4757', borderRadius: 5 }]
+                    },
+                    options: { responsive: true, plugins: { legend: {display: false} } }
+                });
             });
         };
-
-        function initChart(values) {
-            const ctx = document.getElementById('financeChart').getContext('2d');
-            if(financeChart) financeChart.destroy();
-            financeChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
-                    datasets: [{
-                        label: 'دخل الأسبوع الحالي',
-                        data: values,
-                        borderColor: '#6c5ce7',
-                        tension: 0.4,
-                        fill: true,
-                        backgroundColor: 'rgba(108, 92, 231, 0.1)'
-                    }]
-                }
-            });
-        }
 
         // --- Parent View Logic ---
-        const urlParams = new URLSearchParams(window.location.search);
-        const parentId = urlParams.get('id');
-        if(parentId) {
+        const urlId = new URLSearchParams(location.search).get('id');
+        if(urlId) {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('parent-view').classList.remove('hidden');
-            
-            onValue(ref(db, `children/${parentId}`), (snap) => {
+            onValue(ref(db, `children/${urlId}`), snap => {
                 const c = snap.val();
                 if(!c) return;
-                document.getElementById('p-name').innerText = c.name;
-                document.getElementById('p-time-start').innerText = "دخول: " + new Date(c.entryTime).toLocaleTimeString('ar-EG');
+                document.getElementById('p-child-name').innerText = c.name;
                 
                 if(c.status === 'out') {
-                    document.getElementById('p-status').innerText = 'انتهت الجلسة';
-                    document.getElementById('p-status').style.background = '#d63031';
-                    document.getElementById('p-total-cost').innerText = c.totalCost;
-                } else {
-                    setInterval(() => {
-                        const cost = calculateCost(c);
-                        document.getElementById('p-total-cost').innerText = cost.total;
-                        document.getElementById('p-timer').innerText = formatTime(Date.now() - c.entryTime);
-                    }, 1000);
+                    document.getElementById('p-status-badge').innerText = 'انتهت الجلسة';
+                    document.getElementById('p-status-badge').style.background = '#ccc';
+                    document.getElementById('p-cost').innerText = c.totalCost;
+                    return;
                 }
 
-                const chatCont = document.getElementById('parent-chat');
-                chatCont.innerHTML = '';
+                // Update UI based on status
+                if(c.status === 'paused') {
+                    document.getElementById('p-status-badge').innerText = 'متوقف مؤقتاً';
+                    document.getElementById('p-status-badge').style.background = 'orange';
+                } else {
+                    document.getElementById('p-status-badge').innerText = 'يلعب الآن';
+                    document.getElementById('p-status-badge').style.background = 'var(--success)';
+                }
+
+                // Live Update
+                const updateParent = () => {
+                    const det = getDetails(c);
+                    document.getElementById('p-cost').innerText = det.total;
+                    document.getElementById('p-timer').innerText = det.str;
+                };
+                updateParent();
+                if(!window.pInterval) window.pInterval = setInterval(updateParent, 1000);
+
+                // Orders List
+                const oList = document.getElementById('p-orders-list');
+                oList.innerHTML = '';
+                if(c.orders) Object.values(c.orders).forEach(o => oList.innerHTML += `<div>${o.item} - ${o.price} ج.م</div>`);
+
+                // Chat
+                const chatBox = document.getElementById('p-chat-box');
+                chatBox.innerHTML = '';
                 if(c.messages) {
-                    Object.values(c.messages).forEach(m => {
-                        const d = document.createElement('div');
-                        d.className = `msg ${m.sender}`;
-                        d.innerText = m.text;
-                        chatCont.appendChild(d);
-                    });
+                    Object.values(c.messages).forEach(m => chatBox.innerHTML += `<div class="msg ${m.sender}">${m.text}</div>`);
+                    chatBox.scrollTop = chatBox.scrollHeight;
                 }
             });
         }
-
-        window.filterKids = () => {
-            const q = document.getElementById('search-input').value.toLowerCase();
-            document.querySelectorAll('.kid-item').forEach(el => {
-                const name = el.getAttribute('data-name').toLowerCase();
-                el.style.display = name.includes(q) ? 'flex' : 'none';
-            });
-        };
-
-        window.copyLink = () => {
-            navigator.clipboard.writeText(currentChildLink);
-            alert('تم نسخ الرابط');
-        };
-
     </script>
 </body>
 </html>
