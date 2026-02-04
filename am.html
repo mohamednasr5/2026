@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>استضافة أوبرا عاشور - النظام الذكي</title>
+    <title>استضافة أوبرا عاشور - النظام المطور</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -17,79 +17,41 @@
             --accent: #1e90ff;
             --success: #2ed573;
             --warning: #ffa502;
-            --bg-body: #f1f2f6;
+            --bg-body: #e5ddd5; /* خلفية واتساب */
             --surface: #ffffff;
             --whatsapp: #25D366;
             --radius: 16px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { background-color: var(--bg-body); color: var(--secondary); min-height: 100vh; display: flex; flex-direction: column; font-size: 16px; overflow-x: hidden; }
+        body { background-color: #f0f2f5; color: var(--secondary); min-height: 100vh; display: flex; flex-direction: column; font-size: 16px; overflow-x: hidden; }
 
-        /* --- تحسينات الهيدر --- */
+        /* --- الهيدر --- */
         header { background: rgba(255, 255, 255, 0.98); padding: 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
         .header-top { background: var(--secondary); color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;}
         
         .logout-btn-styled {
-            background-color: var(--primary);
-            color: white !important;
-            border: none;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: 0.3s;
+            background-color: var(--primary); color: white !important; border: none; padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.3s;
         }
         .logout-btn-styled:hover { background-color: #ff6b81; transform: translateY(-2px); }
 
         .header-content { padding: 15px 20px; display: flex; align-items: center; gap: 20px; max-width: 1200px; margin: 0 auto;}
-        .logo-img { height: 60px; width: 60px; background: white; border-radius: 50%; padding: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid var(--bg-body);}
+        .logo-img { height: 60px; width: 60px; background: white; border-radius: 50%; padding: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid #fff;}
         
-        /* --- مربع البحث --- */
-        .search-box { 
-            background: white; 
-            padding: 0.8rem 1.2rem; 
-            border-radius: 50px; 
-            margin-bottom: 1.5rem; 
-            display: flex; 
-            gap: 15px; 
-            align-items: center; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
-            border: 2px solid #e1e1e1; 
-        }
+        /* --- البحث --- */
+        .search-box { background: white; padding: 0.8rem 1.2rem; border-radius: 50px; margin-bottom: 1.5rem; display: flex; gap: 15px; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 2px solid #e1e1e1; }
         .search-box input { border: none; flex: 1; outline: none; font-size: 1rem; color: #333; }
         .search-box i { color: var(--secondary); font-size: 1.1rem; }
 
-        /* --- الأزرار المعدلة (Fix Buttons) --- */
-        .btn { 
-            padding: 10px 15px; 
-            border: none; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            font-weight: 700; 
-            font-size: 1rem; 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 8px; 
-            transition: all 0.2s;
-            color: var(--secondary);
-            background: #fff;
-            border: 1px solid #eee;
-        }
+        /* --- الأزرار --- */
+        .btn { padding: 10px 15px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 1rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; color: var(--secondary); background: #fff; border: 1px solid #eee; }
         .btn i { font-size: 1.1rem; }
-
-        /* إجبار الألوان على الظهور باستخدام !important */
         .btn-danger { background-color: #ff4757 !important; color: white !important; border: none !important; }
-        .btn-primary { background-color: #2f3542 !important; color: white !important; border: none !important; } /* Chat */
-        .btn-warning { background-color: #ffa502 !important; color: white !important; border: none !important; } /* Pause */
-        .btn-success { background-color: #2ed573 !important; color: white !important; border: none !important; } /* Resume */
+        .btn-primary { background-color: #2f3542 !important; color: white !important; border: none !important; }
+        .btn-warning { background-color: #ffa502 !important; color: white !important; border: none !important; }
+        .btn-success { background-color: #2ed573 !important; color: white !important; border: none !important; }
         .btn-whatsapp { background-color: #25D366 !important; color: white !important; border: none !important; }
-        .btn-purple { background-color: #a55eea !important; color: white !important; border: none !important; } /* Products */
+        .btn-purple { background-color: #a55eea !important; color: white !important; border: none !important; }
         .btn-outline { background-color: transparent !important; border: 2px solid #ccc !important; color: #555 !important; }
         .btn-info { background-color: var(--accent) !important; color: white !important; border: none !important; }
 
@@ -126,8 +88,6 @@
         .receipt-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.95rem; color: #555; }
         .receipt-row.bold { font-weight: bold; color: #000; font-size: 1.1rem; }
         .dashed-divider { border-bottom: 2px dashed #ccc; margin: 15px 0; position: relative; }
-        .dashed-divider::before, .dashed-divider::after { content: ''; position: absolute; top: -10px; width: 20px; height: 20px; background: rgba(0,0,0,0.7); border-radius: 50%; }
-        .dashed-divider::before { left: -30px; } .dashed-divider::after { right: -30px; }
         .receipt-total-box { background: #f1f2f6; padding: 15px; text-align: center; border-radius: 10px; margin-top: 15px; }
         .timer-display { font-family: 'Courier New', monospace; font-weight: 800; color: var(--primary); font-size: 1.1rem; background: rgba(255, 71, 87, 0.05); padding: 5px 10px; border-radius: 8px; display: inline-block;}
 
@@ -141,19 +101,39 @@
         .stat-card.income-card .value { color: var(--success); }
         .stat-card.product-card .value { color: var(--accent); }
         
-        /* Parent View & Chat */
-        .parent-view-card { text-align: center; border-radius: 30px; padding: 2.5rem 1.5rem; background: rgba(255, 255, 255, 0.95); margin-top: 2rem; position: relative; z-index: 10; box-shadow: 0 20px 50px rgba(0,0,0,0.08); }
-        .parent-timer-circle { width: 200px; height: 200px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 30px auto; border: 8px solid rgba(255, 71, 87, 0.1); }
-        .timer-text-big { font-size: 3rem; font-weight: 900; color: var(--secondary); }
-        .paused-text-msg { color: var(--warning); font-weight: bold; font-size: 1.3rem; line-height: 1.6; }
+        /* Parent View */
+        .parent-view-card { text-align: center; border-radius: 30px; padding: 2rem 1.5rem; background: rgba(255, 255, 255, 0.95); margin-top: 2rem; position: relative; z-index: 10; box-shadow: 0 20px 50px rgba(0,0,0,0.08); }
+        .parent-timer-circle { width: 180px; height: 180px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 20px auto; border: 8px solid rgba(255, 71, 87, 0.1); }
+        .timer-text-big { font-size: 2.5rem; font-weight: 900; color: var(--secondary); }
+        .paused-text-msg { color: var(--warning); font-weight: bold; font-size: 1.2rem; line-height: 1.6; }
         .scene-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; background: linear-gradient(to bottom, #87CEEB 0%, #E0F7FA 100%); pointer-events: none; }
-        .chat-container { margin-top: 1.5rem; background: #e5ddd5; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
-        .chat-messages { height: 300px; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
-        .message { padding: 8px 12px; border-radius: 8px; max-width: 80%; font-size: 0.9rem; position: relative; }
+        
+        /* --- WhatsApp Chat Style --- */
+        .chat-container { margin-top: 1.5rem; background: #e5ddd5; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"); /* خلفية واتساب */ }
+        .chat-messages { height: 350px; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+        
+        .message { padding: 8px 12px; border-radius: 8px; max-width: 75%; font-size: 0.95rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); display: flex; flex-direction: column; min-width: 100px; }
+        
+        /* رسالة مستلمة (أبيض) */
         .message.received { align-self: flex-start; background: white; color: #111; border-top-left-radius: 0; }
+        .message.received::after { content: ''; position: absolute; top: 0; right: -10px; width: 0; height: 0; border: 10px solid transparent; border-top-color: white; border-left: 0; border-right: 0; margin-top: 0; margin-right: -10px; transform: rotate(180deg); right: auto; left: -8px;}
+
+        /* رسالة مرسلة (أخضر فاتح) */
         .message.sent { align-self: flex-end; background: #dcf8c6; color: #111; border-top-right-radius: 0; }
+        .message.sent::after { content: ''; position: absolute; top: 0; right: -8px; width: 0; height: 0; border: 10px solid transparent; border-top-color: #dcf8c6; border-left: 0; border-right: 0; margin-top: 0; margin-right: -10px;}
+
+        .msg-meta { font-size: 0.7rem; color: #999; align-self: flex-end; display: flex; align-items: center; gap: 4px; margin-top: 4px; }
+        .msg-ticks { font-size: 0.8rem; }
+        .msg-ticks.read { color: #34B7F1; } /* الأزرق للصحين */
+        .msg-ticks.sent { color: #999; } /* الرمادي */
+
         .chat-input-area { padding: 10px; background: #f0f0f0; display: flex; gap: 10px; }
-        .chat-input-area input { flex:1; padding: 10px; border-radius: 20px; border:none; }
+        .chat-input-area input { flex:1; padding: 12px; border-radius: 25px; border:none; outline:none; }
+        
+        /* Parent Product List */
+        .parent-products-list { margin-top: 15px; background: white; border-radius: 12px; padding: 15px; text-align: right; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .prod-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 0.9rem; }
+        .prod-row:last-child { border-bottom: none; }
         
         /* Mini Products */
         .mini-product-list { margin-bottom: 15px; max-height: 150px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; padding: 5px; background: #fafafa; }
@@ -290,8 +270,13 @@
                     <div class="timer-text-big" id="live-timer">00:00:00</div>
                 </div>
                 
-                <h3 style="color:var(--primary); margin:20px 0;">التكلفة: <span id="live-cost">0</span> ج.م</h3>
+                <h3 style="color:var(--primary); margin:20px 0;">الإجمالي: <span id="live-cost">0</span> ج.م</h3>
                 
+                <div id="parent-products-container" class="parent-products-list hidden">
+                    <h4 style="margin-bottom:10px; color:#555; border-bottom:1px solid #eee; padding-bottom:5px;">🛒 تفاصيل الطلبات</h4>
+                    <div id="parent-products-items"></div>
+                </div>
+
                 <div class="chat-container">
                     <div id="parent-chat-messages" class="chat-messages"></div>
                     <div class="chat-input-area">
@@ -305,8 +290,8 @@
     </main>
 
     <div id="admin-chat-modal" class="modal">
-        <div class="modal-content" style="height:80vh; display:flex; flex-direction:column;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+        <div class="modal-content" style="height:80vh; display:flex; flex-direction:column; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-color:#e5ddd5;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px; background:white; padding:10px; border-radius:10px;">
                 <h3 id="chat-modal-title">محادثة</h3>
                 <button onclick="closeAdminChat()" style="background:none; border:none; font-size:1.5rem;">&times;</button>
             </div>
@@ -411,8 +396,6 @@
         
         window.checkLogin = () => {
             const p = document.getElementById('login-pass').value;
-            
-            // 1. دخول الموظفين (إدارة فقط)
             if(p === '0100') {
                 loginScreen.classList.add('hidden');
                 staffView.classList.remove('hidden');
@@ -421,7 +404,6 @@
                 document.getElementById('view-subtitle').innerText = "نظام المتابعة اليومي";
                 initStaffView();
             } 
-            // 2. دخول المالك (مالية فقط)
             else if (p === '521988') {
                 loginScreen.classList.add('hidden');
                 staffView.classList.add('hidden');
@@ -437,21 +419,17 @@
         
         window.logout = () => location.reload();
 
-        // Check Parent Link Mode
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('mode') === 'parent' && urlParams.get('id')) {
             loginScreen.classList.add('hidden');
             initParentView(urlParams.get('id'));
         }
 
-        // --- TIME UPDATE ---
         setInterval(() => {
             document.getElementById('header-datetime').innerText = new Date().toLocaleDateString('ar-EG', { weekday:'long', hour:'2-digit', minute:'2-digit' });
         }, 1000);
 
-        // =============================================
-        // STAFF VIEW LOGIC (0100)
-        // =============================================
+        // --- Staff View ---
         function initStaffView() {
             onValue(ref(db, 'children'), (snapshot) => {
                 const data = snapshot.val();
@@ -463,7 +441,6 @@
 
                 Object.keys(data).forEach(key => {
                     const child = data[key];
-                    
                     let productHTML = '';
                     let productsTotal = 0;
                     if(child.products) {
@@ -475,7 +452,6 @@
                         productHTML += `(مجموع: ${productsTotal} ج.م)</div>`;
                     }
 
-                    // تجهيز نص البحث (اسم + هاتف + كود)
                     const searchText = `${child.name} ${child.phone} ${child.childId}`.toLowerCase();
 
                     if (child.status === 'in' || child.status === 'paused') {
@@ -486,15 +462,15 @@
                         
                         const hoursCeil = Math.ceil(duration / 3600000); 
                         
+                        // Badge logic
                         const msgs = child.messages ? Object.values(child.messages) : [];
                         const unread = msgs.filter(m => m.sender === 'parent' && m.status !== 'read').length;
                         const badge = unread > 0 ? `<span style="background:red; color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem; position:absolute; top:-5px; right:-5px;">${unread}</span>` : '';
 
                         const div = document.createElement('div');
                         div.className = `kid-card ${isPaused ? 'paused-status' : 'in-status'}`;
-                        div.setAttribute('data-search', searchText); // إضافة خاصية البحث
+                        div.setAttribute('data-search', searchText);
                         
-                        // هنا يتم رسم الأزرار بناءً على الشكل الجديد (شريط ملون)
                         div.innerHTML = `
                             <div class="kid-info">
                                 <h3>${child.name} <span style="background:#eee; padding:2px 8px; border-radius:5px; font-size:0.8rem;">#${child.childId}</span></h3>
@@ -507,33 +483,18 @@
                             </div>
                             
                             <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; margin-top:10px;">
-                                
-                                <button class="btn btn-danger" style="padding: 8px 20px;" onclick="prepareCheckout('${key}')">
-                                    خروج
-                                </button>
-
-                                <button class="btn btn-primary" style="width:45px;" onclick="openAdminChat('${key}', '${child.name}')">
-                                    <i class="fas fa-comments"></i> ${badge}
-                                </button>
-
+                                <button class="btn btn-danger" style="padding: 8px 20px;" onclick="prepareCheckout('${key}')">خروج</button>
+                                <button class="btn btn-primary" style="width:45px;" onclick="openAdminChat('${key}', '${child.name}')"><i class="fas fa-comments"></i> ${badge}</button>
                                 ${isPaused 
                                     ? `<button class="btn btn-success" style="width:45px;" onclick="resumeChild('${key}')"><i class="fas fa-play"></i></button>`
                                     : `<button class="btn btn-warning" style="width:45px;" onclick="pauseChild('${key}')"><i class="fas fa-pause"></i></button>`
                                 }
-
-                                <a href="https://wa.me/2${child.phone}" target="_blank" class="btn btn-whatsapp" style="width:45px; text-decoration:none; display:inline-flex;">
-                                    <i class="fab fa-whatsapp"></i>
-                                </a>
-
-                                <button class="btn btn-purple" style="width:45px;" onclick="openProductModal('${key}')" title="المنتجات">
-                                    <i class="fas fa-shopping-cart"></i>
-                                </button>
-
+                                <a href="https://wa.me/2${child.phone}" target="_blank" class="btn btn-whatsapp" style="width:45px; text-decoration:none; display:inline-flex;"><i class="fab fa-whatsapp"></i></a>
+                                <button class="btn btn-purple" style="width:45px;" onclick="openProductModal('${key}')" title="المنتجات"><i class="fas fa-shopping-cart"></i></button>
                             </div>
                         `;
                         listActive.appendChild(div);
                     } else {
-                        // History List
                         const div = document.createElement('div');
                         div.className = 'kid-card out-status';
                         div.setAttribute('data-search', searchText);
@@ -546,11 +507,9 @@
                         listHistory.appendChild(div);
                     }
                 });
-                // تشغيل الفلتر في حالة كان هناك بحث مكتوب
                 filterList();
             });
 
-            // Live Timer Update
             setInterval(() => {
                 document.querySelectorAll('.live-timer').forEach(el => {
                     if(el.dataset.status === 'in') {
@@ -561,7 +520,6 @@
             }, 1000);
         }
 
-        // --- Add Child ---
         document.getElementById('checkin-form').onsubmit = (e) => {
             e.preventDefault();
             const name = document.getElementById('child-name').value;
@@ -569,7 +527,6 @@
             const item = document.getElementById('extra-item').value;
             const price = document.getElementById('extra-price').value;
 
-            // Phone Validation
             const phoneRegex = /^01\d{9}$/;
             if (!phoneRegex.test(phone)) return alert("يرجى إدخال رقم هاتف صحيح (11 رقم يبدأ بـ 01)");
 
@@ -598,27 +555,20 @@
         };
         window.closeQR = () => document.getElementById('new-child-qr').classList.add('hidden');
 
-        // --- Search Functionality (تم الإصلاح) ---
-        // استخدام keyup لضمان البحث الفوري
         document.getElementById('admin-search').addEventListener('keyup', (e) => {
             searchQuery = e.target.value.toLowerCase();
             filterList();
         });
 
-        // دالة الفلترة تعتمد على data-search
         function filterList() {
             const cards = document.querySelectorAll('.kid-card');
             cards.forEach(card => {
                 const txt = card.getAttribute('data-search') || "";
-                if (txt.includes(searchQuery)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
+                if (txt.includes(searchQuery)) card.style.display = 'flex';
+                else card.style.display = 'none';
             });
         }
 
-        // --- Pause/Resume ---
         window.pauseChild = (id) => update(ref(db, `children/${id}`), { status:'paused', pauseStartTime: Date.now() });
         window.resumeChild = (id) => {
             get(ref(db, `children/${id}`)).then(s => {
@@ -628,9 +578,7 @@
             });
         };
 
-        // =============================================
-        // FINANCIAL VIEW LOGIC (521988)
-        // =============================================
+        // --- Financial View ---
         function initFinancialView() {
             onValue(ref(db, 'children'), (snapshot) => {
                 const data = snapshot.val();
@@ -653,25 +601,16 @@
                         const cost = parseFloat(child.totalCost || 0);
                         const exitDate = new Date(child.exitTime);
 
-                        // 1. Today
                         if (exitDate.toDateString() === todayStr) {
                             dayInc += cost;
                             dayCount++;
-                            
-                            // حساب المنتجات لهذا الطفل
-                            if(child.products) {
-                                Object.values(child.products).forEach(p => {
-                                    dayProductSales += parseFloat(p.price);
-                                });
-                            }
+                            if(child.products) Object.values(child.products).forEach(p => dayProductSales += parseFloat(p.price));
                         }
                         
-                        // 2. Month
                         if (exitDate.getMonth() === currentMonth && exitDate.getFullYear() === now.getFullYear()) {
                             monthInc += cost;
                         }
 
-                        // 3. Week
                         if (child.exitTime >= startOfWeekTs) {
                             weekInc += cost;
                         }
@@ -683,14 +622,12 @@
                 document.getElementById('stat-month-income').innerText = monthInc + ' ج.م';
                 document.getElementById('stat-day-count').innerText = dayCount;
                 document.getElementById('stat-day-products').innerText = dayProductSales + ' ج.م';
-                
                 renderDailyDetails(data, todayStr);
             });
         }
 
         window.toggleDailyDetails = () => {
-            const container = document.getElementById('daily-details-container');
-            container.classList.toggle('hidden');
+            document.getElementById('daily-details-container').classList.toggle('hidden');
         };
 
         function renderDailyDetails(data, todayStr) {
@@ -721,9 +658,7 @@
             if(!found) listDiv.innerHTML = '<div style="text-align:center; padding:10px; color:#999;">لا يوجد خروج اليوم</div>';
         }
 
-        // =============================================
-        // PRODUCT MODAL
-        // =============================================
+        // --- Product Management ---
         window.openProductModal = (id) => {
             childIdForProduct = id;
             const listContainer = document.getElementById('current-products-list');
@@ -749,9 +684,7 @@
         };
 
         window.deleteProduct = (childId, prodKey) => {
-            if(confirm('حذف المنتج؟')) {
-                remove(ref(db, `children/${childId}/products/${prodKey}`)).then(() => openProductModal(childId));
-            }
+            if(confirm('حذف المنتج؟')) remove(ref(db, `children/${childId}/products/${prodKey}`)).then(() => openProductModal(childId));
         };
         window.closeProductModal = () => document.getElementById('add-product-modal').style.display = 'none';
         window.submitAddProduct = () => {
@@ -761,9 +694,7 @@
             push(ref(db, `children/${childIdForProduct}/products`), { name, price: parseFloat(price) }).then(() => closeProductModal());
         };
 
-        // =============================================
-        // CHECKOUT & RECEIPT LOGIC
-        // =============================================
+        // --- Checkout ---
         function showReceiptModal(c, key, isReadOnly = false) {
             let ms = c.status === 'paused' 
                 ? c.pauseStartTime - c.entryTime - (c.totalPausedTime||0)
@@ -820,13 +751,16 @@
         };
         window.closeModal = () => document.getElementById('checkout-modal').style.display = 'none';
 
-        // =============================================
-        // PARENT VIEW LOGIC
-        // =============================================
+        // --- PARENT VIEW & CHAT (Modified) ---
         function initParentView(childId) {
             currentChatId = childId;
             document.getElementById('parent-view').classList.remove('hidden');
             
+            // تحديث حالة قراءة رسائل الإدمن من قبل الأب
+            get(ref(db, `children/${childId}/messages`)).then(s => {
+                if(s.exists()) s.forEach(c => { if(c.val().sender==='admin' && c.val().status!=='read') update(ref(db, `children/${childId}/messages/${c.key}`), {status:'read'}); });
+            });
+
             onValue(ref(db, `children/${childId}`), (snapshot) => {
                 const data = snapshot.val();
                 if (!data) return;
@@ -837,14 +771,28 @@
                 const costEl = document.getElementById('live-cost');
                 const containerEl = document.getElementById('parent-timer-container');
 
+                // عرض المنتجات للأب
+                const prodContainer = document.getElementById('parent-products-container');
+                const prodItems = document.getElementById('parent-products-items');
+                let prodCost = 0;
+                
+                if (data.products) {
+                    prodContainer.classList.remove('hidden');
+                    prodItems.innerHTML = '';
+                    Object.values(data.products).forEach(p => {
+                        prodCost += parseFloat(p.price);
+                        prodItems.innerHTML += `<div class="prod-row"><span>${p.name}</span><span>${p.price} ج.م</span></div>`;
+                    });
+                } else {
+                    prodContainer.classList.add('hidden');
+                }
+
                 if (data.status === 'in') {
                     containerEl.innerHTML = '<div class="timer-text-big" id="live-timer">00:00:00</div>';
                     const updateTimer = () => {
                         const ms = Date.now() - data.entryTime - (data.totalPausedTime || 0);
                         document.getElementById('live-timer').innerText = formatDuration(ms);
                         const h = Math.ceil(ms/3600000) || 1;
-                        let prodCost = 0;
-                        if(data.products) Object.values(data.products).forEach(p=> prodCost+=parseFloat(p.price));
                         costEl.innerText = (h*20) + prodCost;
                     };
                     updateTimer();
@@ -854,8 +802,6 @@
                     containerEl.innerHTML = '<div class="paused-text-msg">تم ايقاف الوقت<br>لحين عودة الطفل ✋</div>';
                     const ms = data.pauseStartTime - data.entryTime - (data.totalPausedTime || 0);
                     const h = Math.ceil(ms/3600000) || 1;
-                    let prodCost = 0;
-                    if(data.products) Object.values(data.products).forEach(p=> prodCost+=parseFloat(p.price));
                     costEl.innerText = (h*20) + prodCost;
                 } else if (data.status === 'out') {
                     if(window.parentTimerInterval) clearInterval(window.parentTimerInterval);
@@ -863,12 +809,24 @@
                     costEl.innerText = data.totalCost;
                 }
 
-                // Chat
+                // Chat Render with Ticks
                 const chatDiv = document.getElementById('parent-chat-messages');
                 chatDiv.innerHTML = '';
                 if(data.messages) {
                     Object.values(data.messages).forEach(m => {
-                        chatDiv.innerHTML += `<div class="message ${m.sender === 'parent' ? 'sent' : 'received'}">${m.text}</div>`;
+                        // حالة الرسالة
+                        let tickIcon = '';
+                        if(m.sender === 'parent') {
+                            if(m.status === 'read') tickIcon = '<span class="msg-ticks read">✓✓</span>';
+                            else tickIcon = '<span class="msg-ticks sent">✓</span>';
+                        }
+
+                        const time = new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        chatDiv.innerHTML += `
+                            <div class="message ${m.sender === 'parent' ? 'sent' : 'received'}">
+                                ${m.text}
+                                <span class="msg-meta">${time} ${tickIcon}</span>
+                            </div>`;
                     });
                     chatDiv.scrollTop = chatDiv.scrollHeight;
                 }
@@ -882,19 +840,37 @@
             };
         }
 
-        // Chat Admin
+        // --- Admin Chat Logic (Modified) ---
         window.openAdminChat = (id, name) => {
             currentChatId = id;
             document.getElementById('chat-modal-title').innerText = name;
             document.getElementById('admin-chat-modal').style.display = 'flex';
+            
+            // عند فتح الإدمن للمحادثة، اجعل رسائل الأب مقروءة
             get(ref(db, `children/${id}/messages`)).then(s => {
                 if(s.exists()) s.forEach(c => { if(c.val().sender==='parent' && c.val().status!=='read') update(ref(db, `children/${id}/messages/${c.key}`), {status:'read'}); });
             });
+
             onValue(ref(db, `children/${id}/messages`), s => {
                 const div = document.getElementById('admin-chat-history');
                 div.innerHTML = '';
-                if(s.exists()) Object.values(s.val()).forEach(m => div.innerHTML += `<div class="message ${m.sender === 'admin' ? 'sent' : 'received'}">${m.text}</div>`);
-                div.scrollTop = div.scrollHeight;
+                if(s.exists()) {
+                    Object.values(s.val()).forEach(m => {
+                        let tickIcon = '';
+                        if(m.sender === 'admin') {
+                            if(m.status === 'read') tickIcon = '<span class="msg-ticks read">✓✓</span>';
+                            else tickIcon = '<span class="msg-ticks sent">✓</span>';
+                        }
+                        const time = new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        
+                        div.innerHTML += `
+                            <div class="message ${m.sender === 'admin' ? 'sent' : 'received'}">
+                                ${m.text}
+                                <span class="msg-meta">${time} ${tickIcon}</span>
+                            </div>`;
+                    });
+                    div.scrollTop = div.scrollHeight;
+                }
             });
         };
         window.closeAdminChat = () => document.getElementById('admin-chat-modal').style.display = 'none';
