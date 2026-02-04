@@ -790,21 +790,8 @@
                 });
             };
 
-            // --- تم تعديل كود البحث ليعمل بشكل فوري عن طريق فلترة العناصر في الصفحة ---
-            document.getElementById('admin-search').addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase();
-                // اختيار جميع الكروت في القائمتين (النشطة والسجل)
-                const cards = document.querySelectorAll('#kids-list-active .kid-card, #kids-list-history .kid-card');
-
-                cards.forEach(card => {
-                    // البحث في النص الكامل للكرت (الاسم، الرقم، الكود)
-                    if (card.textContent.toLowerCase().includes(query)) {
-                        card.classList.remove('hidden');
-                    } else {
-                        card.classList.add('hidden');
-                    }
-                });
-            });
+            // --- تم نقل سطر البحث إلى هنا ليعمل بشكل صحيح وفوري ---
+            document.getElementById('admin-search').addEventListener('input', initAdmin);
         }
 
         window.openProductModal = (id, name) => {
