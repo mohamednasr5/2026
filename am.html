@@ -203,6 +203,7 @@
         .parent-view-card { text-align: center; border-radius: 30px; padding: 2.5rem 1.5rem; background: rgba(255, 255, 255, 0.95); margin-top: 2rem; position: relative; z-index: 10; box-shadow: 0 20px 50px rgba(0,0,0,0.08); }
         .parent-timer-circle { width: 200px; height: 200px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 30px auto; border: 8px solid rgba(255, 71, 87, 0.1); }
         .timer-text-big { font-size: 3rem; font-weight: 900; color: var(--secondary); }
+        .paused-text-msg { color: var(--warning); font-weight: bold; font-size: 1.3rem; line-height: 1.6; }
         .scene-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; background: linear-gradient(to bottom, #87CEEB 0%, #E0F7FA 100%); pointer-events: none; }
         
         /* Chat */
@@ -213,6 +214,10 @@
         .message.sent { align-self: flex-end; background: #dcf8c6; color: #111; border-top-right-radius: 0; }
         .chat-input-area { padding: 10px; background: #f0f0f0; display: flex; gap: 10px; }
         .chat-input-area input { flex:1; padding: 10px; border-radius: 20px; border:none; }
+        
+        /* زر السجل */
+        .stats-btn { cursor: pointer; color: var(--primary); font-size: 1rem; margin-right: 10px; background: #fff; border: 1px solid #ddd; padding: 5px 10px; border-radius: 20px; transition: 0.3s; }
+        .stats-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
     </style>
 </head>
 <body>
@@ -257,7 +262,8 @@
                         </div>
                         <div class="form-group">
                             <label>رقم الهاتف</label>
-                            <input type="tel" id="parent-phone" class="form-control" placeholder="01xxxxxxxxx" required>
+                            <input type="tel" id="parent-phone" class="form-control" placeholder="01xxxxxxxxx" maxlength="11" required>
+                            <small style="color:#888; font-size:0.8rem;">يجب أن يبدأ بـ 01 ويكون 11 رقم</small>
                         </div>
                         <div class="form-group">
                             <label>منتج (اختياري)</label>
@@ -290,7 +296,12 @@
                         <div id="kids-list-active"></div>
                     </div>
                     <div class="card" style="background: #fafafa;">
-                        <h2 style="margin-bottom:1rem; color:#7f8c8d;">📜 سجل اليوم</h2>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                            <h2 style="color:#7f8c8d;">📜 سجل اليوم</h2>
+                            <button class="stats-btn" onclick="openFinancialStats()">
+                                <i class="fas fa-chart-line"></i> تقرير مالي
+                            </button>
+                        </div>
                         <div id="kids-list-history"></div>
                     </div>
                 </section>
@@ -303,9 +314,11 @@
                 <div id="p-status-badge" style="padding:5px 15px; border-radius:20px; display:inline-block; font-weight:bold; margin-bottom:10px;"></div>
                 <h2 id="p-child-name"></h2>
                 <div id="p-child-id" style="color:#666; margin-bottom:10px;"></div>
-                <div class="parent-timer-circle">
+                
+                <div class="parent-timer-circle" id="parent-timer-container">
                     <div class="timer-text-big" id="live-timer">00:00:00</div>
                 </div>
+                
                 <h3 style="color:var(--primary); margin:20px 0;">التكلفة: <span id="live-cost">0</span> ج.م</h3>
                 
                 <div class="chat-container">
@@ -367,9 +380,9 @@
                         <a id="receipt-whatsapp-btn" href="#" target="_blank" class="btn btn-whatsapp">
                             <i class="fab fa-whatsapp"></i> إرسال الفاتورة واتساب
                         </a>
-                        <div style="display:flex; gap:10px;">
-                            <button class="btn btn-danger" onclick="confirmCheckout()">✅ تأكيد الخروج</button>
-                            <button class="btn btn-outline" onclick="closeModal()">إلغاء</button>
+                        <div style="display:flex; gap:10px;" id="checkout-actions">
+                            <button class="btn btn-danger" onclick="confirmCheckout()" id="btn-confirm-out">✅ تأكيد الخروج</button>
+                            <button class="btn btn-outline" onclick="closeModal()">إغلاق</button>
                         </div>
                     </div>
                     
@@ -377,6 +390,16 @@
                         شكراً لزيارتكم .. نتمنى لكم يوماً سعيداً!
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="stats-modal" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-bottom:1rem; border-bottom:1px solid #eee; padding-bottom:10px;">📊 التقرير المالي اليومي</h2>
+            <div id="stats-list" style="max-height: 400px; overflow-y:auto;"></div>
+            <div style="margin-top:15px; text-align:center;">
+                <button class="btn btn-outline" onclick="document.getElementById('stats-modal').style.display='none'">إغلاق</button>
             </div>
         </div>
     </div>
@@ -493,15 +516,14 @@
                             ? (child.pauseStartTime - child.entryTime - (child.totalPausedTime||0))
                             : (Date.now() - child.entryTime - (child.totalPausedTime||0));
                         
-                        // 2. منطق الوقت: حساب الساعات المجبورة للعرض
-                        const hoursCeil = Math.ceil(duration / 3600000); // 1 دقيقة = 1 ساعة
-                        const displayTime = isPaused ? formatDuration(duration) : formatDuration(duration); // للتحديث المباشر
+                        const hoursCeil = Math.ceil(duration / 3600000); 
+                        const displayTime = formatDuration(duration);
 
                         const div = document.createElement('div');
                         div.className = `kid-card ${isPaused ? 'paused-status' : 'in-status'}`;
                         div.setAttribute('data-search', `${child.name} ${child.phone} ${child.childId}`);
                         
-                        // زر الرسائل (مع عدد غير المقروء)
+                        // زر الرسائل
                         const msgs = child.messages ? Object.values(child.messages) : [];
                         const unread = msgs.filter(m => m.sender === 'parent' && m.status !== 'read').length;
                         const badge = unread > 0 ? `<span style="background:red; color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem; position:absolute; top:-5px; right:-5px;">${unread}</span>` : '';
@@ -563,6 +585,14 @@
             const item = document.getElementById('extra-item').value;
             const price = document.getElementById('extra-price').value;
 
+            // --- التحقق من رقم الهاتف ---
+            // يجب أن يبدأ بـ 01 ويتكون من 11 رقم
+            const phoneRegex = /^01\d{9}$/;
+            if (!phoneRegex.test(phone)) {
+                alert("يرجى إدخال رقم هاتف صحيح (11 رقم يبدأ بـ 01)");
+                return;
+            }
+
             const newRef = push(ref(db, 'children'));
             const code = Math.floor(1000 + Math.random() * 9000);
             
@@ -582,7 +612,11 @@
                 qrDiv.classList.remove('hidden');
                 document.getElementById('qr-code').innerHTML = '';
                 new QRCode(document.getElementById('qr-code'), { text: link, width:100, height:100 });
-                document.getElementById('wa-btn-new').onclick = () => window.open(`https://wa.me/${phone}?text=${encodeURIComponent('رابط المتابعة: ' + link)}`, '_blank');
+                
+                // إضافة الرقم 2 في بداية رقم الواتساب للكود الدولي
+                const whatsappPhone = '2' + phone;
+                
+                document.getElementById('wa-btn-new').onclick = () => window.open(`https://wa.me/${whatsappPhone}?text=${encodeURIComponent('رابط المتابعة: ' + link)}`, '_blank');
             });
         };
         window.closeQR = () => document.getElementById('new-child-qr').classList.add('hidden');
@@ -641,11 +675,9 @@
             document.getElementById('add-product-modal').style.display = 'flex';
         };
 
-        // دالة الحذف الجديدة
         window.deleteProduct = (childId, prodKey) => {
             if(confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
                 remove(ref(db, `children/${childId}/products/${prodKey}`)).then(() => {
-                    // إعادة تحميل القائمة
                     openProductModal(childId);
                 });
             }
@@ -661,7 +693,6 @@
             push(ref(db, `children/${childIdForProduct}/products`), {
                 name: name, price: parseFloat(price)
             }).then(() => {
-                // الإغلاق التلقائي لتوفير الوقت
                 closeProductModal();
             });
         };
@@ -669,53 +700,52 @@
         // =============================================
         // 1. & 2. CHECKOUT LOGIC & RECEIPT (الفاتورة والوقت)
         // =============================================
-        window.prepareCheckout = (id) => {
-            currentChildId = id;
-            get(ref(db, `children/${id}`)).then(s => {
-                const c = s.val();
-                
-                // حساب المدة
-                let ms = c.status === 'paused' 
-                    ? c.pauseStartTime - c.entryTime - (c.totalPausedTime||0)
-                    : Date.now() - c.entryTime - (c.totalPausedTime||0);
-                
-                // 2. منطق الساعة المجبورة (Time Calculation Logic)
-                // دالة السقف (Ceiling): 1 دقيقة = 1 ساعة
-                const hours = Math.ceil(ms / 3600000); 
-                const safeHours = hours === 0 ? 1 : hours; // أقل حاجة ساعة
-                const timeCost = safeHours * 20; // 20 جنيه للساعة
+        
+        // دالة موحدة لعرض الفاتورة (تستخدم للخروج وللتقارير)
+        function showReceiptModal(c, key, isReadOnly = false) {
+             // حساب المدة
+            let ms = c.status === 'paused' 
+                ? c.pauseStartTime - c.entryTime - (c.totalPausedTime||0)
+                : (c.status === 'out' && c.exitTime) ? (c.exitTime - c.entryTime - (c.totalPausedTime||0)) 
+                : Date.now() - c.entryTime - (c.totalPausedTime||0);
+            
+            // 2. منطق الساعة المجبورة
+            const hours = Math.ceil(ms / 3600000); 
+            const safeHours = hours === 0 ? 1 : hours; // أقل حاجة ساعة
+            const timeCost = safeHours * 20; // 20 جنيه للساعة
 
-                // تحضير المنتجات
-                let productsCost = 0;
-                let productsListHTML = '';
-                let productsTextForWA = '';
+            // تحضير المنتجات
+            let productsCost = 0;
+            let productsListHTML = '';
+            let productsTextForWA = '';
 
-                if(c.products) {
-                    Object.values(c.products).forEach(p => {
-                        productsCost += parseFloat(p.price);
-                        productsListHTML += `
-                            <div class="receipt-row">
-                                <span>${p.name}</span>
-                                <span>${p.price} ج.م</span>
-                            </div>
-                        `;
-                        productsTextForWA += `\n🛍️ ${p.name}: ${p.price} ج.م`;
-                    });
-                } else {
-                    productsListHTML = '<div style="color:#999; text-align:center;">لا يوجد طلبات</div>';
-                    productsTextForWA = '\n🛍️ لا يوجد طلبات إضافية';
-                }
+            if(c.products) {
+                Object.values(c.products).forEach(p => {
+                    productsCost += parseFloat(p.price);
+                    productsListHTML += `
+                        <div class="receipt-row">
+                            <span>${p.name}</span>
+                            <span>${p.price} ج.م</span>
+                        </div>
+                    `;
+                    productsTextForWA += `\n🛍️ ${p.name}: ${p.price} ج.م`;
+                });
+            } else {
+                productsListHTML = '<div style="color:#999; text-align:center;">لا يوجد طلبات</div>';
+                productsTextForWA = '\n🛍️ لا يوجد طلبات إضافية';
+            }
 
-                const grandTotal = timeCost + productsCost;
+            const grandTotal = timeCost + productsCost;
 
-                // 1. تعبئة بيانات الفاتورة (Checkout Modal)
-                document.getElementById('receipt-child-name').innerText = c.name;
-                document.getElementById('receipt-hours-text').innerText = `${safeHours} ساعة (${timeCost} ج.م)`;
-                document.getElementById('receipt-products-list').innerHTML = productsListHTML;
-                document.getElementById('receipt-grand-total').innerText = `${grandTotal} ج.م`;
+            // تعبئة البيانات
+            document.getElementById('receipt-child-name').innerText = c.name;
+            document.getElementById('receipt-hours-text').innerText = `${safeHours} ساعة (${timeCost} ج.م)`;
+            document.getElementById('receipt-products-list').innerHTML = productsListHTML;
+            document.getElementById('receipt-grand-total').innerText = `${grandTotal} ج.م`;
 
-                // 3. تنسيق رسالة واتساب (WhatsApp Format)
-                const waText = `🧾 *فاتورة استضافة أوبرا عاشور*
+            // واتساب: إضافة 2 لرقم الهاتف
+            const waPhone = '2' + c.phone;
+            const waText = `🧾 *فاتورة استضافة أوبرا عاشور*
 ------------------------
 👤 *الطفل:* ${c.name}
 ⏳ *الوقت:* ${safeHours} ساعات
@@ -727,13 +757,26 @@ ${productsTextForWA}
 ------------------------
 شكراً لزيارتكم! ❤️`;
 
-                const waLink = `https://wa.me/${c.phone}?text=${encodeURIComponent(waText)}`;
-                document.getElementById('receipt-whatsapp-btn').href = waLink;
+            const waLink = `https://wa.me/${waPhone}?text=${encodeURIComponent(waText)}`;
+            document.getElementById('receipt-whatsapp-btn').href = waLink;
 
+            // إخفاء زر التأكيد في حالة القراءة فقط
+            const confirmBtn = document.getElementById('btn-confirm-out');
+            if(isReadOnly) {
+                confirmBtn.style.display = 'none';
+            } else {
+                confirmBtn.style.display = 'inline-block';
                 // حفظ التكلفة للإرسال عند التأكيد
                 document.getElementById('checkout-modal').dataset.total = grandTotal;
-                
-                document.getElementById('checkout-modal').style.display = 'flex';
+            }
+            
+            document.getElementById('checkout-modal').style.display = 'flex';
+        }
+
+        window.prepareCheckout = (id) => {
+            currentChildId = id;
+            get(ref(db, `children/${id}`)).then(s => {
+                showReceiptModal(s.val(), id, false);
             });
         };
 
@@ -748,6 +791,134 @@ ${productsTextForWA}
             });
         };
         window.closeModal = () => document.getElementById('checkout-modal').style.display = 'none';
+
+        // =============================================
+        // تقرير المالية (ميزة جديدة)
+        // =============================================
+        window.openFinancialStats = () => {
+            const pass = prompt("الرجاء إدخال كلمة المرور:");
+            if(pass !== "521988") {
+                alert("كلمة المرور غير صحيحة");
+                return;
+            }
+
+            const listDiv = document.getElementById('stats-list');
+            listDiv.innerHTML = '<div style="text-align:center;">جاري التحميل...</div>';
+            document.getElementById('stats-modal').style.display = 'flex';
+
+            get(ref(db, 'children')).then(snapshot => {
+                listDiv.innerHTML = '';
+                const data = snapshot.val();
+                if(!data) {
+                    listDiv.innerHTML = 'لا توجد بيانات.';
+                    return;
+                }
+
+                let hasData = false;
+                Object.keys(data).forEach(key => {
+                    const child = data[key];
+                    // نعرض فقط الأطفال الذين خرجوا (Out)
+                    if(child.status === 'out') {
+                        hasData = true;
+                        const div = document.createElement('div');
+                        div.style.padding = '10px';
+                        div.style.borderBottom = '1px solid #eee';
+                        div.style.cursor = 'pointer';
+                        div.style.display = 'flex';
+                        div.style.justifyContent = 'space-between';
+                        div.innerHTML = `
+                            <div>
+                                <strong>${child.name}</strong> <br>
+                                <small>${child.phone}</small>
+                            </div>
+                            <div style="text-align:left;">
+                                <span style="font-weight:bold; color:var(--primary);">${child.totalCost || 0} ج.م</span>
+                            </div>
+                        `;
+                        // عند الضغط يفتح الفاتورة
+                        div.onclick = () => showReceiptModal(child, key, true);
+                        listDiv.appendChild(div);
+                    }
+                });
+                
+                if(!hasData) listDiv.innerHTML = '<div style="text-align:center; padding:20px;">لا يوجد أطفال مسجل خروجهم اليوم.</div>';
+            });
+        };
+
+        // =============================================
+        // PARENT VIEW LOGIC (تم التحديث لدعم الإيقاف)
+        // =============================================
+        function initParentView(childId) {
+            currentChatId = childId;
+            document.getElementById('parent-view').classList.remove('hidden');
+            const statusRef = ref(db, `children/${childId}`);
+            
+            onValue(statusRef, (snapshot) => {
+                const data = snapshot.val();
+                if (!data) return;
+
+                document.getElementById('p-child-name').innerText = data.name;
+                document.getElementById('p-child-id').innerText = `ID: ${data.childId}`;
+
+                const timerEl = document.getElementById('live-timer');
+                const costEl = document.getElementById('live-cost');
+                const containerEl = document.getElementById('parent-timer-container');
+
+                if (data.status === 'in') {
+                    containerEl.innerHTML = '<div class="timer-text-big" id="live-timer">00:00:00</div>';
+                    // Update timer logic
+                    const updateTimer = () => {
+                        const ms = Date.now() - data.entryTime - (data.totalPausedTime || 0);
+                        document.getElementById('live-timer').innerText = formatDuration(ms);
+                        // حساب التكلفة المباشر
+                        const h = Math.ceil(ms/3600000) || 1;
+                        let prodCost = 0;
+                        if(data.products) Object.values(data.products).forEach(p=> prodCost+=parseFloat(p.price));
+                        costEl.innerText = (h*20) + prodCost;
+                    };
+                    updateTimer();
+                    if(!window.parentTimerInterval) window.parentTimerInterval = setInterval(updateTimer, 1000);
+
+                } else if (data.status === 'paused') {
+                    // --- تعديل الإيقاف: إظهار الرسالة ---
+                    if(window.parentTimerInterval) clearInterval(window.parentTimerInterval);
+                    containerEl.innerHTML = '<div class="paused-text-msg">تم ايقاف الوقت<br>لحين عودة الطفل ✋</div>';
+                    // حساب التكلفة حتى لحظة التوقف
+                    const ms = data.pauseStartTime - data.entryTime - (data.totalPausedTime || 0);
+                    const h = Math.ceil(ms/3600000) || 1;
+                    let prodCost = 0;
+                    if(data.products) Object.values(data.products).forEach(p=> prodCost+=parseFloat(p.price));
+                    costEl.innerText = (h*20) + prodCost;
+
+                } else if (data.status === 'out') {
+                    if(window.parentTimerInterval) clearInterval(window.parentTimerInterval);
+                    containerEl.innerHTML = '<div class="paused-text-msg" style="color:gray">تم الخروج 👋</div>';
+                    costEl.innerText = data.totalCost;
+                }
+
+                // Chat Messages
+                const chatDiv = document.getElementById('parent-chat-messages');
+                chatDiv.innerHTML = '';
+                if(data.messages) {
+                    Object.values(data.messages).forEach(m => {
+                        const d = document.createElement('div');
+                        d.className = `message ${m.sender === 'parent' ? 'sent' : 'received'}`;
+                        d.innerText = m.text;
+                        chatDiv.appendChild(d);
+                    });
+                    chatDiv.scrollTop = chatDiv.scrollHeight;
+                }
+            });
+
+            window.sendParentMessage = () => {
+                const txt = document.getElementById('parent-message-input').value;
+                if(!txt) return;
+                push(ref(db, `children/${childId}/messages`), {
+                    sender: 'parent', text: txt, timestamp: Date.now(), status: 'new'
+                });
+                document.getElementById('parent-message-input').value = '';
+            };
+        }
 
         // --- CHAT SYSTEM ---
         window.openAdminChat = (id, name) => {
