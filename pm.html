@@ -134,7 +134,7 @@
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 20px; border-radius: 16px; width: 95%; max-width: 450px; position: relative; }
         
-        /* --- Receipt Styles (New) --- */
+        /* --- Receipt Styles --- */
         .receipt-card {
             background: #fff;
             border: 1px dashed #ccc;
@@ -171,6 +171,18 @@
         .dev-footer p { margin: 5px 0; }
         .dev-footer a { color: var(--accent); text-decoration: none; font-weight: bold; }
         .dev-footer i { margin-left: 5px; }
+        
+        /* Products List in Modal */
+        .manage-prod-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem;
+        }
+        .manage-prod-item:last-child { border-bottom: none; }
+        .btn-delete-prod {
+            background: #ffe0e0; color: #ff4757; border: none;
+            padding: 4px 8px; border-radius: 5px; cursor: pointer;
+            font-size: 0.8rem;
+        }
 
         /* Utils */
         .hidden { display: none !important; }
@@ -338,13 +350,20 @@
 
     <div id="product-modal" class="modal">
         <div class="modal-content">
-            <h3 style="color:var(--purple); margin-bottom:15px;">🛍️ إضافة منتج</h3>
-            <p id="prod-modal-title" style="margin-bottom:15px; font-weight:bold;"></p>
-            <input type="text" id="prod-name" class="form-control" placeholder="اسم المنتج (عصير، مياه..)">
-            <input type="number" id="prod-price" class="form-control" placeholder="السعر">
-            <div style="display:flex; gap:10px;">
-                <button class="btn btn-product" style="flex:1;" onclick="addProduct()">إضافة</button>
-                <button class="btn btn-outline" style="flex:1;" onclick="closeProductModal()">إلغاء</button>
+            <h3 style="color:var(--purple); margin-bottom:10px;">🛍️ إدارة المنتجات</h3>
+            <p id="prod-modal-title" style="margin-bottom:15px; font-weight:bold; color:#555;"></p>
+            
+            <div id="current-prod-list" style="max-height:150px; overflow-y:auto; background:#f9f9f9; padding:5px; border-radius:8px; margin-bottom:15px; border:1px solid #eee;">
+                </div>
+
+            <div style="border-top:1px dashed #ccc; padding-top:15px;">
+                <h4 style="margin-bottom:10px; font-size:0.9rem;">إضافة جديد:</h4>
+                <input type="text" id="prod-name" class="form-control" placeholder="اسم المنتج (عصير، مياه..)">
+                <input type="number" id="prod-price" class="form-control" placeholder="السعر">
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-product" style="flex:1;" onclick="addProduct()">إضافة وتأكيد</button>
+                    <button class="btn btn-outline" style="flex:1;" onclick="closeProductModal()">إغلاق</button>
+                </div>
             </div>
         </div>
     </div>
@@ -369,8 +388,7 @@
                         <span id="bill-duration">-</span>
                     </div>
                     
-                    <div id="bill-products-container" style="margin: 10px 0; border-top:1px dotted #ccc; padding-top:5px;">
-                        </div>
+                    <div id="bill-products-container" style="margin: 10px 0; border-top:1px dotted #ccc; padding-top:5px;"></div>
 
                     <div class="receipt-row total-row">
                         <span>إجمالي المبلغ:</span>
@@ -396,6 +414,7 @@
             </div>
         </div>
     </div>
+
     <div id="toast-container" style="position:fixed; bottom:20px; left:20px; z-index:3000;"></div>
     
     <audio id="msg-sound" src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_3f32527b79.mp3"></audio>
@@ -403,7 +422,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getDatabase, ref, push, onValue, update, set, get } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+        import { getDatabase, ref, push, onValue, update, set, get, remove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDJ_dnEZP62J871KLAg88_quQdUt01004o",
@@ -426,7 +445,7 @@
         let activeChatId = null;
         let productTargetId = null;
         let lastMsgCounts = {};
-        let currentBillPhone = ""; // Store phone for bill
+        let currentBillPhone = "";
         
         // --- Sounds ---
         const playMsgSound = () => document.getElementById('msg-sound').play().catch(()=>{});
@@ -442,7 +461,7 @@
                 document.getElementById('admin-view').classList.remove('hidden');
                 document.getElementById('logout-btn').classList.remove('hidden');
                 initAdmin();
-            } else if (pass === '521988') { // كلمة سر الاحصائيات
+            } else if (pass === '521988') {
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('stats-view').classList.remove('hidden');
                 document.getElementById('logout-btn').classList.remove('hidden');
@@ -475,20 +494,15 @@
                 const todayStr = new Date().toLocaleDateString('en-US');
 
                 Object.values(data).forEach(child => {
-                    // Count only finished sessions for income
                     if(child.status === 'out' && child.totalCost) {
                         const cost = parseFloat(child.totalCost);
                         totalIncome += cost;
-                        
-                        // Check if today
                         if(child.exitTime) {
                             const exitDate = new Date(child.exitTime).toLocaleDateString('en-US');
                             if(exitDate === todayStr) {
                                 todayIncome += cost;
                             }
                         }
-
-                        // Calculate product vs time split
                         let pCost = 0;
                         if(child.products) {
                             Object.values(child.products).forEach(p => pCost += p.price);
@@ -526,12 +540,10 @@
                     if(prodText) prodText = '🛍️ ' + prodText;
 
                     if(child.status === 'in' || child.status === 'paused') {
-                        // Calculate Time
                         let duration = 0;
                         if(child.status === 'in') duration = Date.now() - child.entryTime - (child.totalPausedTime||0);
                         else duration = child.pauseStartTime - child.entryTime - (child.totalPausedTime||0);
 
-                        // Hour Alert
                         const hours = Math.floor(duration / 3600000);
                         if(child.lastHourAlert !== hours && hours > 0) {
                             playHourSound();
@@ -539,7 +551,6 @@
                             update(ref(db, `children/${key}`), { lastHourAlert: hours });
                         }
 
-                        // Messages Badge
                         const msgs = child.messages ? Object.values(child.messages) : [];
                         const unreadCount = msgs.filter(m => m.sender === 'parent' && !m.read).length;
                         if(unreadCount > (lastMsgCounts[key] || 0)) {
@@ -562,7 +573,7 @@
                                 <div class="timer-display" style="margin-top:5px;">${formatTime(duration)}</div>
                             </div>
                             <div class="controls">
-                                <button class="btn btn-product" onclick="openProductModal('${key}', '${child.name}')" title="إضافة منتجات"><i class="fas fa-cart-plus"></i></button>
+                                <button class="btn btn-product" onclick="openProductModal('${key}', '${child.name}')" title="إدارة المنتجات"><i class="fas fa-cart-plus"></i></button>
                                 <button class="btn btn-whatsapp" onclick="openWhatsApp('${child.phone}', '${key}')"><i class="fab fa-whatsapp"></i></button>
                                 ${child.status === 'in' 
                                     ? `<button class="btn btn-warning" onclick="pause('${key}')"><i class="fas fa-pause"></i></button>`
@@ -598,7 +609,6 @@
                 initAdmin(); 
             }, 1000);
 
-            // Add Child
             document.getElementById('checkin-form').onsubmit = (e) => {
                 e.preventDefault();
                 const name = document.getElementById('child-name').value;
@@ -615,7 +625,6 @@
                     entryTime: Date.now(), status: 'in', 
                     products: [], messages: [], totalPausedTime: 0, lastHourAlert: 0
                 }).then(() => {
-                    // *** ADDED: Free Snack Logic ***
                     if(snack) {
                         push(ref(db, `children/${newRef.key}/products`), { 
                             name: `${snack} (مجاني)`, 
@@ -635,24 +644,57 @@
             document.getElementById('admin-search').addEventListener('input', initAdmin);
         }
 
-        // --- Product Logic ---
+        // --- UPDATED Product Logic (Edit/Delete + Auto Close) ---
         window.openProductModal = (id, name) => {
             productTargetId = id;
             document.getElementById('prod-modal-title').innerText = name;
             document.getElementById('product-modal').style.display = 'flex';
+            
+            // Listen for current products to display them
+            onValue(ref(db, `children/${id}/products`), (snap) => {
+                const list = document.getElementById('current-prod-list');
+                list.innerHTML = '';
+                const data = snap.val();
+                if(data) {
+                    Object.entries(data).forEach(([key, val]) => {
+                        const div = document.createElement('div');
+                        div.className = 'manage-prod-item';
+                        div.innerHTML = `
+                            <span>${val.name} (${val.price} ج.م)</span>
+                            <button class="btn-delete-prod" onclick="deleteProduct('${id}', '${key}')">حذف 🗑️</button>
+                        `;
+                        list.appendChild(div);
+                    });
+                } else {
+                    list.innerHTML = '<div style="text-align:center; color:#999; font-size:0.8rem;">لا يوجد منتجات</div>';
+                }
+            });
         };
+
+        window.deleteProduct = (childId, prodId) => {
+            if(confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
+                remove(ref(db, `children/${childId}/products/${prodId}`));
+                showToast('تم حذف المنتج');
+            }
+        };
+
         window.closeProductModal = () => {
             document.getElementById('product-modal').style.display = 'none';
             document.getElementById('prod-name').value = '';
             document.getElementById('prod-price').value = '';
         };
+
         window.addProduct = () => {
             const name = document.getElementById('prod-name').value;
             const price = document.getElementById('prod-price').value;
             if(!name || !price) return;
-            push(ref(db, `children/${productTargetId}/products`), { name, price: parseFloat(price) });
-            showToast('تمت الإضافة');
-            closeProductModal();
+            
+            push(ref(db, `children/${productTargetId}/products`), { name, price: parseFloat(price) })
+            .then(() => {
+                showToast('تمت الإضافة');
+                // AUTO CLOSE
+                closeProductModal(); 
+            });
         };
 
         // --- Chat Logic ---
@@ -830,16 +872,15 @@
             });
         };
         
-        // --- CHECKOUT LOGIC (MODIFIED FOR BILL) ---
+        // --- CHECKOUT LOGIC ---
         window.checkout = (id) => {
             currentChildId = id;
             get(ref(db, `children/${id}`)).then(s => {
                 const d = s.val();
                 currentBillPhone = d.phone;
 
-                // 1. Calculate Time & Cost
                 let timeMs = d.status === 'in' ? Date.now() - d.entryTime - (d.totalPausedTime||0) : d.pauseStartTime - d.entryTime - (d.totalPausedTime||0);
-                const hours = Math.ceil(timeMs/3600000); // Rounded up hours
+                const hours = Math.ceil(timeMs/3600000); 
                 const exactHours = Math.floor(timeMs/3600000);
                 const exactMins = Math.floor((timeMs % 3600000) / 60000);
                 
@@ -848,8 +889,6 @@
                 const prods = d.products ? Object.values(d.products) : [];
                 let pTotal = 0;
                 let productsHTML = '';
-                
-                // For WhatsApp Text Construction
                 let waProductsText = "";
                 
                 prods.forEach(p => {
@@ -870,21 +909,18 @@
 
                 const totalAmount = timeCost + pTotal;
                 
-                // 2. Date Formatting
                 const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
                 const now = new Date();
                 const dayName = days[now.getDay()];
                 const dateStr = now.toLocaleDateString('ar-EG');
                 const fullDate = `${dayName}، ${dateStr}`;
 
-                // 3. Populate HTML Bill
                 document.getElementById('bill-child-name').innerText = d.name;
                 document.getElementById('bill-duration').innerText = `${hours} ساعة (${timeCost} ج.م)`;
                 document.getElementById('bill-date-line').innerText = fullDate;
                 document.getElementById('bill-products-container').innerHTML = productsHTML;
                 document.getElementById('bill-total-amount').innerText = totalAmount + ' ج.م';
 
-                // 4. Prepare WhatsApp Message
                 const waMessage = `*فاتورة منطقة ألعاب أوبرا عاشور* 🎪%0a` +
                                   `--------------------------------%0a` +
                                   `لقد استمتع طفلكم *${d.name}* باللعب معنا 😍%0a%0a` +
@@ -900,14 +936,12 @@
                                   `شكراً لزيارتكم منطقة ألعاب أوبرا عاشور ❤️%0a` +
                                   `ننتظر عودتكم لنا ✨`;
 
-                // 5. Setup Button
                 const btn = document.getElementById('btn-send-bill-wa');
                 btn.onclick = () => {
                      const url = `https://wa.me/${currentBillPhone.replace(/[^0-9]/g,'')}?text=${waMessage}`;
                      window.open(url, '_blank');
                 };
 
-                // Show Modal
                 document.getElementById('checkout-modal').style.display = 'flex';
             });
         };
@@ -932,7 +966,7 @@
             const t = document.createElement('div');
             t.style.cssText = "background:#333; color:white; padding:10px 20px; border-radius:5px; margin-top:10px; box-shadow:0 3px 10px rgba(0,0,0,0.2);";
             t.innerText = msg;
-            t.getElementById('toast-container').appendChild(t);
+            document.getElementById('toast-container').appendChild(t);
             setTimeout(() => t.remove(), 3000);
         }
         
@@ -940,6 +974,12 @@
         setInterval(() => {
             document.getElementById('header-datetime').innerText = new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
         }, 1000);
+        
+        // EXPOSE FUNCTIONS GLOBALLY
+        window.addProduct = addProduct;
+        window.openProductModal = openProductModal;
+        window.deleteProduct = deleteProduct;
+        window.closeProductModal = closeProductModal;
 
     </script>
 </body>
