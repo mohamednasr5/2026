@@ -588,6 +588,9 @@
         window.closeHistoryModal = () => document.getElementById('history-list-modal').style.display = 'none';
 
         window.viewBillFromHistory = (key, child) => {
+             // إغلاق قائمة الأسماء حتى تظهر الفاتورة بوضوح
+             document.getElementById('history-list-modal').style.display = 'none';
+
              // Setup bill logic for view only
              currentBillPhone = child.phone;
              
