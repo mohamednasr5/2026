@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التقارير المركزية | Financial Admin</title>
+    <title>التقرير المالي التفصيلي | أوبرا كيدز</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --primary-am: #10ac84; /* لون الاستضافة */
-            --primary-pm: #5f27cd; /* لون الملاهي */
-            --dark: #222f3e;
-            --light: #f1f2f6;
+            --am-color: #00b894; /* لون الاستضافة */
+            --pm-color: #6c5ce7; /* لون الملاهي */
+            --text-dark: #2d3436;
+            --text-light: #636e72;
+            --bg: #f5f6fa;
             --white: #ffffff;
-            --glass: rgba(255, 255, 255, 0.95);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--light); color: var(--dark); padding-bottom: 50px; }
+        body { background: var(--bg); color: var(--text-dark); padding-bottom: 50px; }
 
         /* --- شاشة القفل --- */
         #lock-screen {
@@ -27,165 +27,200 @@
             background: #2d3436; z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
-        .pin-input {
-            background: transparent; border: 2px solid rgba(255,255,255,0.2);
-            color: white; font-size: 2rem; padding: 10px; width: 200px;
-            text-align: center; border-radius: 10px; letter-spacing: 10px;
-            margin-bottom: 20px; outline: none; transition: 0.3s;
+        .pin-display {
+            font-size: 3rem; color: white; letter-spacing: 10px; margin-bottom: 20px;
+            font-weight: bold; min-height: 60px;
         }
-        .pin-input:focus { border-color: var(--primary-am); }
-        .btn-unlock {
-            background: var(--primary-am); color: white; border: none;
-            padding: 10px 40px; font-size: 1.2rem; border-radius: 8px; cursor: pointer;
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .num-btn {
+            width: 70px; height: 70px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2);
+            background: transparent; color: white; font-size: 1.5rem; cursor: pointer; transition: 0.2s;
         }
+        .num-btn:active { background: rgba(255,255,255,0.3); transform: scale(0.9); }
 
-        /* --- الهيدر والتحكم --- */
+        /* --- الهيدر --- */
         header {
-            background: var(--white); padding: 15px 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            background: var(--white); padding: 15px; position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;
+        }
+        .toggle-container {
+            background: #dfe6e9; padding: 5px; border-radius: 30px; display: flex;
+        }
+        .toggle-btn {
+            padding: 8px 25px; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; color: #b2bec3; transition: 0.3s;
+        }
+        .toggle-btn.active.am { background: var(--white); color: var(--am-color); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .toggle-btn.active.pm { background: var(--white); color: var(--pm-color); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        /* --- الإحصائيات --- */
+        .stats-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+            max-width: 800px; margin: 20px auto; padding: 0 15px;
+        }
+        .stat-box {
+            background: var(--white); padding: 20px; border-radius: 15px; text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03); border-bottom: 4px solid transparent;
+        }
+        body.mode-am .stat-box { border-color: var(--am-color); }
+        body.mode-pm .stat-box { border-color: var(--pm-color); }
+        
+        .stat-num { font-size: 2rem; font-weight: 800; margin: 10px 0; }
+
+        /* --- الجدول / القائمة --- */
+        .container { max-width: 800px; margin: 0 auto; padding: 0 15px; }
+        .child-card {
+            background: var(--white); border-radius: 12px; padding: 15px; margin-bottom: 12px;
             display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 100;
+            cursor: pointer; transition: transform 0.2s; position: relative; overflow: hidden;
         }
-        .mode-switch {
-            display: flex; background: #dfe6e9; padding: 5px; border-radius: 12px;
+        .child-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .card-status {
+            position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
         }
-        .mode-btn {
-            border: none; padding: 8px 20px; border-radius: 8px;
-            font-weight: bold; cursor: pointer; transition: 0.3s; color: #636e72;
-        }
-        .mode-btn.active-am { background: var(--white); color: var(--primary-am); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .mode-btn.active-pm { background: var(--white); color: var(--primary-pm); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .status-active { background: #00b894; }
+        .status-out { background: #fab1a0; }
 
-        /* --- الكروت والإحصائيات --- */
-        .container { max-width: 800px; margin: 20px auto; padding: 0 15px; }
-        
-        .stats-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;
-        }
-        .stat-card {
-            background: var(--white); padding: 20px; border-radius: 16px;
-            text-align: center; cursor: pointer; position: relative; overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.03); transition: transform 0.2s;
-        }
-        .stat-card:active { transform: scale(0.98); }
-        .stat-card h3 { font-size: 0.9rem; color: #8395a7; margin-bottom: 10px; }
-        .stat-value { font-size: 2.5rem; font-weight: 800; }
-        
-        /* ألوان متغيرة حسب المود */
-        body.am-mode .stat-value { color: var(--primary-am); }
-        body.pm-mode .stat-value { color: var(--primary-pm); }
-        body.pm-mode .btn-unlock { background: var(--primary-pm); }
+        .card-main h3 { font-size: 1.1rem; margin-bottom: 5px; }
+        .card-details { font-size: 0.85rem; color: #777; display: flex; gap: 10px; }
+        .card-price { font-weight: 800; font-size: 1.2rem; color: var(--text-dark); }
 
-        /* --- القائمة --- */
-        .list-container { display: none; animation: slideUp 0.4s ease; }
-        .list-header { font-weight: bold; margin-bottom: 15px; display: flex; justify-content: space-between; }
-        
-        .child-row {
-            background: var(--white); padding: 15px; border-radius: 12px;
-            margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
-            cursor: pointer; border-right: 4px solid transparent;
+        /* --- المودال (الفاتورة التفصيلية) --- */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 2000;
+            justify-content: center; align-items: center; padding: 20px;
         }
-        body.am-mode .child-row { border-color: var(--primary-am); }
-        body.pm-mode .child-row { border-color: var(--primary-pm); }
-        
-        .child-info strong { display: block; font-size: 1.1rem; margin-bottom: 4px; }
-        .child-info span { font-size: 0.85rem; color: #777; }
-        .child-price { font-weight: bold; font-size: 1.2rem; }
+        .invoice-paper {
+            background: #fff; width: 100%; max-width: 450px; border-radius: 20px;
+            overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column;
+        }
+        .inv-header {
+            padding: 20px; text-align: center; color: white;
+        }
+        body.mode-am .inv-header { background: var(--am-color); }
+        body.mode-pm .inv-header { background: var(--pm-color); }
 
-        /* --- المودال --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
-            z-index: 2000; display: none; justify-content: center; align-items: center;
+        .inv-body { padding: 20px; }
+        
+        .info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 0.95rem; }
+        .info-row:last-child { border: none; }
+        .info-label { color: #888; }
+        .info-val { font-weight: bold; }
+
+        .products-section {
+            background: #f9f9f9; padding: 15px; border-radius: 10px; margin: 15px 0;
         }
-        .invoice-card {
-            background: var(--white); width: 90%; max-width: 380px;
-            border-radius: 20px; padding: 25px; text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        .inv-total {
-            background: #f1f2f6; padding: 15px; border-radius: 10px;
-            margin: 20px 0; font-size: 2rem; font-weight: 800;
+        .prod-item { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; }
+
+        .total-section {
+            background: #2d3436; color: white; padding: 20px;
+            display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem;
         }
         .btn-whatsapp {
-            background: #25D366; color: white; border: none; width: 100%;
-            padding: 12px; border-radius: 10px; font-size: 1rem; font-weight: bold;
-            display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+            display: block; width: 100%; background: #25D366; color: white; text-align: center;
+            padding: 15px; text-decoration: none; font-weight: bold; font-size: 1.1rem;
         }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #555; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 20px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loader { text-align: center; padding: 20px; color: #777; }
     </style>
 </head>
-<body class="am-mode">
+<body class="mode-am">
 
     <div id="lock-screen">
-        <i class="fas fa-shield-alt fa-3x" style="color:white; margin-bottom:20px;"></i>
-        <h3 style="color:white; margin-bottom:15px;">نظام الإدارة المالي</h3>
-        <input type="password" id="pin" class="pin-input" placeholder="******" maxlength="6">
-        <button onclick="checkPin()" class="btn-unlock">دخول</button>
-        <p id="error-msg" style="color:#ff6b6b; display:none; margin-top:10px;">الرمز غير صحيح</p>
+        <div class="pin-display" id="pin-display"></div>
+        <div class="numpad">
+            <button class="num-btn" onclick="addPin('1')">1</button>
+            <button class="num-btn" onclick="addPin('2')">2</button>
+            <button class="num-btn" onclick="addPin('3')">3</button>
+            <button class="num-btn" onclick="addPin('4')">4</button>
+            <button class="num-btn" onclick="addPin('5')">5</button>
+            <button class="num-btn" onclick="addPin('6')">6</button>
+            <button class="num-btn" onclick="addPin('7')">7</button>
+            <button class="num-btn" onclick="addPin('8')">8</button>
+            <button class="num-btn" onclick="addPin('9')">9</button>
+            <button class="num-btn" onclick="clsPin()">C</button>
+            <button class="num-btn" onclick="addPin('0')">0</button>
+            <button class="num-btn" style="background:var(--am-color); border:none;" onclick="checkPin()">⏎</button>
+        </div>
     </div>
 
     <header>
-        <h2 style="font-size:1.2rem;">التقارير المالية</h2>
-        <div class="mode-switch">
-            <button class="mode-btn active-am" onclick="setMode('am')">AM (استضافة)</button>
-            <button class="mode-btn" onclick="setMode('pm')">PM (ملاهي)</button>
+        <h3>التقارير المالية</h3>
+        <div class="toggle-container">
+            <button class="toggle-btn active am" onclick="setMode('am')">AM استضافة</button>
+            <button class="toggle-btn pm" onclick="setMode('pm')">PM ملاهي</button>
         </div>
     </header>
 
-    <div class="container">
-        
-        <div class="stats-grid">
-            <div class="stat-card" onclick="toggleList()">
-                <h3>عدد الأطفال (انقر للعرض)</h3>
-                <div class="stat-value" id="disp-count">0</div>
-                <i class="fas fa-users" style="position:absolute; bottom:10px; left:10px; opacity:0.1;"></i>
-            </div>
-            <div class="stat-card" style="cursor: default;">
-                <h3>إجمالي الإيراد</h3>
-                <div class="stat-value" id="disp-total">0</div>
-                <span style="font-size:0.8rem; color:#777;">جنيه مصري</span>
-            </div>
+    <div class="stats-row">
+        <div class="stat-box">
+            <span>عدد الأطفال</span>
+            <div class="stat-num" id="stat-count">0</div>
         </div>
-
-        <div id="loader" class="loader" style="display:none;"></div>
-
-        <div id="list-container" class="list-container">
-            <div class="list-header">
-                <span>سجل العملاء</span>
-                <span id="list-status" style="color:#777; font-weight:normal;">جاري جلب البيانات...</span>
-            </div>
-            <div id="items-list"></div>
+        <div class="stat-box">
+            <span>إجمالي الإيراد</span>
+            <div class="stat-num" id="stat-total">0</div>
+            <small>جنية مصري</small>
         </div>
     </div>
 
-    <div id="invoice-modal" class="modal-overlay" onclick="if(event.target===this) closeModal()">
-        <div class="invoice-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <h3 style="margin:0;">تفاصيل الفاتورة</h3>
-                <button onclick="closeModal()" style="background:none; border:none; font-size:1.2rem;">✕</button>
+    <div class="container">
+        <h4 style="margin-bottom:15px; color:#888;">سجل الحركات (الكل)</h4>
+        <div id="loader" class="loader">جاري تحميل البيانات...</div>
+        <div id="data-list"></div>
+    </div>
+
+    <div id="invoice-modal" class="modal" onclick="if(event.target === this) closeModal()">
+        <div class="invoice-paper">
+            <div class="inv-header">
+                <h2 id="m-child-name">اسم الطفل</h2>
+                <p id="m-status-text" style="opacity:0.8; font-size:0.9rem;">حالة الفاتورة</p>
             </div>
-            
-            <i class="fas fa-user-circle fa-4x" style="color:#ddd; margin-bottom:10px;"></i>
-            <h2 id="inv-name" style="color:var(--dark); margin-bottom:5px;">-</h2>
-            <p id="inv-date" style="color:#777; font-size:0.85rem;">-</p>
-            
-            <div class="inv-total">
-                <span id="inv-amount">0</span> <small style="font-size:1rem;">ج.م</small>
-            </div>
-            
-            <div style="text-align:right; margin-bottom:20px; font-size:0.9rem; line-height:1.6;">
-                <p><strong>رقم الهاتف:</strong> <span id="inv-phone">-</span></p>
-                <p><strong>وقت الدخول:</strong> <span id="inv-time">-</span></p>
-                <p><strong>حالة الدفع:</strong> <span style="color:var(--primary-am);">مدفوع</span></p>
+            <div class="inv-body">
+                <div class="info-row">
+                    <span class="info-label">ولي الأمر</span>
+                    <span class="info-val" id="m-parent">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">رقم الهاتف</span>
+                    <span class="info-val" id="m-phone">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">التاريخ</span>
+                    <span class="info-val" id="m-date">-</span>
+                </div>
+
+                <div style="margin-top:15px; background:#f0f0f0; padding:10px; border-radius:8px; display:flex; justify-content:space-between; text-align:center;">
+                    <div>
+                        <small style="color:#888">دخول</small>
+                        <div style="font-weight:bold" id="m-start">-</div>
+                    </div>
+                    <div style="border-right:1px solid #ddd; border-left:1px solid #ddd; padding:0 15px;">
+                        <small style="color:#888">المدة</small>
+                        <div style="font-weight:bold; color:var(--am-color)" id="m-duration">-</div>
+                    </div>
+                    <div>
+                        <small style="color:#888">خروج</small>
+                        <div style="font-weight:bold" id="m-end">-</div>
+                    </div>
+                </div>
+
+                <div class="products-section">
+                    <h5 style="margin-bottom:10px; color:#555;">الطلبات الإضافية (Products):</h5>
+                    <div id="m-products-list">
+                        </div>
+                </div>
             </div>
 
-            <button class="btn-whatsapp" onclick="sendWhatsapp()">
-                <i class="fab fa-whatsapp"></i> إرسال للعميل
-            </button>
+            <div class="total-section">
+                <span>الإجمالي النهائي</span>
+                <span><span id="m-total">0</span> ج.م</span>
+            </div>
+
+            <a href="#" id="wa-link" target="_blank" class="btn-whatsapp">
+                <i class="fab fa-whatsapp"></i> إرسال الفاتورة عبر واتساب
+            </a>
         </div>
     </div>
 
@@ -193,181 +228,220 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
 
-        // --- 1. إعدادات Firebase ---
-        
-        // إعداد قاعدة بيانات AM (الاستضافة) - Operakides حسب طلبك
+        // 1. تعريف قواعد البيانات
         const configAM = {
             apiKey: "AIzaSyDJ_dnEZP62J871KLAg88_quQdUt01004o",
             authDomain: "operakides.firebaseapp.com",
             databaseURL: "https://operakides-default-rtdb.firebaseio.com",
             projectId: "operakides",
-            storageBucket: "operakides.firebasestorage.app",
-            messagingSenderId: "1028823199618",
-            appId: "1:1028823199618:web:16062acdd68c32002a299b",
-            measurementId: "G-W46366S9Z2"
+            appId: "1:1028823199618:web:16062acdd68c32002a299b"
         };
 
-        // إعداد قاعدة بيانات PM (الملاهي) - Operaestdafa حسب طلبك
         const configPM = {
             apiKey: "AIzaSyDIH-wzZV71U-zbkxArRE4f9oiCtwvKOWA",
             authDomain: "operaestdafa.firebaseapp.com",
             databaseURL: "https://operaestdafa-default-rtdb.firebaseio.com",
             projectId: "operaestdafa",
-            storageBucket: "operaestdafa.firebasestorage.app",
-            messagingSenderId: "44885598287",
-            appId: "1:44885598287:web:e2b0d3497b86c69de38a3a",
-            measurementId: "G-X1129EKN1P"
+            appId: "1:44885598287:web:e2b0d3497b86c69de38a3a"
         };
 
-        // تهيئة التطبيقين بأسماء مختلفة لتجنب التعارض
         const appAM = initializeApp(configAM, "appAM");
         const appPM = initializeApp(configPM, "appPM");
-
         const dbAM = getDatabase(appAM);
         const dbPM = getDatabase(appPM);
 
-        // --- 2. متغيرات النظام ---
-        let currentMode = 'am'; // 'am' or 'pm'
-        let currentData = [];
-        let currentChild = null;
+        // 2. المتغيرات والتهيئة
+        let currentMode = 'am';
+        let currentPin = '';
+        let globalData = [];
 
-        // --- 3. وظائف النظام الأساسية ---
+        // 3. دوال شاشة القفل
+        window.addPin = (n) => {
+            if(currentPin.length < 6) {
+                currentPin += n;
+                document.getElementById('pin-display').innerText = '*'.repeat(currentPin.length);
+            }
+        };
+        window.clsPin = () => {
+            currentPin = '';
+            document.getElementById('pin-display').innerText = '';
+        };
+        window.checkPin = () => {
+            if(currentPin === '521988') {
+                document.getElementById('lock-screen').style.display = 'none';
+                fetchData(); // بدء جلب البيانات
+            } else {
+                alert('كلمة المرور خاطئة');
+                window.clsPin();
+            }
+        };
 
-        // دالة لجلب البيانات بناءً على الوضع الحالي
+        // 4. التحكم في الوضع AM/PM
+        window.setMode = (mode) => {
+            currentMode = mode;
+            document.body.className = `mode-${mode}`;
+            
+            // تحديث الأزرار
+            document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.toggle-btn.${mode}`).classList.add('active');
+            
+            fetchData();
+        };
+
+        // 5. جلب البيانات وتحليلها
         function fetchData() {
             const db = currentMode === 'am' ? dbAM : dbPM;
             const loader = document.getElementById('loader');
+            const listDiv = document.getElementById('data-list');
+            
             loader.style.display = 'block';
+            listDiv.innerHTML = '';
             
-            // نجلب البيانات من الجذر '/' (سنقوم بفلترتها لاحقاً)
-            const dataRef = ref(db, '/'); 
-            
+            const dataRef = ref(db, '/'); // جلب الكل من الجذر
+
             onValue(dataRef, (snapshot) => {
                 loader.style.display = 'none';
                 const raw = snapshot.val();
                 
-                // معالجة البيانات وتحويلها لمصفوفة موحدة
-                currentData = normalizeData(raw);
+                // تحويل البيانات الشجرية إلى مصفوفة مسطحة
+                globalData = flattenData(raw);
                 
+                // ترتيب: الأحدث أولاً
+                globalData.sort((a, b) => (b.startTime || 0) - (a.startTime || 0));
+
                 updateStats();
                 renderList();
-            }, (error) => {
-                loader.style.display = 'none';
-                console.error("Error fetching data:", error);
-                alert("حدث خطأ في جلب البيانات، تأكد من اتصال الإنترنت");
             });
         }
 
-        // دالة ذكية لتحويل أي هيكل بيانات من Firebase إلى قائمة مسطحة
-        function normalizeData(raw) {
-            if (!raw) return [];
-            let list = [];
+        // دالة مساعدة لاستخراج البيانات العميقة
+        function flattenData(obj) {
+            let results = [];
+            if(!obj) return results;
 
-            // إذا كانت البيانات مصفوفة مباشرة أو كائن يحتوي على مفاتيح
-            // سنبحث بشكل متكرر (Recursive) عن أي كائن يحتوي على 'totalCost' أو 'price'
-            function search(obj) {
-                if (typeof obj !== 'object' || obj === null) return;
-                
-                // شرط: إذا وجدنا كائن يمثل فاتورة (يحتوي على اسم وسعر)
-                if ((obj.childName || obj.name) && (obj.totalCost !== undefined || obj.price !== undefined)) {
-                    list.push(obj);
+            function recurse(current) {
+                // هل هذا الكائن يمثل طفلاً؟ (شرط: وجود اسم ووقت بداية)
+                if (current.childName && current.startTime) {
+                    results.push(current);
+                    return;
+                }
+                if (current.name && current.startTime) { // صيغة أخرى محتملة
+                    results.push(current);
                     return;
                 }
 
-                // البحث في الأبناء
-                Object.values(obj).forEach(val => search(val));
+                // إذا لم يكن طفلاً، ابحث في الأبناء
+                if (typeof current === 'object' && current !== null) {
+                    Object.values(current).forEach(val => recurse(val));
+                }
             }
-            
-            search(raw);
-            return list;
+            recurse(obj);
+            return results;
         }
 
+        // 6. عرض الإحصائيات والقائمة
         function updateStats() {
-            // حساب العدد
-            document.getElementById('disp-count').innerText = currentData.length;
-            
-            // حساب الإجمالي
-            const total = currentData.reduce((sum, item) => {
-                // محاولة قراءة السعر من مفاتيح مختلفة محتملة
-                let price = item.totalCost || item.price || item.cost || 0;
-                return sum + parseFloat(price);
-            }, 0);
-            
-            document.getElementById('disp-total').innerText = total.toLocaleString();
+            const total = globalData.reduce((sum, item) => sum + (parseFloat(item.totalCost) || parseFloat(item.price) || 0), 0);
+            document.getElementById('stat-count').innerText = globalData.length;
+            document.getElementById('stat-total').innerText = total.toLocaleString();
         }
 
         function renderList() {
-            const container = document.getElementById('items-list');
-            container.innerHTML = '';
-            
-            if (currentData.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">لا توجد بيانات مسجلة حالياً</p>';
+            const listDiv = document.getElementById('data-list');
+            listDiv.innerHTML = '';
+
+            if(globalData.length === 0) {
+                listDiv.innerHTML = '<p style="text-align:center;color:#999">لا توجد سجلات</p>';
                 return;
             }
 
-            // ترتيب البيانات الأحدث أولاً (بافتراض وجود timestamp)
-            // إذا لم يوجد، نعرضها كما هي
-            const sorted = [...currentData].reverse();
-
-            sorted.forEach(item => {
-                const name = item.childName || item.name || 'عميل بدون اسم';
+            globalData.forEach(item => {
+                const name = item.childName || item.name || 'بدون اسم';
                 const price = item.totalCost || item.price || 0;
-                const date = item.timestamp ? new Date(item.timestamp).toLocaleTimeString('ar-EG') : 'غير محدد';
-
-                const div = document.createElement('div');
-                div.className = 'child-row';
-                div.innerHTML = `
-                    <div class="child-info">
-                        <strong>${name}</strong>
-                        <span><i class="far fa-clock"></i> ${date}</span>
+                const time = new Date(item.startTime).toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
+                const isOut = item.endTime ? true : false;
+                
+                const card = document.createElement('div');
+                card.className = 'child-card';
+                card.innerHTML = `
+                    <div class="card-status ${isOut ? 'status-out' : 'status-active'}"></div>
+                    <div class="card-main" style="padding-right:15px">
+                        <h3>${name}</h3>
+                        <div class="card-details">
+                            <span><i class="far fa-clock"></i> ${time}</span>
+                            <span>|</span>
+                            <span>${isOut ? 'تم الخروج' : 'نشط الآن'}</span>
+                        </div>
                     </div>
-                    <div class="child-price">${price} ج.م</div>
+                    <div class="card-price">${price} ج.م</div>
                 `;
-                div.onclick = () => openInvoice(item);
-                container.appendChild(div);
+                card.onclick = () => showInvoice(item);
+                listDiv.appendChild(card);
             });
         }
 
-        // --- 4. التفاعل مع الواجهة ---
-        
-        window.setMode = (mode) => {
-            currentMode = mode;
-            
-            // تحديث الأزرار
-            document.querySelectorAll('.mode-btn').forEach(b => {
-                b.classList.remove('active-am', 'active-pm');
-            });
-            
-            const activeBtn = document.querySelectorAll('.mode-btn')[mode === 'am' ? 0 : 1];
-            activeBtn.classList.add(mode === 'am' ? 'active-am' : 'active-pm');
-            
-            // تحديث ستايل الجسم (للألوان)
-            document.body.className = mode + '-mode';
-            
-            // إخفاء القائمة وإعادة التحميل
-            document.getElementById('list-container').style.display = 'none';
-            fetchData();
-        }
-
-        window.toggleList = () => {
-            const list = document.getElementById('list-container');
-            list.style.display = list.style.display === 'block' ? 'none' : 'block';
-        };
-
-        // --- 5. الفاتورة والواتساب ---
-
-        window.openInvoice = (item) => {
-            currentChild = item;
+        // 7. عرض الفاتورة
+        window.showInvoice = (item) => {
             const modal = document.getElementById('invoice-modal');
             
             // تعبئة البيانات
-            document.getElementById('inv-name').innerText = item.childName || item.name || 'غير معروف';
-            document.getElementById('inv-amount').innerText = item.totalCost || item.price || 0;
-            document.getElementById('inv-phone').innerText = item.parentPhone || item.phone || 'غير مسجل';
+            document.getElementById('m-child-name').innerText = item.childName || item.name;
+            document.getElementById('m-parent').innerText = item.parentName || item.guardian || 'غير محدد';
+            document.getElementById('m-phone').innerText = item.parentPhone || item.phone || 'غير محدد';
             
-            const ts = item.timestamp || Date.now();
-            document.getElementById('inv-date').innerText = new Date(ts).toLocaleDateString('ar-EG');
-            document.getElementById('inv-time').innerText = new Date(ts).toLocaleTimeString('ar-EG');
+            // التواريخ
+            const start = new Date(item.startTime);
+            document.getElementById('m-date').innerText = start.toLocaleDateString('ar-EG');
+            document.getElementById('m-start').innerText = start.toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
+            
+            let endStr = '-';
+            let durationStr = 'جاري الحساب';
+            
+            if(item.endTime) {
+                const end = new Date(item.endTime);
+                endStr = end.toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
+                
+                // حساب المدة
+                const diffMs = item.endTime - item.startTime;
+                const hrs = Math.floor(diffMs / 3600000);
+                const mins = Math.floor((diffMs % 3600000) / 60000);
+                durationStr = `${hrs} س و ${mins} د`;
+            } else {
+                durationStr = 'لم يخرج بعد';
+            }
+            
+            document.getElementById('m-end').innerText = endStr;
+            document.getElementById('m-duration').innerText = durationStr;
+
+            // المنتجات
+            const prodList = document.getElementById('m-products-list');
+            prodList.innerHTML = '';
+            
+            if(item.products && Array.isArray(item.products) && item.products.length > 0) {
+                item.products.forEach(p => {
+                    const row = document.createElement('div');
+                    row.className = 'prod-item';
+                    row.innerHTML = `<span>${p.name} (x${p.qty || 1})</span> <span>${p.price} ج.م</span>`;
+                    prodList.appendChild(row);
+                });
+            } else {
+                prodList.innerHTML = '<small style="color:#aaa">لا توجد طلبات إضافية</small>';
+            }
+
+            // الإجمالي والواتساب
+            const total = item.totalCost || item.price || 0;
+            document.getElementById('m-total').innerText = total;
+            
+            // تجهيز رابط واتساب
+            const phone = (item.parentPhone || item.phone || '').replace(/\D/g, '');
+            let waUrl = '#';
+            if(phone) {
+                const formattedPhone = phone.startsWith('01') ? '2'+phone : phone;
+                const place = currentMode === 'am' ? 'أوبرا كيدز (استضافة)' : 'أوبرا كيدز (ملاهي)';
+                const msg = `فاتورة ${place}%0aالاسم: ${item.childName || item.name}%0aالوقت: من ${start.toLocaleTimeString()} إلى ${endStr}%0aالإجمالي: ${total} جنيه`;
+                waUrl = `https://wa.me/${formattedPhone}?text=${msg}`;
+            }
+            document.getElementById('wa-link').href = waUrl;
 
             modal.style.display = 'flex';
         };
@@ -376,44 +450,6 @@
             document.getElementById('invoice-modal').style.display = 'none';
         };
 
-        window.sendWhatsapp = () => {
-            if(!currentChild) return;
-            
-            const phone = currentChild.parentPhone || currentChild.phone;
-            if(!phone) {
-                alert("لا يوجد رقم هاتف مسجل لهذا العميل");
-                return;
-            }
-
-            const name = currentChild.childName || currentChild.name;
-            const amount = currentChild.totalCost || currentChild.price;
-            const placeName = currentMode === 'am' ? "أوبرا كيدز (استضافة)" : "أوبرا كيدز (ملاهي)";
-            
-            let msg = `مرحباً، فاتورة ${placeName}%0a`;
-            msg += `الاسم: ${name}%0a`;
-            msg += `المبلغ الإجمالي: ${amount} جنيه%0a`;
-            msg += `شكراً لزيارتكم!`;
-
-            // تنسيق الرقم المصري
-            let p = phone.replace(/\D/g, '');
-            if(p.startsWith('01')) p = '2' + p;
-
-            window.open(`https://wa.me/${p}?text=${msg}`, '_blank');
-        };
-
-        // --- 6. الأمان ---
-        window.checkPin = () => {
-            const pin = document.getElementById('pin').value;
-            if(pin === '521988') {
-                document.getElementById('lock-screen').style.display = 'none';
-                fetchData(); // تحميل البيانات عند الفتح
-            } else {
-                document.getElementById('error-msg').style.display = 'block';
-            }
-        }
-
-        // جعل الوظائف متاحة في HTML
-        window.currentData = currentData;
     </script>
 </body>
 </html>
