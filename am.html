@@ -459,21 +459,23 @@
     <audio id="hour-sound" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_12b0c7443c.mp3"></audio>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getDatabase, ref, push, onValue, update, set, get, remove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import { getDatabase, ref, push, onValue, update, set, get, remove } 
+    from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDJ_dnEZP62J871KLAg88_quQdUt01004o",
-            authDomain: "operakides.firebaseapp.com",
-            projectId: "operakides",
-            storageBucket: "operakides.firebasestorage.app",
-            messagingSenderId: "1028823199618",
-            appId: "1:1028823199618:web:16062acdd68c32002a299b",
-            measurementId: "G-W46366S9Z2"
-        };
+  const firebaseConfig = {
+    apiKey: "AIzaSyDJ_dnEZP62J871KLAg88_quQdUt01004o",
+    authDomain: "operakides.firebaseapp.com",
+    databaseURL: "https://operakides-default-rtdb.firebaseio.com",
+    projectId: "operakides",
+    storageBucket: "operakides.firebasestorage.app",
+    messagingSenderId: "1028823199618",
+    appId: "1:1028823199618:web:16062acdd68c32002a299b",
+    measurementId: "G-W46366S9Z2"
+  };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
         // --- Variables ---
         let currentChildId = null; 
