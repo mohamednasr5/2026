@@ -2,7 +2,8 @@
   "name": "أوبرا كافيه",
   "short_name": "أوبرا كافيه",
   "description": "من هنا تبدأ الحكاية",
-  "start_url": "/",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#1cb5e0",
   "theme_color": "#1cb5e0",
@@ -36,14 +37,14 @@
       "name": "الاستضافة",
       "short_name": "استضافة",
       "description": "الذهاب لقسم الاستضافة",
-      "url": "/am.html",
+      "url": "./am.html",
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "الملاهي",
       "short_name": "ملاهي",
       "description": "الذهاب لقسم الملاهي",
-      "url": "/pm.html",
+      "url": "./pm.html",
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     }
   ]
