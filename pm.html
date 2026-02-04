@@ -88,11 +88,20 @@
 
         /* --- Stats View Styles --- */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-        .stat-card { background: white; padding: 20px; border-radius: 16px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .stat-card { background: white; padding: 20px; border-radius: 16px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        
+        /* جعل كرت الزوار قابل للضغط */
+        .stat-card.clickable { cursor: pointer; border: 2px solid transparent; }
+        .stat-card.clickable:hover { border-color: var(--accent); transform: translateY(-5px); }
+
         .stat-value { font-size: 2.5rem; font-weight: 800; color: var(--secondary); margin: 10px 0; }
         .stat-label { color: #888; font-size: 0.9rem; }
         .stat-icon { font-size: 1.5rem; margin-bottom: 10px; color: var(--primary); }
         
+        /* --- History List Modal Items --- */
+        .history-item { background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; border: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .history-item:hover { background: #fff; border-color: var(--accent); box-shadow: 0 3px 10px rgba(0,0,0,0.05); }
+
         /* --- WHATSAPP STYLE CHAT --- */
         .chat-container { 
             margin-top: 1rem; border-radius: 16px; overflow: hidden; 
@@ -132,7 +141,7 @@
 
         /* --- Modals --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 20px; border-radius: 16px; width: 95%; max-width: 450px; position: relative; }
+        .modal-content { background: white; padding: 20px; border-radius: 16px; width: 95%; max-width: 450px; position: relative; max-height: 90vh; overflow-y: auto; }
         
         /* --- Receipt Styles --- */
         .receipt-card {
@@ -155,7 +164,8 @@
         
         /* --- Parent View Specifics --- */
         .parent-header-card { background: white; border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .big-timer-circle { width: 180px; height: 180px; border-radius: 50%; border: 6px solid var(--primary); display: flex; align-items: center; justify-content: center; margin: 20px auto; font-size: 2.5rem; font-weight: 800; color: var(--secondary); background: #fff; }
+        .big-timer-circle { width: 180px; height: 180px; border-radius: 50%; border: 6px solid var(--primary); display: flex; align-items: center; justify-content: center; margin: 20px auto; font-size: 2.5rem; font-weight: 800; color: var(--secondary); background: #fff; padding: 10px; text-align: center; line-height: 1.2; }
+        .paused-circle { border-color: var(--warning); color: #777; font-size: 1rem; }
 
         /* --- Custom Footer --- */
         .dev-footer {
@@ -219,7 +229,7 @@
                     <h2 style="color:var(--primary); margin-bottom:15px;">📝 تسجيل دخول</h2>
                     <form id="checkin-form">
                         <input type="text" id="child-name" class="form-control" placeholder="اسم الطفل" required>
-                        <input type="tel" id="parent-phone" class="form-control" placeholder="رقم الموبايل" required>
+                        <input type="tel" id="parent-phone" class="form-control" placeholder="رقم الموبايل (يبدأ بـ 01)" maxlength="11" required>
                         <select id="child-snack" class="form-control">
                             <option value="غزل بنات">غزل بنات (مجاني) 🍭</option>
                             <option value="فشار">فشار (مجاني) 🍿</option>
@@ -264,10 +274,10 @@
                     <div class="stat-value" style="color:var(--success);" id="stat-today-income">0</div>
                     <div class="stat-label">إيرادات اليوم</div>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card clickable" onclick="showDailyHistory()">
                     <div class="stat-icon"><i class="fas fa-users"></i></div>
                     <div class="stat-value" id="stat-total-kids">0</div>
-                    <div class="stat-label">إجمالي الزوار</div>
+                    <div class="stat-label">إجمالي الزوار (اضغط للعرض)</div>
                 </div>
             </div>
 
@@ -407,10 +417,21 @@
                 </button>
                 
                 <div style="display:flex; gap:10px;">
-                    <button class="btn btn-danger" style="flex:1;" onclick="confirmCheckout()">تأكيد الخروج</button>
-                    <button class="btn btn-outline" style="flex:1;" onclick="closeModal()">إلغاء</button>
+                    <button id="btn-confirm-checkout" class="btn btn-danger" style="flex:1;" onclick="confirmCheckout()">تأكيد الخروج</button>
+                    <button class="btn btn-outline" style="flex:1;" onclick="closeModal()">إغلاق</button>
                 </div>
             </div>
+        </div>
+    </div>
+    
+    <div id="history-list-modal" class="modal">
+        <div class="modal-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 style="color:var(--secondary);">سجل خروج اليوم 📅</h3>
+                <i class="fas fa-times" onclick="closeHistoryModal()" style="cursor:pointer; font-size:1.2rem;"></i>
+            </div>
+            <div id="daily-history-container" style="max-height:400px; overflow-y:auto;">
+                </div>
         </div>
     </div>
 
@@ -500,8 +521,11 @@
                             const exitDate = new Date(child.exitTime).toLocaleDateString('en-US');
                             if(exitDate === todayStr) {
                                 todayIncome += cost;
+                                totalKids++; // Count only today's kids for the daily view
                             }
                         }
+                        
+                        // Calculate products logic only for today or total if needed (Current logic calculates total)
                         let pCost = 0;
                         if(child.products) {
                             Object.values(child.products).forEach(p => pCost += p.price);
@@ -509,16 +533,134 @@
                         productIncome += pCost;
                         timeIncome += (cost - pCost);
                     }
-                    totalKids++;
                 });
 
                 document.getElementById('stat-total-income').innerText = totalIncome + ' ج.م';
                 document.getElementById('stat-today-income').innerText = todayIncome + ' ج.م';
-                document.getElementById('stat-total-kids').innerText = totalKids;
+                document.getElementById('stat-total-kids').innerText = totalKids; // This is now TODAY's checked out count
                 document.getElementById('stat-products-income').innerText = productIncome + ' ج.م';
                 document.getElementById('stat-time-income').innerText = timeIncome + ' ج.م';
             });
         }
+        
+        // --- NEW: History List Logic ---
+        window.showDailyHistory = () => {
+            document.getElementById('history-list-modal').style.display = 'flex';
+            const container = document.getElementById('daily-history-container');
+            container.innerHTML = '<div style="text-align:center; padding:20px;">جاري التحميل...</div>';
+            
+            get(ref(db, 'children')).then((snap) => {
+                const data = snap.val() || {};
+                container.innerHTML = '';
+                const todayStr = new Date().toLocaleDateString('en-US');
+                let found = false;
+
+                Object.entries(data).forEach(([key, child]) => {
+                    if(child.status === 'out' && child.exitTime) {
+                        const exitDate = new Date(child.exitTime).toLocaleDateString('en-US');
+                        if(exitDate === todayStr) {
+                            found = true;
+                            const div = document.createElement('div');
+                            div.className = 'history-item';
+                            div.innerHTML = `
+                                <div>
+                                    <div style="font-weight:bold; font-size:1.1rem;">${child.name}</div>
+                                    <div style="font-size:0.85rem; color:#777;">${new Date(child.exitTime).toLocaleTimeString('ar-EG')}</div>
+                                </div>
+                                <div style="text-align:left;">
+                                    <div style="font-weight:bold; color:var(--primary);">${child.totalCost} ج.م</div>
+                                    <div style="font-size:0.8rem; color:#999;">#${child.childId}</div>
+                                </div>
+                            `;
+                            div.onclick = () => viewBillFromHistory(key, child);
+                            container.appendChild(div);
+                        }
+                    }
+                });
+                
+                if(!found) {
+                    container.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">لا يوجد أطفال غادروا اليوم حتى الآن</div>';
+                }
+            });
+        };
+
+        window.closeHistoryModal = () => document.getElementById('history-list-modal').style.display = 'none';
+
+        window.viewBillFromHistory = (key, child) => {
+             // Setup bill logic for view only
+             currentBillPhone = child.phone;
+             
+             // Calculate time based on stored data (Total cost - Products)
+             // But we need the hours. We can approximate or use stored data if we had it.
+             // Reverse Calculation:
+             let pTotal = 0;
+             let productsHTML = '';
+             let waProductsText = "";
+             
+             if(child.products) {
+                 Object.values(child.products).forEach(p => {
+                    pTotal += p.price;
+                    const priceTxt = p.price > 0 ? `${p.price} ج.م` : 'مجاناً';
+                    productsHTML += `
+                        <div class="receipt-row">
+                            <span>${p.name}</span>
+                            <span>${priceTxt}</span>
+                        </div>`;
+                    waProductsText += `▫️ ${p.name}: ${priceTxt}%0a`;
+                 });
+             }
+             
+             if(productsHTML === '') {
+                 productsHTML = '<div style="text-align:center; color:#ccc; font-size:0.8rem;">لا توجد طلبات إضافية</div>';
+                 waProductsText = "لا توجد طلبات إضافية%0a";
+             }
+             
+             const totalCost = parseFloat(child.totalCost);
+             const timeCost = totalCost - pTotal;
+             const hours = Math.round(timeCost / 50); // Approximate back to hours
+             
+             // Set Data
+             const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+             const exitDateObj = new Date(child.exitTime);
+             const dayName = days[exitDateObj.getDay()];
+             const dateStr = exitDateObj.toLocaleDateString('ar-EG');
+             const fullDate = `${dayName}، ${dateStr}`;
+
+             document.getElementById('bill-child-name').innerText = child.name;
+             document.getElementById('bill-duration').innerText = `${hours} ساعة (${timeCost} ج.م)`;
+             document.getElementById('bill-date-line').innerText = fullDate;
+             document.getElementById('bill-products-container').innerHTML = productsHTML;
+             document.getElementById('bill-total-amount').innerText = child.totalCost + ' ج.م';
+             
+             // Construct WhatsApp Message
+             const waMessage = `*فاتورة منطقة ألعاب أوبرا عاشور* 🎪%0a` +
+                             `--------------------------------%0a` +
+                             `لقد استمتع طفلكم *${child.name}* باللعب معنا 😍%0a%0a` +
+                             `⏳ *عدد الساعات:* ${hours} ساعات%0a` +
+                             `💰 *حساب الوقت:* ${timeCost} ج.م%0a` +
+                             `--------------------------------%0a` +
+                             `📋 *المنتجات:*%0a` +
+                             waProductsText +
+                             `--------------------------------%0a` +
+                             `💵 *المبلغ الإجمالي:* *${child.totalCost} ج.م*%0a` +
+                             `📅 *التاريخ:* ${fullDate}%0a` +
+                             `--------------------------------%0a` +
+                             `شكراً لزيارتكم منطقة ألعاب أوبرا عاشور ❤️%0a` +
+                             `ننتظر عودتكم لنا ✨`;
+             
+             // Setup Buttons
+             const btn = document.getElementById('btn-send-bill-wa');
+             btn.onclick = () => {
+                 let p = currentBillPhone.replace(/[^0-9]/g,'');
+                 if(p.startsWith('01')) p = '2' + p;
+                 const url = `https://wa.me/${p}?text=${waMessage}`;
+                 window.open(url, '_blank');
+             };
+             
+             // Hide Checkout Confirm button, Show Close only
+             document.getElementById('btn-confirm-checkout').style.display = 'none';
+             document.getElementById('checkout-modal').style.display = 'flex';
+        };
 
         // --- Admin Logic ---
         function initAdmin() {
@@ -613,6 +755,14 @@
                 const name = document.getElementById('child-name').value;
                 const phone = document.getElementById('parent-phone').value;
                 const snack = document.getElementById('child-snack').value;
+                
+                // --- Validation 1: Phone must be 11 digits and start with 01 ---
+                const phoneRegex = /^01[0-9]{9}$/;
+                if(!phoneRegex.test(phone)) {
+                    alert("⚠️ يجب أن يتكون رقم الهاتف من 11 رقم ويبدأ بـ 01");
+                    return;
+                }
+                
                 const cid = Math.floor(1000 + Math.random() * 9000);
                 
                 const newRef = push(ref(db, 'children'));
@@ -740,6 +890,23 @@
                 document.getElementById('p-child-name').innerText = data.name;
                 document.getElementById('p-child-id').innerText = '#' + data.childId;
                 
+                // Update Status Badge and Logic
+                const statusBadge = document.getElementById('p-status-badge');
+                const timerCircle = document.getElementById('live-timer');
+
+                if (data.status === 'paused') {
+                    statusBadge.innerText = "متوقف مؤقتاً";
+                    statusBadge.style.background = "var(--warning)";
+                    
+                    // --- REQ: Specific message when paused ---
+                    timerCircle.classList.add('paused-circle');
+                    timerCircle.innerHTML = "تم ايقاف الوقت<br>لحين عودة الطفل";
+                } else {
+                    statusBadge.innerText = "متواجد حالياً";
+                    statusBadge.style.background = "var(--success)";
+                    timerCircle.classList.remove('paused-circle');
+                }
+                
                 const prods = data.products ? Object.values(data.products) : [];
                 let pTotal = 0;
                 let pHtml = '';
@@ -767,13 +934,16 @@
                 const timeCost = hours * 50;
                 const totalCost = timeCost + pTotal;
 
-                document.getElementById('live-timer').innerText = formatTime(timeMs);
+                if (data.status === 'in') {
+                     document.getElementById('live-timer').innerText = formatTime(timeMs);
+                }
                 document.getElementById('live-cost').innerText = totalCost;
 
                 if(data.status === 'in') {
                     if(!parentTimer) parentTimer = setInterval(() => initParent(id), 1000); 
                 } else {
                     if(parentTimer) clearInterval(parentTimer);
+                    parentTimer = null; // Clear timer reference to allow restart
                 }
 
                 renderChat(data.messages, 'parent-chat-messages', 'parent');
@@ -856,9 +1026,16 @@
         // --- Action Buttons ---
         window.openWhatsApp = (phone, id, link) => {
             const finalLink = link || `${window.location.origin}${window.location.pathname}?mode=parent&id=${id}`;
-            const url = `https://wa.me/${phone.replace(/[^0-9]/g,'')}?text=${encodeURIComponent("مرحباً، رابط متابعة طفلك في أوبرا عاشور:\n" + finalLink)}`;
+            // --- VALIDATION 2: Add '2' before '01' ---
+            let formattedPhone = phone.replace(/[^0-9]/g,'');
+            if(formattedPhone.startsWith('01')) {
+                formattedPhone = '2' + formattedPhone;
+            }
+            
+            const url = `https://wa.me/${formattedPhone}?text=${encodeURIComponent("مرحباً، رابط متابعة طفلك في أوبرا عاشور:\n" + finalLink)}`;
             window.open(url, '_blank');
         };
+        
         window.pause = (id) => update(ref(db, `children/${id}`), { status:'paused', pauseStartTime: Date.now() });
         window.resume = (id) => {
             get(ref(db, `children/${id}`)).then(s => {
@@ -868,7 +1045,7 @@
             });
         };
         
-        // --- UPDATED CHECKOUT LOGIC (Round Up Hours in WhatsApp) ---
+        // --- CHECKOUT LOGIC ---
         window.checkout = (id) => {
             currentChildId = id;
             get(ref(db, `children/${id}`)).then(s => {
@@ -877,7 +1054,6 @@
 
                 let timeMs = d.status === 'in' ? Date.now() - d.entryTime - (d.totalPausedTime||0) : d.pauseStartTime - d.entryTime - (d.totalPausedTime||0);
                 
-                // *** TIME CALCULATION (Rounded Up for Billing & Display) ***
                 const hours = Math.ceil(timeMs/3600000); 
                 const timeCost = hours * 50;
                 
@@ -916,7 +1092,6 @@
                 document.getElementById('bill-products-container').innerHTML = productsHTML;
                 document.getElementById('bill-total-amount').innerText = totalAmount + ' ج.م';
 
-                // *** MODIFIED WHATSAPP MESSAGE (Uses Rounded 'hours') ***
                 const waMessage = `*فاتورة منطقة ألعاب أوبرا عاشور* 🎪%0a` +
                                   `--------------------------------%0a` +
                                   `لقد استمتع طفلكم *${d.name}* باللعب معنا 😍%0a%0a` +
@@ -934,10 +1109,15 @@
 
                 const btn = document.getElementById('btn-send-bill-wa');
                 btn.onclick = () => {
-                     const url = `https://wa.me/${currentBillPhone.replace(/[^0-9]/g,'')}?text=${waMessage}`;
+                     // Ensure 2 + phone
+                     let p = currentBillPhone.replace(/[^0-9]/g,'');
+                     if(p.startsWith('01')) p = '2' + p;
+                     const url = `https://wa.me/${p}?text=${waMessage}`;
                      window.open(url, '_blank');
                 };
-
+                
+                // Show confirm button for live checkout
+                document.getElementById('btn-confirm-checkout').style.display = 'block';
                 document.getElementById('checkout-modal').style.display = 'flex';
             });
         };
