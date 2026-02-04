@@ -3,452 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>التقرير المالي التفصيلي | أوبرا كيدز</title>
+    <title>التقرير المالي المجمع | أوبرا كيدز</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <style>
         :root {
-            --am-color: #00b894; /* لون الاستضافة */
-            --pm-color: #6c5ce7; /* لون الملاهي */
-            --text-dark: #2d3436;
-            --text-light: #636e72;
-            --bg: #f5f6fa;
-            --white: #ffffff;
+            --primary-am: #ff4757; 
+            --primary-pm: #2f3542; 
+            --accent: #1e90ff;
+            --success: #2ed573;
+            --bg-body: #f1f2f6;
+            --surface: #ffffff;
+            --text-main: #2f3542;
+            --text-light: #747d8c;
+            --radius: 12px;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); color: var(--text-dark); padding-bottom: 50px; }
+        
+        body { background-color: var(--bg-body); color: var(--text-main); padding-bottom: 50px; }
 
-        /* --- شاشة القفل --- */
-        #lock-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #2d3436; z-index: 9999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-        }
-        .pin-display {
-            font-size: 3rem; color: white; letter-spacing: 10px; margin-bottom: 20px;
-            font-weight: bold; min-height: 60px;
-        }
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .num-btn {
-            width: 70px; height: 70px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2);
-            background: transparent; color: white; font-size: 1.5rem; cursor: pointer; transition: 0.2s;
-        }
-        .num-btn:active { background: rgba(255,255,255,0.3); transform: scale(0.9); }
-
-        /* --- الهيدر --- */
         header {
-            background: var(--white); padding: 15px; position: sticky; top: 0; z-index: 100;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(135deg, #2c3e50, #000000);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
         }
-        .toggle-container {
-            background: #dfe6e9; padding: 5px; border-radius: 30px; display: flex;
+        header h1 { font-weight: 800; font-size: 1.8rem; margin-bottom: 5px; }
+        .date-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-top: 10px;
         }
-        .toggle-btn {
-            padding: 8px 25px; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; color: #b2bec3; transition: 0.3s;
-        }
-        .toggle-btn.active.am { background: var(--white); color: var(--am-color); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .toggle-btn.active.pm { background: var(--white); color: var(--pm-color); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
-        /* --- الإحصائيات --- */
-        .stats-row {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
-            max-width: 800px; margin: 20px auto; padding: 0 15px;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
-        .stat-box {
-            background: var(--white); padding: 20px; border-radius: 15px; text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.03); border-bottom: 4px solid transparent;
+
+        @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
+
+        .report-section {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border-top: 5px solid gray;
         }
-        body.mode-am .stat-box { border-color: var(--am-color); }
-        body.mode-pm .stat-box { border-color: var(--pm-color); }
+        .report-section.am { border-top-color: var(--primary-am); }
+        .report-section.pm { border-top-color: var(--primary-pm); }
+
+        .section-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .section-header h2 { font-size: 1.3rem; margin: 0; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e1e1e1;
+        }
+        .stat-card .label { font-size: 0.8rem; color: var(--text-light); }
+        .stat-card .value { font-size: 1.4rem; font-weight: 800; margin-top: 5px; }
+        .stat-card.money .value { color: var(--success); }
+        .stat-card.count .value { color: var(--accent); }
+
+        .table-wrapper {
+            max-height: 400px;
+            overflow-y: auto;
+            border-top: 1px solid #eee;
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th { position: sticky; top: 0; background: #f8f9fa; z-index: 1; text-align: right; padding: 12px; color: var(--text-light); }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
         
-        .stat-num { font-size: 2rem; font-weight: 800; margin: 10px 0; }
+        /* حالة الطفل */
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+        .status-in { background-color: var(--success); box-shadow: 0 0 5px var(--success); }
+        .status-out { background-color: #ccc; }
 
-        /* --- الجدول / القائمة --- */
-        .container { max-width: 800px; margin: 0 auto; padding: 0 15px; }
-        .child-card {
-            background: var(--white); border-radius: 12px; padding: 15px; margin-bottom: 12px;
-            display: flex; justify-content: space-between; align-items: center;
-            cursor: pointer; transition: transform 0.2s; position: relative; overflow: hidden;
+        .fab {
+            position: fixed; bottom: 20px; left: 20px;
+            width: 50px; height: 50px;
+            background: var(--text-main); color: white;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            cursor: pointer; z-index: 100;
         }
-        .child-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .card-status {
-            position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
-        }
-        .status-active { background: #00b894; }
-        .status-out { background: #fab1a0; }
-
-        .card-main h3 { font-size: 1.1rem; margin-bottom: 5px; }
-        .card-details { font-size: 0.85rem; color: #777; display: flex; gap: 10px; }
-        .card-price { font-weight: 800; font-size: 1.2rem; color: var(--text-dark); }
-
-        /* --- المودال (الفاتورة التفصيلية) --- */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 2000;
-            justify-content: center; align-items: center; padding: 20px;
-        }
-        .invoice-paper {
-            background: #fff; width: 100%; max-width: 450px; border-radius: 20px;
-            overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            max-height: 90vh; overflow-y: auto; display: flex; flex-direction: column;
-        }
-        .inv-header {
-            padding: 20px; text-align: center; color: white;
-        }
-        body.mode-am .inv-header { background: var(--am-color); }
-        body.mode-pm .inv-header { background: var(--pm-color); }
-
-        .inv-body { padding: 20px; }
-        
-        .info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 0.95rem; }
-        .info-row:last-child { border: none; }
-        .info-label { color: #888; }
-        .info-val { font-weight: bold; }
-
-        .products-section {
-            background: #f9f9f9; padding: 15px; border-radius: 10px; margin: 15px 0;
-        }
-        .prod-item { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; }
-
-        .total-section {
-            background: #2d3436; color: white; padding: 20px;
-            display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem;
-        }
-        .btn-whatsapp {
-            display: block; width: 100%; background: #25D366; color: white; text-align: center;
-            padding: 15px; text-decoration: none; font-weight: bold; font-size: 1.1rem;
-        }
-
-        .loader { text-align: center; padding: 20px; color: #777; }
     </style>
 </head>
-<body class="mode-am">
-
-    <div id="lock-screen">
-        <div class="pin-display" id="pin-display"></div>
-        <div class="numpad">
-            <button class="num-btn" onclick="addPin('1')">1</button>
-            <button class="num-btn" onclick="addPin('2')">2</button>
-            <button class="num-btn" onclick="addPin('3')">3</button>
-            <button class="num-btn" onclick="addPin('4')">4</button>
-            <button class="num-btn" onclick="addPin('5')">5</button>
-            <button class="num-btn" onclick="addPin('6')">6</button>
-            <button class="num-btn" onclick="addPin('7')">7</button>
-            <button class="num-btn" onclick="addPin('8')">8</button>
-            <button class="num-btn" onclick="addPin('9')">9</button>
-            <button class="num-btn" onclick="clsPin()">C</button>
-            <button class="num-btn" onclick="addPin('0')">0</button>
-            <button class="num-btn" style="background:var(--am-color); border:none;" onclick="checkPin()">⏎</button>
-        </div>
-    </div>
+<body>
 
     <header>
-        <h3>التقارير المالية</h3>
-        <div class="toggle-container">
-            <button class="toggle-btn active am" onclick="setMode('am')">AM استضافة</button>
-            <button class="toggle-btn pm" onclick="setMode('pm')">PM ملاهي</button>
-        </div>
+        <h1><i class="fa-solid fa-chart-line"></i> لوحة الإدارة المالية</h1>
+        <div class="date-badge" id="current-date">--/--/----</div>
     </header>
 
-    <div class="stats-row">
-        <div class="stat-box">
-            <span>عدد الأطفال</span>
-            <div class="stat-num" id="stat-count">0</div>
-        </div>
-        <div class="stat-box">
-            <span>إجمالي الإيراد</span>
-            <div class="stat-num" id="stat-total">0</div>
-            <small>جنية مصري</small>
-        </div>
-    </div>
-
     <div class="container">
-        <h4 style="margin-bottom:15px; color:#888;">سجل الحركات (الكل)</h4>
-        <div id="loader" class="loader">جاري تحميل البيانات...</div>
-        <div id="data-list"></div>
-    </div>
-
-    <div id="invoice-modal" class="modal" onclick="if(event.target === this) closeModal()">
-        <div class="invoice-paper">
-            <div class="inv-header">
-                <h2 id="m-child-name">اسم الطفل</h2>
-                <p id="m-status-text" style="opacity:0.8; font-size:0.9rem;">حالة الفاتورة</p>
+        
+        <div class="report-section am">
+            <div class="section-header">
+                <h2 style="color: var(--primary-am);"><i class="fa-solid fa-sun"></i> استضافة (AM)</h2>
             </div>
-            <div class="inv-body">
-                <div class="info-row">
-                    <span class="info-label">ولي الأمر</span>
-                    <span class="info-val" id="m-parent">-</span>
+            <div class="stats-grid">
+                <div class="stat-card count">
+                    <div class="label">عدد اليوم</div>
+                    <div class="value" id="am-count">0</div>
                 </div>
-                <div class="info-row">
-                    <span class="info-label">رقم الهاتف</span>
-                    <span class="info-val" id="m-phone">-</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">التاريخ</span>
-                    <span class="info-val" id="m-date">-</span>
-                </div>
-
-                <div style="margin-top:15px; background:#f0f0f0; padding:10px; border-radius:8px; display:flex; justify-content:space-between; text-align:center;">
-                    <div>
-                        <small style="color:#888">دخول</small>
-                        <div style="font-weight:bold" id="m-start">-</div>
-                    </div>
-                    <div style="border-right:1px solid #ddd; border-left:1px solid #ddd; padding:0 15px;">
-                        <small style="color:#888">المدة</small>
-                        <div style="font-weight:bold; color:var(--am-color)" id="m-duration">-</div>
-                    </div>
-                    <div>
-                        <small style="color:#888">خروج</small>
-                        <div style="font-weight:bold" id="m-end">-</div>
-                    </div>
-                </div>
-
-                <div class="products-section">
-                    <h5 style="margin-bottom:10px; color:#555;">الطلبات الإضافية (Products):</h5>
-                    <div id="m-products-list">
-                        </div>
+                <div class="stat-card money">
+                    <div class="label">إيراد اليوم</div>
+                    <div class="value" id="am-total">0 ج.م</div>
                 </div>
             </div>
-
-            <div class="total-section">
-                <span>الإجمالي النهائي</span>
-                <span><span id="m-total">0</span> ج.م</span>
+            <div class="table-wrapper">
+                <table id="am-table">
+                    <thead><tr><th>الاسم</th><th>دخول</th><th>المبلغ</th></tr></thead>
+                    <tbody id="am-tbody"><tr><td colspan="3" style="text-align:center">جار التحميل...</td></tr></tbody>
+                </table>
             </div>
-
-            <a href="#" id="wa-link" target="_blank" class="btn-whatsapp">
-                <i class="fab fa-whatsapp"></i> إرسال الفاتورة عبر واتساب
-            </a>
         </div>
+
+        <div class="report-section pm">
+            <div class="section-header">
+                <h2 style="color: var(--primary-pm);"><i class="fa-solid fa-moon"></i> كافيه (PM)</h2>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card count">
+                    <div class="label">عدد اليوم</div>
+                    <div class="value" id="pm-count">0</div>
+                </div>
+                <div class="stat-card money">
+                    <div class="label">إيراد اليوم</div>
+                    <div class="value" id="pm-total">0 ج.م</div>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table id="pm-table">
+                    <thead><tr><th>الاسم</th><th>دخول</th><th>المبلغ</th></tr></thead>
+                    <tbody id="pm-tbody"><tr><td colspan="3" style="text-align:center">جار التحميل...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+    <div class="fab" onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i></div>
 
-        // 1. تعريف قواعد البيانات
-        const configAM = {
-            apiKey: "AIzaSyDJ_dnEZP62J871KLAg88_quQdUt01004o",
-            authDomain: "operakides.firebaseapp.com",
-            databaseURL: "https://operakides-default-rtdb.firebaseio.com",
-            projectId: "operakides",
-            appId: "1:1028823199618:web:16062acdd68c32002a299b"
-        };
+    <script>
+        // ضبط التاريخ
+        const today = new Date();
+        document.getElementById('current-date').innerText = today.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-        const configPM = {
+        // ==========================================
+        // إعدادات Firebase (يجب تعبئتها من قبلك)
+        // ==========================================
+        
+        // 1. إعدادات الاستضافة (AM) - Opera Estdafa
+        const firebaseConfig = {
             apiKey: "AIzaSyDIH-wzZV71U-zbkxArRE4f9oiCtwvKOWA",
             authDomain: "operaestdafa.firebaseapp.com",
             databaseURL: "https://operaestdafa-default-rtdb.firebaseio.com",
             projectId: "operaestdafa",
+            storageBucket: "operaestdafa.firebasestorage.app",
+            messagingSenderId: "44885598287",
             appId: "1:44885598287:web:e2b0d3497b86c69de38a3a"
         };
 
-        const appAM = initializeApp(configAM, "appAM");
-        const appPM = initializeApp(configPM, "appPM");
-        const dbAM = getDatabase(appAM);
-        const dbPM = getDatabase(appPM);
-
-        // 2. المتغيرات والتهيئة
-        let currentMode = 'am';
-        let currentPin = '';
-        let globalData = [];
-
-        // 3. دوال شاشة القفل
-        window.addPin = (n) => {
-            if(currentPin.length < 6) {
-                currentPin += n;
-                document.getElementById('pin-display').innerText = '*'.repeat(currentPin.length);
-            }
-        };
-        window.clsPin = () => {
-            currentPin = '';
-            document.getElementById('pin-display').innerText = '';
-        };
-        window.checkPin = () => {
-            if(currentPin === '521988') {
-                document.getElementById('lock-screen').style.display = 'none';
-                fetchData(); // بدء جلب البيانات
-            } else {
-                alert('كلمة المرور خاطئة');
-                window.clsPin();
-            }
+        // 2. إعدادات الكافيه (PM) - Opera Kides
+         const firebaseConfig = {
+            apiKey: "AIzaSyDJ_dnEZP62J871KLAg88_quQdUt01004o",
+            authDomain: "operakides.firebaseapp.com",
+            projectId: "operakides",
+            storageBucket: "operakides.firebasestorage.app",
+            messagingSenderId: "1028823199618",
+            appId: "1:1028823199618:web:16062acdd68c32002a299b",
+            measurementId: "G-W46366S9Z2"
         };
 
-        // 4. التحكم في الوضع AM/PM
-        window.setMode = (mode) => {
-            currentMode = mode;
-            document.body.className = `mode-${mode}`;
-            
-            // تحديث الأزرار
-            document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector(`.toggle-btn.${mode}`).classList.add('active');
-            
-            fetchData();
-        };
+        // تهيئة التطبيقات
+        let appAM, appPM;
+        try { appAM = firebase.initializeApp(configAM, "AppAM"); } catch(e) { appAM = firebase.app("AppAM"); }
+        try { appPM = firebase.initializeApp(configPM, "AppPM"); } catch(e) { appPM = firebase.app("AppPM"); }
 
-        // 5. جلب البيانات وتحليلها
-        function fetchData() {
-            const db = currentMode === 'am' ? dbAM : dbPM;
-            const loader = document.getElementById('loader');
-            const listDiv = document.getElementById('data-list');
-            
-            loader.style.display = 'block';
-            listDiv.innerHTML = '';
-            
-            const dataRef = ref(db, '/'); // جلب الكل من الجذر
+        // دالة مساعدة للتحقق هل التاريخ هو اليوم
+        function isToday(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            return date.getDate() === now.getDate() &&
+                   date.getMonth() === now.getMonth() &&
+                   date.getFullYear() === now.getFullYear();
+        }
 
-            onValue(dataRef, (snapshot) => {
-                loader.style.display = 'none';
-                const raw = snapshot.val();
+        // الدالة الرئيسية لجلب البيانات
+        function fetchReport(database, tbodyId, countId, totalId) {
+            database.ref('children').on('value', (snapshot) => {
+                const tbody = document.getElementById(tbodyId);
+                tbody.innerHTML = '';
                 
-                // تحويل البيانات الشجرية إلى مصفوفة مسطحة
-                globalData = flattenData(raw);
-                
-                // ترتيب: الأحدث أولاً
-                globalData.sort((a, b) => (b.startTime || 0) - (a.startTime || 0));
+                let dailyCount = 0;
+                let dailyTotal = 0;
+                let rows = [];
 
-                updateStats();
-                renderList();
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    
+                    Object.values(data).forEach(child => {
+                        // 1. التأكد أن البيانات تخص اليوم فقط
+                        if (child.entryTime && isToday(child.entryTime)) {
+                            dailyCount++;
+                            // تحويل التكلفة لرقم (التعامل مع النصوص الفارغة)
+                            let cost = parseFloat(child.totalCost) || 0;
+                            dailyTotal += cost;
+
+                            // تحديد حالة التواجد (للتلوين)
+                            const isOut = child.status === 'out';
+                            const statusDot = isOut ? 'status-out' : 'status-in';
+                            const timeStr = new Date(child.entryTime).toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
+
+                            rows.push(`
+                                <tr>
+                                    <td>
+                                        <span class="status-dot ${statusDot}"></span> 
+                                        <b>${child.name || 'بدون اسم'}</b>
+                                    </td>
+                                    <td>${timeStr}</td>
+                                    <td style="color: var(--success); font-weight:bold;">${cost} ج.م</td>
+                                </tr>
+                            `);
+                        }
+                    });
+                }
+
+                // تحديث الواجهة
+                document.getElementById(countId).innerText = dailyCount;
+                document.getElementById(totalId).innerText = dailyTotal.toLocaleString() + ' ج.م';
+                
+                if (rows.length > 0) {
+                    // عرض الأحدث أولاً
+                    tbody.innerHTML = rows.reverse().join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:20px; color:#999;">لا توجد بيانات لهذا اليوم</td></tr>';
+                }
             });
         }
 
-        // دالة مساعدة لاستخراج البيانات العميقة
-        function flattenData(obj) {
-            let results = [];
-            if(!obj) return results;
-
-            function recurse(current) {
-                // هل هذا الكائن يمثل طفلاً؟ (شرط: وجود اسم ووقت بداية)
-                if (current.childName && current.startTime) {
-                    results.push(current);
-                    return;
-                }
-                if (current.name && current.startTime) { // صيغة أخرى محتملة
-                    results.push(current);
-                    return;
-                }
-
-                // إذا لم يكن طفلاً، ابحث في الأبناء
-                if (typeof current === 'object' && current !== null) {
-                    Object.values(current).forEach(val => recurse(val));
-                }
-            }
-            recurse(obj);
-            return results;
-        }
-
-        // 6. عرض الإحصائيات والقائمة
-        function updateStats() {
-            const total = globalData.reduce((sum, item) => sum + (parseFloat(item.totalCost) || parseFloat(item.price) || 0), 0);
-            document.getElementById('stat-count').innerText = globalData.length;
-            document.getElementById('stat-total').innerText = total.toLocaleString();
-        }
-
-        function renderList() {
-            const listDiv = document.getElementById('data-list');
-            listDiv.innerHTML = '';
-
-            if(globalData.length === 0) {
-                listDiv.innerHTML = '<p style="text-align:center;color:#999">لا توجد سجلات</p>';
-                return;
-            }
-
-            globalData.forEach(item => {
-                const name = item.childName || item.name || 'بدون اسم';
-                const price = item.totalCost || item.price || 0;
-                const time = new Date(item.startTime).toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
-                const isOut = item.endTime ? true : false;
-                
-                const card = document.createElement('div');
-                card.className = 'child-card';
-                card.innerHTML = `
-                    <div class="card-status ${isOut ? 'status-out' : 'status-active'}"></div>
-                    <div class="card-main" style="padding-right:15px">
-                        <h3>${name}</h3>
-                        <div class="card-details">
-                            <span><i class="far fa-clock"></i> ${time}</span>
-                            <span>|</span>
-                            <span>${isOut ? 'تم الخروج' : 'نشط الآن'}</span>
-                        </div>
-                    </div>
-                    <div class="card-price">${price} ج.م</div>
-                `;
-                card.onclick = () => showInvoice(item);
-                listDiv.appendChild(card);
-            });
-        }
-
-        // 7. عرض الفاتورة
-        window.showInvoice = (item) => {
-            const modal = document.getElementById('invoice-modal');
-            
-            // تعبئة البيانات
-            document.getElementById('m-child-name').innerText = item.childName || item.name;
-            document.getElementById('m-parent').innerText = item.parentName || item.guardian || 'غير محدد';
-            document.getElementById('m-phone').innerText = item.parentPhone || item.phone || 'غير محدد';
-            
-            // التواريخ
-            const start = new Date(item.startTime);
-            document.getElementById('m-date').innerText = start.toLocaleDateString('ar-EG');
-            document.getElementById('m-start').innerText = start.toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
-            
-            let endStr = '-';
-            let durationStr = 'جاري الحساب';
-            
-            if(item.endTime) {
-                const end = new Date(item.endTime);
-                endStr = end.toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
-                
-                // حساب المدة
-                const diffMs = item.endTime - item.startTime;
-                const hrs = Math.floor(diffMs / 3600000);
-                const mins = Math.floor((diffMs % 3600000) / 60000);
-                durationStr = `${hrs} س و ${mins} د`;
-            } else {
-                durationStr = 'لم يخرج بعد';
-            }
-            
-            document.getElementById('m-end').innerText = endStr;
-            document.getElementById('m-duration').innerText = durationStr;
-
-            // المنتجات
-            const prodList = document.getElementById('m-products-list');
-            prodList.innerHTML = '';
-            
-            if(item.products && Array.isArray(item.products) && item.products.length > 0) {
-                item.products.forEach(p => {
-                    const row = document.createElement('div');
-                    row.className = 'prod-item';
-                    row.innerHTML = `<span>${p.name} (x${p.qty || 1})</span> <span>${p.price} ج.م</span>`;
-                    prodList.appendChild(row);
-                });
-            } else {
-                prodList.innerHTML = '<small style="color:#aaa">لا توجد طلبات إضافية</small>';
-            }
-
-            // الإجمالي والواتساب
-            const total = item.totalCost || item.price || 0;
-            document.getElementById('m-total').innerText = total;
-            
-            // تجهيز رابط واتساب
-            const phone = (item.parentPhone || item.phone || '').replace(/\D/g, '');
-            let waUrl = '#';
-            if(phone) {
-                const formattedPhone = phone.startsWith('01') ? '2'+phone : phone;
-                const place = currentMode === 'am' ? 'أوبرا كيدز (استضافة)' : 'أوبرا كيدز (ملاهي)';
-                const msg = `فاتورة ${place}%0aالاسم: ${item.childName || item.name}%0aالوقت: من ${start.toLocaleTimeString()} إلى ${endStr}%0aالإجمالي: ${total} جنيه`;
-                waUrl = `https://wa.me/${formattedPhone}?text=${msg}`;
-            }
-            document.getElementById('wa-link').href = waUrl;
-
-            modal.style.display = 'flex';
-        };
-
-        window.closeModal = () => {
-            document.getElementById('invoice-modal').style.display = 'none';
-        };
+        // تشغيل المراقبين
+        fetchReport(appAM.database(), 'am-tbody', 'am-count', 'am-total');
+        fetchReport(appPM.database(), 'pm-tbody', 'pm-count', 'pm-total');
 
     </script>
 </body>
