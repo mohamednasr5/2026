@@ -30,7 +30,7 @@
 
         /* --- General Reset --- */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { background-color: #f1f2f6; color: var(--secondary); min-height: 100vh; display: flex; flex-direction: column; font-size: 16px; overflow-x: hidden; padding-bottom: 100px; /* Space for footer */ }
+        body { background-color: #f1f2f6; color: var(--secondary); min-height: 100vh; display: flex; flex-direction: column; font-size: 16px; overflow-x: hidden; padding-bottom: 100px; }
 
         /* --- Scrollbar --- */
         ::-webkit-scrollbar { width: 6px; }
@@ -90,7 +90,6 @@
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
         .stat-card { background: white; padding: 20px; border-radius: 16px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s; }
         
-        /* جعل كرت الزوار قابل للضغط */
         .stat-card.clickable { cursor: pointer; border: 2px solid transparent; }
         .stat-card.clickable:hover { border-color: var(--accent); transform: translateY(-5px); }
 
@@ -151,7 +150,6 @@
             border-radius: 10px;
             margin-bottom: 20px;
             position: relative;
-            background-image: radial-gradient(circle at 0 0, transparent 0, transparent 0), radial-gradient(circle at 100% 0, transparent 0, transparent 0);
         }
         .receipt-header { text-align: center; border-bottom: 2px dashed #eee; padding-bottom: 15px; margin-bottom: 15px; }
         .receipt-logo { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 5px; }
@@ -437,29 +435,39 @@
 
     <div id="toast-container" style="position:fixed; bottom:20px; left:20px; z-index:3000;"></div>
     
-    <audio id="msg-sound" src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_3f32527b79.mp3"></audio>
-    <audio id="hour-sound" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_12b0c7443c.mp3"></audio>
+    <!-- استبدال روابط الصوت بروابط بديلة مضمونة العمل -->
+    <audio id="msg-sound" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
+    <audio id="hour-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
 
     <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
-  import { getDatabase } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+        // --- Import Fixes ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
+        // تم إضافة جميع الدوال الناقصة هنا
+        import { getDatabase, ref, set, onValue, push, update, get, remove, child, off } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDIH-wzZV71U-zbkxxArRE4f9oiCtwvKOWA",
-    authDomain: "operaestdafa.firebaseapp.com",
-    databaseURL: "https://operaestdafa-default-rtdb.firebaseio.com",
-    projectId: "operaestdafa",
-    storageBucket: "operaestdafa.firebasestorage.app",
-    messagingSenderId: "44885598287",
-    appId: "1:44885598287:web:e2b0d3497b86c69de38a3a",
-    measurementId: "G-X1129EKN1P"
-  };
+        const firebaseConfig = {
+            apiKey: "AIzaSyDIH-wzZV71U-zbkxxArRE4f9oiCtwvKOWA",
+            authDomain: "operaestdafa.firebaseapp.com",
+            databaseURL: "https://operaestdafa-default-rtdb.firebaseio.com",
+            projectId: "operaestdafa",
+            storageBucket: "operaestdafa.firebasestorage.app",
+            messagingSenderId: "44885598287",
+            appId: "1:44885598287:web:e2b0d3497b86c69de38a3a",
+            measurementId: "G-X1129EKN1P"
+        };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const db = getDatabase(app);
+        // Initialize Firebase
+        // ملاحظة: إذا استمر خطأ 400، تأكد من أن إعدادات API Key في Firebase Console تسمح بالنطاق (Domain) الحالي
+        let app, db, analytics;
+        try {
+            app = initializeApp(firebaseConfig);
+            analytics = getAnalytics(app);
+            db = getDatabase(app);
+        } catch (e) {
+            console.error("Firebase Init Error:", e);
+            alert("حدث خطأ في الاتصال بقاعدة البيانات. تأكد من مفتاح API.");
+        }
 
         // --- Variables ---
         let currentChildId = null; 
@@ -470,16 +478,22 @@
         let productTargetId = null;
         let lastMsgCounts = {};
         let currentBillPhone = "";
-        let searchQuery = ""; // NEW: Variable for search
+        let searchQuery = ""; 
         
         // --- Sounds ---
-        const playMsgSound = () => document.getElementById('msg-sound').play().catch(()=>{});
-        const playHourSound = () => document.getElementById('hour-sound').play().catch(()=>{});
+        const playMsgSound = () => {
+            const audio = document.getElementById('msg-sound');
+            if(audio) audio.play().catch(()=>{});
+        };
+        const playHourSound = () => {
+            const audio = document.getElementById('hour-sound');
+            if(audio) audio.play().catch(()=>{});
+        };
 
         // --- Auth ---
         window.handleEnter = (e) => { if(e.key === 'Enter') checkLogin(); }
         
-        window.checkLogin = () => {
+        function checkLogin() {
             const pass = document.getElementById('login-pass').value;
             if(pass === '0100') {
                 document.getElementById('login-screen').classList.add('hidden');
@@ -496,7 +510,7 @@
             }
         };
         
-        window.logout = () => location.reload();
+        function logout() { location.reload(); }
 
         // --- Routing ---
         const urlParams = new URLSearchParams(window.location.search);
@@ -508,6 +522,7 @@
 
         // --- Stats Logic ---
         function initStats() {
+            if(!db) return;
             onValue(ref(db, 'children'), (snap) => {
                 const data = snap.val() || {};
                 let totalIncome = 0;
@@ -526,11 +541,10 @@
                             const exitDate = new Date(child.exitTime).toLocaleDateString('en-US');
                             if(exitDate === todayStr) {
                                 todayIncome += cost;
-                                totalKids++; // Count only today's kids for the daily view
+                                totalKids++; 
                             }
                         }
                         
-                        // Calculate products logic only for today or total if needed (Current logic calculates total)
                         let pCost = 0;
                         if(child.products) {
                             Object.values(child.products).forEach(p => pCost += p.price);
@@ -542,14 +556,14 @@
 
                 document.getElementById('stat-total-income').innerText = totalIncome + ' ج.م';
                 document.getElementById('stat-today-income').innerText = todayIncome + ' ج.م';
-                document.getElementById('stat-total-kids').innerText = totalKids; // This is now TODAY's checked out count
+                document.getElementById('stat-total-kids').innerText = totalKids; 
                 document.getElementById('stat-products-income').innerText = productIncome + ' ج.م';
                 document.getElementById('stat-time-income').innerText = timeIncome + ' ج.م';
             });
         }
         
-        // --- NEW: History List Logic ---
-        window.showDailyHistory = () => {
+        // --- History List Logic ---
+        function showDailyHistory() {
             document.getElementById('history-list-modal').style.display = 'flex';
             const container = document.getElementById('daily-history-container');
             container.innerHTML = '<div style="text-align:center; padding:20px;">جاري التحميل...</div>';
@@ -589,18 +603,12 @@
             });
         };
 
-        window.closeHistoryModal = () => document.getElementById('history-list-modal').style.display = 'none';
+        function closeHistoryModal() { document.getElementById('history-list-modal').style.display = 'none'; }
 
-        window.viewBillFromHistory = (key, child) => {
-             // إغلاق قائمة الأسماء حتى تظهر الفاتورة بوضوح
+        function viewBillFromHistory(key, child) {
              document.getElementById('history-list-modal').style.display = 'none';
-
-             // Setup bill logic for view only
              currentBillPhone = child.phone;
              
-             // Calculate time based on stored data (Total cost - Products)
-             // But we need the hours. We can approximate or use stored data if we had it.
-             // Reverse Calculation:
              let pTotal = 0;
              let productsHTML = '';
              let waProductsText = "";
@@ -625,9 +633,8 @@
              
              const totalCost = parseFloat(child.totalCost);
              const timeCost = totalCost - pTotal;
-             const hours = Math.round(timeCost / 50); // Approximate back to hours
+             const hours = Math.round(timeCost / 50); 
              
-             // Set Data
              const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
              const exitDateObj = new Date(child.exitTime);
              const dayName = days[exitDateObj.getDay()];
@@ -640,7 +647,6 @@
              document.getElementById('bill-products-container').innerHTML = productsHTML;
              document.getElementById('bill-total-amount').innerText = child.totalCost + ' ج.م';
              
-             // Construct WhatsApp Message
              const waMessage = `*فاتورة منطقة ألعاب أوبرا عاشور* 🎪%0a` +
                              `--------------------------------%0a` +
                              `لقد استمتع طفلكم *${child.name}* باللعب معنا 😍%0a%0a` +
@@ -656,7 +662,6 @@
                              `شكراً لزيارتكم منطقة ألعاب أوبرا عاشور ❤️%0a` +
                              `ننتظر عودتكم لنا ✨`;
              
-             // Setup Buttons
              const btn = document.getElementById('btn-send-bill-wa');
              btn.onclick = () => {
                  let p = currentBillPhone.replace(/[^0-9]/g,'');
@@ -665,13 +670,13 @@
                  window.open(url, '_blank');
              };
              
-             // Hide Checkout Confirm button, Show Close only
              document.getElementById('btn-confirm-checkout').style.display = 'none';
              document.getElementById('checkout-modal').style.display = 'flex';
         };
 
         // --- Admin Logic ---
         function initAdmin() {
+            if(!db) return;
             onValue(ref(db, 'children'), (snap) => {
                 const data = snap.val() || {};
                 const listActive = document.getElementById('kids-list-active');
@@ -681,9 +686,7 @@
                 listHistory.innerHTML = '';
 
                 Object.entries(data).forEach(([key, child]) => {
-                    // NEW: Calculate Search Text once and store it in attribute
                     const searchText = `${child.name} ${child.phone} ${child.childId}`.toLowerCase();
-
                     const products = child.products ? Object.values(child.products) : [];
                     let prodText = products.map(p => `${p.name}`).join(' + ');
                     if(prodText) prodText = '🛍️ ' + prodText;
@@ -711,8 +714,6 @@
 
                         const div = document.createElement('div');
                         div.className = `kid-card ${child.status === 'in' ? 'in-status' : 'paused-status'}`;
-                        
-                        // NEW: Set the search attribute
                         div.setAttribute('data-search', searchText);
 
                         div.innerHTML = `
@@ -742,9 +743,7 @@
                     } else if (child.status === 'out') {
                         const div = document.createElement('div');
                         div.className = 'kid-card out-status';
-                        // NEW: Set the search attribute
                         div.setAttribute('data-search', searchText);
-
                         div.innerHTML = `
                             <div class="kid-info">
                                 <h3>${child.name}</h3>
@@ -758,15 +757,11 @@
                         listHistory.appendChild(div);
                     }
                 });
-                
-                // NEW: Call Filter immediately after rendering
                 filterList();
             });
 
             if(adminTimer) clearInterval(adminTimer);
-            adminTimer = setInterval(() => {
-                initAdmin(); 
-            }, 1000);
+            adminTimer = setInterval(() => { initAdmin(); }, 1000);
 
             document.getElementById('checkin-form').onsubmit = (e) => {
                 e.preventDefault();
@@ -808,7 +803,7 @@
             };
         }
 
-        // --- NEW: Search Logic using Data Attributes (Same as your reference code) ---
+        // --- Search Logic ---
         document.getElementById('admin-search').addEventListener('keyup', (e) => {
             searchQuery = e.target.value.toLowerCase();
             filterList();
@@ -819,8 +814,6 @@
             cards.forEach(card => {
                 const txt = card.getAttribute('data-search') || "";
                 if (txt.includes(searchQuery)) {
-                    // Check if it's supposed to be flex (like in CSS)
-                    // Or just use empty string which defaults to CSS value
                     card.style.display = 'flex'; 
                 } else {
                     card.style.display = 'none';
@@ -828,7 +821,7 @@
             });
         }
 
-        window.openProductModal = (id, name) => {
+        function openProductModal(id, name) {
             productTargetId = id;
             document.getElementById('prod-modal-title').innerText = name;
             document.getElementById('product-modal').style.display = 'flex';
@@ -853,20 +846,20 @@
             });
         };
 
-        window.deleteProduct = (childId, prodId) => {
+        function deleteProduct(childId, prodId) {
             if(confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
                 remove(ref(db, `children/${childId}/products/${prodId}`));
                 showToast('تم حذف المنتج');
             }
         };
 
-        window.closeProductModal = () => {
+        function closeProductModal() {
             document.getElementById('product-modal').style.display = 'none';
             document.getElementById('prod-name').value = '';
             document.getElementById('prod-price').value = '';
         };
 
-        window.addProduct = () => {
+        function addProduct() {
             const name = document.getElementById('prod-name').value;
             const price = document.getElementById('prod-price').value;
             if(!name || !price) return;
@@ -879,7 +872,7 @@
         };
 
         // --- Chat Logic ---
-        window.openAdminChat = (id, name) => {
+        function openAdminChat(id, name) {
             activeChatId = id;
             document.getElementById('chat-modal-title').innerText = name;
             document.getElementById('admin-chat-modal').style.display = 'flex';
@@ -897,11 +890,13 @@
                 }
             });
         };
-        window.closeAdminChat = () => {
+        
+        function closeAdminChat() {
             activeChatId = null;
             document.getElementById('admin-chat-modal').style.display = 'none';
         };
-        window.sendAdminMessage = () => {
+        
+        function sendAdminMessage() {
             const txt = document.getElementById('admin-chat-input').value;
             if(!txt) return;
             push(ref(db, `children/${activeChatId}/messages`), {
@@ -911,6 +906,7 @@
         };
 
         function initParent(id) {
+            if(!db) return;
             onValue(ref(db, `children/${id}`), (snap) => {
                 const data = snap.val();
                 if(!data) return;
@@ -925,7 +921,6 @@
                 document.getElementById('p-child-name').innerText = data.name;
                 document.getElementById('p-child-id').innerText = '#' + data.childId;
                 
-                // Update Status Badge and Logic
                 const statusBadge = document.getElementById('p-status-badge');
                 const timerCircle = document.getElementById('live-timer');
 
@@ -1057,7 +1052,7 @@
         }
 
         // --- Action Buttons ---
-        window.openWhatsApp = (phone, id, link) => {
+        function openWhatsApp(phone, id, link) {
             const finalLink = link || `${window.location.origin}${window.location.pathname}?mode=parent&id=${id}`;
             let formattedPhone = phone.replace(/[^0-9]/g,'');
             if(formattedPhone.startsWith('01')) {
@@ -1068,8 +1063,9 @@
             window.open(url, '_blank');
         };
         
-        window.pause = (id) => update(ref(db, `children/${id}`), { status:'paused', pauseStartTime: Date.now() });
-        window.resume = (id) => {
+        function pause(id) { update(ref(db, `children/${id}`), { status:'paused', pauseStartTime: Date.now() }); }
+        
+        function resume(id) {
             get(ref(db, `children/${id}`)).then(s => {
                 const d = s.val();
                 const pTime = Date.now() - d.pauseStartTime;
@@ -1078,7 +1074,7 @@
         };
         
         // --- CHECKOUT LOGIC ---
-        window.checkout = (id) => {
+        function checkout(id) {
             currentChildId = id;
             get(ref(db, `children/${id}`)).then(s => {
                 const d = s.val();
@@ -1152,7 +1148,7 @@
             });
         };
 
-        window.confirmCheckout = () => {
+        function confirmCheckout() {
             const total = document.getElementById('bill-total-amount').innerText.replace(' ج.م','');
             update(ref(db, `children/${currentChildId}`), { status:'out', exitTime: Date.now(), totalCost: total });
             closeModal();
@@ -1160,14 +1156,16 @@
         };
 
         // --- Utils ---
-        window.closeQR = () => document.getElementById('new-child-qr').classList.add('hidden');
-        window.closeModal = () => document.getElementById('checkout-modal').style.display = 'none';
+        function closeQR() { document.getElementById('new-child-qr').classList.add('hidden'); }
+        function closeModal() { document.getElementById('checkout-modal').style.display = 'none'; }
+        
         function formatTime(ms) {
             const s = Math.floor((ms/1000)%60).toString().padStart(2,'0');
             const m = Math.floor((ms/60000)%60).toString().padStart(2,'0');
             const h = Math.floor(ms/3600000).toString().padStart(2,'0');
             return `${h}:${m}:${s}`;
         }
+        
         function showToast(msg) {
             const t = document.createElement('div');
             t.style.cssText = "background:#333; color:white; padding:10px 20px; border-radius:5px; margin-top:10px; box-shadow:0 3px 10px rgba(0,0,0,0.2);";
@@ -1180,11 +1178,30 @@
             document.getElementById('header-datetime').innerText = new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
         }, 1000);
         
-        // EXPOSE FUNCTIONS GLOBALLY
-        window.addProduct = addProduct;
+        // --- Global Exposure for HTML onClick events ---
+        window.checkLogin = checkLogin;
+        window.logout = logout;
+        window.initStats = initStats;
+        window.showDailyHistory = showDailyHistory;
+        window.closeHistoryModal = closeHistoryModal;
+        window.viewBillFromHistory = viewBillFromHistory;
         window.openProductModal = openProductModal;
         window.deleteProduct = deleteProduct;
         window.closeProductModal = closeProductModal;
+        window.addProduct = addProduct;
+        window.pause = pause;
+        window.resume = resume;
+        window.openAdminChat = openAdminChat;
+        window.closeAdminChat = closeAdminChat;
+        window.sendAdminMessage = sendAdminMessage;
+        window.checkout = checkout;
+        window.confirmCheckout = confirmCheckout;
+        window.openWhatsApp = openWhatsApp;
+        window.handleEnter = handleEnter;
+        window.closeQR = closeQR;
+        window.closeModal = closeModal;
+        window.sendParentMessage = sendParentMessage;
+        window.toggleReaction = toggleReaction;
 
     </script>
 </body>
