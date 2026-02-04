@@ -353,8 +353,7 @@
             <h3 style="color:var(--purple); margin-bottom:10px;">🛍️ إدارة المنتجات</h3>
             <p id="prod-modal-title" style="margin-bottom:15px; font-weight:bold; color:#555;"></p>
             
-            <div id="current-prod-list" style="max-height:150px; overflow-y:auto; background:#f9f9f9; padding:5px; border-radius:8px; margin-bottom:15px; border:1px solid #eee;">
-                </div>
+            <div id="current-prod-list" style="max-height:150px; overflow-y:auto; background:#f9f9f9; padding:5px; border-radius:8px; margin-bottom:15px; border:1px solid #eee;"></div>
 
             <div style="border-top:1px dashed #ccc; padding-top:15px;">
                 <h4 style="margin-bottom:10px; font-size:0.9rem;">إضافة جديد:</h4>
@@ -644,13 +643,11 @@
             document.getElementById('admin-search').addEventListener('input', initAdmin);
         }
 
-        // --- UPDATED Product Logic (Edit/Delete + Auto Close) ---
         window.openProductModal = (id, name) => {
             productTargetId = id;
             document.getElementById('prod-modal-title').innerText = name;
             document.getElementById('product-modal').style.display = 'flex';
             
-            // Listen for current products to display them
             onValue(ref(db, `children/${id}/products`), (snap) => {
                 const list = document.getElementById('current-prod-list');
                 list.innerHTML = '';
@@ -692,7 +689,6 @@
             push(ref(db, `children/${productTargetId}/products`), { name, price: parseFloat(price) })
             .then(() => {
                 showToast('تمت الإضافة');
-                // AUTO CLOSE
                 closeProductModal(); 
             });
         };
@@ -872,7 +868,7 @@
             });
         };
         
-        // --- CHECKOUT LOGIC ---
+        // --- UPDATED CHECKOUT LOGIC (Round Up Hours in WhatsApp) ---
         window.checkout = (id) => {
             currentChildId = id;
             get(ref(db, `children/${id}`)).then(s => {
@@ -880,10 +876,9 @@
                 currentBillPhone = d.phone;
 
                 let timeMs = d.status === 'in' ? Date.now() - d.entryTime - (d.totalPausedTime||0) : d.pauseStartTime - d.entryTime - (d.totalPausedTime||0);
-                const hours = Math.ceil(timeMs/3600000); 
-                const exactHours = Math.floor(timeMs/3600000);
-                const exactMins = Math.floor((timeMs % 3600000) / 60000);
                 
+                // *** TIME CALCULATION (Rounded Up for Billing & Display) ***
+                const hours = Math.ceil(timeMs/3600000); 
                 const timeCost = hours * 50;
                 
                 const prods = d.products ? Object.values(d.products) : [];
@@ -921,10 +916,11 @@
                 document.getElementById('bill-products-container').innerHTML = productsHTML;
                 document.getElementById('bill-total-amount').innerText = totalAmount + ' ج.م';
 
+                // *** MODIFIED WHATSAPP MESSAGE (Uses Rounded 'hours') ***
                 const waMessage = `*فاتورة منطقة ألعاب أوبرا عاشور* 🎪%0a` +
                                   `--------------------------------%0a` +
                                   `لقد استمتع طفلكم *${d.name}* باللعب معنا 😍%0a%0a` +
-                                  `⏳ *الوقت:* ${exactHours} ساعة و ${exactMins} دقيقة%0a` +
+                                  `⏳ *عدد الساعات:* ${hours} ساعات%0a` +
                                   `💰 *حساب الوقت:* ${timeCost} ج.م%0a` +
                                   `--------------------------------%0a` +
                                   `📋 *المنتجات:*%0a` +
