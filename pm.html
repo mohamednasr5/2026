@@ -466,6 +466,7 @@
         let productTargetId = null;
         let lastMsgCounts = {};
         let currentBillPhone = "";
+        let searchQuery = ""; // NEW: Variable for search
         
         // --- Sounds ---
         const playMsgSound = () => document.getElementById('msg-sound').play().catch(()=>{});
@@ -668,13 +669,13 @@
                 const data = snap.val() || {};
                 const listActive = document.getElementById('kids-list-active');
                 const listHistory = document.getElementById('kids-list-history');
-                const search = document.getElementById('admin-search').value.toLowerCase();
                 
                 listActive.innerHTML = '';
                 listHistory.innerHTML = '';
 
                 Object.entries(data).forEach(([key, child]) => {
-                    if(search && !child.name.toLowerCase().includes(search) && !child.phone.includes(search)) return;
+                    // NEW: Calculate Search Text once and store it in attribute
+                    const searchText = `${child.name} ${child.phone} ${child.childId}`.toLowerCase();
 
                     const products = child.products ? Object.values(child.products) : [];
                     let prodText = products.map(p => `${p.name}`).join(' + ');
@@ -703,6 +704,10 @@
 
                         const div = document.createElement('div');
                         div.className = `kid-card ${child.status === 'in' ? 'in-status' : 'paused-status'}`;
+                        
+                        // NEW: Set the search attribute
+                        div.setAttribute('data-search', searchText);
+
                         div.innerHTML = `
                             <div class="kid-info">
                                 <h3>${child.name} <span style="font-size:0.8rem; background:#eee; padding:2px 6px; border-radius:4px;">#${child.childId}</span></h3>
@@ -730,6 +735,9 @@
                     } else if (child.status === 'out') {
                         const div = document.createElement('div');
                         div.className = 'kid-card out-status';
+                        // NEW: Set the search attribute
+                        div.setAttribute('data-search', searchText);
+
                         div.innerHTML = `
                             <div class="kid-info">
                                 <h3>${child.name}</h3>
@@ -743,6 +751,9 @@
                         listHistory.appendChild(div);
                     }
                 });
+                
+                // NEW: Call Filter immediately after rendering
+                filterList();
             });
 
             if(adminTimer) clearInterval(adminTimer);
@@ -756,7 +767,6 @@
                 const phone = document.getElementById('parent-phone').value;
                 const snack = document.getElementById('child-snack').value;
                 
-                // --- Validation 1: Phone must be 11 digits and start with 01 ---
                 const phoneRegex = /^01[0-9]{9}$/;
                 if(!phoneRegex.test(phone)) {
                     alert("⚠️ يجب أن يتكون رقم الهاتف من 11 رقم ويبدأ بـ 01");
@@ -789,6 +799,26 @@
                     showToast('تم تسجيل الطفل واضافة الهدية المجانية');
                 });
             };
+        }
+
+        // --- NEW: Search Logic using Data Attributes (Same as your reference code) ---
+        document.getElementById('admin-search').addEventListener('keyup', (e) => {
+            searchQuery = e.target.value.toLowerCase();
+            filterList();
+        });
+
+        function filterList() {
+            const cards = document.querySelectorAll('.kid-card');
+            cards.forEach(card => {
+                const txt = card.getAttribute('data-search') || "";
+                if (txt.includes(searchQuery)) {
+                    // Check if it's supposed to be flex (like in CSS)
+                    // Or just use empty string which defaults to CSS value
+                    card.style.display = 'flex'; 
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         }
 
         window.openProductModal = (id, name) => {
@@ -895,8 +925,6 @@
                 if (data.status === 'paused') {
                     statusBadge.innerText = "متوقف مؤقتاً";
                     statusBadge.style.background = "var(--warning)";
-                    
-                    // --- REQ: Specific message when paused ---
                     timerCircle.classList.add('paused-circle');
                     timerCircle.innerHTML = "تم ايقاف الوقت<br>لحين عودة الطفل";
                 } else {
@@ -941,7 +969,7 @@
                     if(!parentTimer) parentTimer = setInterval(() => initParent(id), 1000); 
                 } else {
                     if(parentTimer) clearInterval(parentTimer);
-                    parentTimer = null; // Clear timer reference to allow restart
+                    parentTimer = null; 
                 }
 
                 renderChat(data.messages, 'parent-chat-messages', 'parent');
@@ -1024,7 +1052,6 @@
         // --- Action Buttons ---
         window.openWhatsApp = (phone, id, link) => {
             const finalLink = link || `${window.location.origin}${window.location.pathname}?mode=parent&id=${id}`;
-            // --- VALIDATION 2: Add '2' before '01' ---
             let formattedPhone = phone.replace(/[^0-9]/g,'');
             if(formattedPhone.startsWith('01')) {
                 formattedPhone = '2' + formattedPhone;
@@ -1107,14 +1134,12 @@
 
                 const btn = document.getElementById('btn-send-bill-wa');
                 btn.onclick = () => {
-                      // Ensure 2 + phone
                       let p = currentBillPhone.replace(/[^0-9]/g,'');
                       if(p.startsWith('01')) p = '2' + p;
                       const url = `https://wa.me/${p}?text=${waMessage}`;
                       window.open(url, '_blank');
                 };
                 
-                // Show confirm button for live checkout
                 document.getElementById('btn-confirm-checkout').style.display = 'block';
                 document.getElementById('checkout-modal').style.display = 'flex';
             });
@@ -1144,7 +1169,6 @@
             setTimeout(() => t.remove(), 3000);
         }
         
-        // Clock
         setInterval(() => {
             document.getElementById('header-datetime').innerText = new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
         }, 1000);
@@ -1154,15 +1178,6 @@
         window.openProductModal = openProductModal;
         window.deleteProduct = deleteProduct;
         window.closeProductModal = closeProductModal;
-
-        // --- FIXED: SEARCH LISTENER MOVED HERE ---
-        // تم نقل مراقبة البحث هنا لتعمل مرة واحدة فقط وبشكل فوري
-        document.getElementById('admin-search').addEventListener('input', () => {
-            // نقوم بإيقاف التايمر القديم لتجنب التداخل
-            if(adminTimer) clearInterval(adminTimer);
-            // نستدعي الدالة لتحديث القائمة فوراً
-            initAdmin();
-        });
 
     </script>
 </body>
