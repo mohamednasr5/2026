@@ -1,12 +1,13 @@
 const CACHE_NAME = 'opera-cafe-v1';
+// استخدام المسارات النسبية بدلاً من المطلقة
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/am.html',
-  '/pm.html',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png',
+  './',
+  './index.html',
+  './am.html',
+  './pm.html',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png',
   'https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Tajawal:wght@400;700;800&display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js',
   'https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'
@@ -70,9 +71,9 @@ self.addEventListener('fetch', event => {
 
           return response;
         }).catch(() => {
-          // If both cache and network fail, show offline page
+          // If both cache and network fail, redirect to index
           if (event.request.destination === 'document') {
-            return caches.match('/index.html');
+            return caches.match('./index.html');
           }
         });
       })
