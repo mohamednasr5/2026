@@ -91,7 +91,6 @@
       height: 100%;
       overflow-y: auto;
       direction: rtl;
-      /* Hide Scrollbar but keep functionality */
       scrollbar-width: none; 
       -ms-overflow-style: none;
     }
@@ -137,13 +136,14 @@
 
     .item-image {
       width: 55px; height: 55px;
-      border-radius: 50%; /* Circle for elegance */
+      border-radius: 50%;
       object-fit: cover;
       margin-left: 12px;
       flex-shrink: 0;
       border: 2px solid var(--accent-gold);
       transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       cursor: zoom-in;
+      background: #fff; /* Fallback */
     }
     .item:hover .item-image { transform: scale(1.2) rotate(5deg); }
 
@@ -182,9 +182,7 @@
     }
     .currency { font-size: 0.7rem; color: #999; font-weight: normal; }
 
-    /* --- ANIMATIONS FOR "مميز" و "لذيذ" و "عرض" --- */
-
-    /* Badge Container (Invisible but holds animation styles) */
+    /* --- ANIMATIONS --- */
     .status-badge {
       font-size: 0.65rem;
       padding: 2px 8px;
@@ -196,7 +194,6 @@
       vertical-align: middle;
     }
 
-    /* 1. مميز (Special) - Gold Shine */
     .status-badge.special {
       background: linear-gradient(45deg, #1a1a1a, #000);
       color: #ffd700;
@@ -210,7 +207,6 @@
       100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.2); }
     }
 
-    /* 2. لذيذ (Delicious) - Wiggle/Tasty */
     .status-badge.delicious {
       background: var(--highlight-green);
       color: white;
@@ -223,7 +219,6 @@
       75% { transform: rotate(5deg); }
     }
 
-    /* 3. عرض (Offer) - Pulse Red */
     .status-badge.offer {
       background: var(--highlight-red);
       color: white;
@@ -235,7 +230,6 @@
       100% { transform: scale(1); box-shadow: 0 0 0 rgba(192, 57, 43, 0); }
     }
 
-    /* 4. خاص (Exclusive) - Text Glow */
     .status-badge.exclusive {
       background: transparent;
       color: #8e44ad;
@@ -294,6 +288,15 @@
     .cover-title { font-size: 3.5rem; font-weight: 900; color: var(--accent-gold); letter-spacing: 4px; margin-bottom: 5px; font-family: 'Reem Kufi', sans-serif; }
     .cover-subtitle { font-size: 1.8rem; font-weight: 300; color: #eee; letter-spacing: 8px; margin-bottom: 40px; }
 
+    /* Footer Link Style */
+    .footer-link {
+      color: rgba(255,255,255,0.4);
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-link:hover { color: var(--accent-gold); }
+
     /* Responsive */
     @media (max-width: 768px) {
       #flipbook-container { height: 75vh; width: 98vw; }
@@ -346,54 +349,56 @@
           <div class="price-list">
             <div class="item">
               <img src="https://images.unsplash.com/photo-1564890369478-c89ca6d9cda9?w=150" class="item-image" alt="شاي">
-              <div class="item-details">
-                <div class="item-header"><span class="item-name">شاي انجليزي</span></div>
-              </div>
+              <div class="item-details"><div class="item-header"><span class="item-name">شاي انجليزي</span></div></div>
               <div class="item-price">25</div>
             </div>
             <div class="item">
               <img src="https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=150" class="item-image" alt="شاي كرك">
-              <div class="item-details">
-                <div class="item-header"><span class="item-name">شاي كرك</span><span class="status-badge offer">عرض</span></div>
-              </div>
+              <div class="item-details"><div class="item-header"><span class="item-name">شاي كرك</span><span class="status-badge offer">عرض</span></div></div>
               <div class="item-price">50</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1594631252845-29fc4cc8cde9?w=150" class="item-image" alt="شاي براد">
               <div class="item-details"><div class="item-header"><span class="item-name">شاي براد</span></div></div>
               <div class="item-price">30</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=150" class="item-image" alt="شاي بالحليب">
               <div class="item-details"><div class="item-header"><span class="item-name">شاي بالحليب</span></div></div>
               <div class="item-price">40</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1627435601361-ec25f5b1d0e5?w=150" class="item-image" alt="شاي أخضر">
               <div class="item-details"><div class="item-header"><span class="item-name">شاي أخضر</span></div></div>
               <div class="item-price">30</div>
             </div>
             <div class="item">
               <img src="https://images.unsplash.com/photo-1536013294807-b7bc846a5c44?w=150" class="item-image" alt="ماتشا">
-              <div class="item-details">
-                <div class="item-header"><span class="item-name">ماتشا</span><span class="status-badge special">مميز</span></div>
-              </div>
+              <div class="item-details"><div class="item-header"><span class="item-name">ماتشا</span><span class="status-badge special">مميز</span></div></div>
               <div class="item-price">45</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=150" class="item-image" alt="أعشاب">
               <div class="item-details"><div class="item-header"><span class="item-name">أعشاب (ينسون، نعناع، كركديه)</span></div></div>
               <div class="item-price">30</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=150" class="item-image" alt="هوت سيدر">
               <div class="item-details"><div class="item-header"><span class="item-name">هوت سيدر (قرفة، تفاح)</span></div></div>
               <div class="item-price">45</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=150" class="item-image" alt="هاواي سيدر">
               <div class="item-details"><div class="item-header"><span class="item-name">هاواي سيدر (قرفة، أناناس)</span></div></div>
               <div class="item-price">45</div>
             </div>
             <div class="item">
-              <div class="item-details"><div class="item-header"><span class="item-name">أوبرا-ASHour سيدر</span><span class="status-badge exclusive">خاص</span></div></div>
+              <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=150" class="item-image" alt="أوبرا سيدر">
+              <div class="item-details"><div class="item-header"><span class="item-name">أوبرا-ASHOUR سيدر</span><span class="status-badge exclusive">خاص</span></div></div>
               <div class="item-price">50</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=150" class="item-image" alt="ميكس أعشاب">
               <div class="item-details"><div class="item-header"><span class="item-name">ميكس أعشاب</span></div></div>
               <div class="item-price">50</div>
             </div>
@@ -403,32 +408,32 @@
           <div class="price-list">
             <div class="item">
               <img src="https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=150" class="item-image" alt="هوت شوكولات">
-              <div class="item-details">
-                <div class="item-header"><span class="item-name">هوت شوكولات كلاسيك</span></div>
-              </div>
+              <div class="item-details"><div class="item-header"><span class="item-name">هوت شوكولات كلاسيك</span></div></div>
               <div class="item-price">55</div>
             </div>
             <div class="item">
               <img src="https://images.unsplash.com/photo-1511381939415-e44015466834?w=150" class="item-image" alt="نوتيلا">
-              <div class="item-details">
-                <div class="item-header"><span class="item-name">هوت شوكولات نوتيلا</span><span class="status-badge delicious">لذيذ</span></div>
-              </div>
+              <div class="item-details"><div class="item-header"><span class="item-name">هوت شوكولات نوتيلا</span><span class="status-badge delicious">لذيذ</span></div></div>
               <div class="item-price">70</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?w=150" class="item-image" alt="أوريو">
               <div class="item-details"><div class="item-header"><span class="item-name">هوت شوكولات أوريو</span></div></div>
               <div class="item-price">70</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1627981779056-e5509a23cc4c?w=150" class="item-image" alt="مارشميلو">
               <div class="item-details"><div class="item-header"><span class="item-name">هوت شوكولات مارشميلو</span></div></div>
               <div class="item-price">60</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=150" class="item-image" alt="كريميه">
               <div class="item-details"><div class="item-header"><span class="item-name">شوكولات بوريم كريميه</span></div></div>
               <div class="item-price">80</div>
             </div>
             <div class="item">
-              <div class="item-details"><div class="item-header"><span class="item-name">أوبرا-ASHour شوكولات</span><span class="status-badge exclusive">خاص</span></div></div>
+              <img src="https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?w=150" class="item-image" alt="أوبرا شوكولات">
+              <div class="item-details"><div class="item-header"><span class="item-name">أوبرا-ASHOUR شوكولات</span><span class="status-badge exclusive">خاص</span></div></div>
               <div class="item-price">85</div>
             </div>
           </div>
@@ -446,29 +451,32 @@
               <div class="item-price">75</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1508737027454-e6454ef45afd?w=150" class="item-image" alt="كاساتا مكسرات">
               <div class="item-details"><div class="item-header"><span class="item-name">كاساتا مكسرات</span></div></div>
               <div class="item-price">80</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=150" class="item-image" alt="كاساتا صوص">
               <div class="item-details"><div class="item-header"><span class="item-name">كاساتا صوص</span></div></div>
               <div class="item-price">65</div>
             </div>
             <div class="item">
-              <img src="https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=150" class="item-image" alt="آيس كريم">
+              <img src="https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=150" class="item-image" alt="سوفت كريم">
               <div class="item-details"><div class="item-header"><span class="item-name">آيس كريم سوفت</span></div></div>
               <div class="item-price">40</div>
             </div>
             <div class="item">
-              <div class="item-details">
-                <div class="item-header"><span class="item-name">سوفت كريم لوتس</span><span class="status-badge delicious">لذيذ</span></div>
-              </div>
+              <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=150" class="item-image" alt="سوفت لوتس">
+              <div class="item-details"><div class="item-header"><span class="item-name">سوفت كريم لوتس</span><span class="status-badge delicious">لذيذ</span></div></div>
               <div class="item-price">50</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=150" class="item-image" alt="سوفت كوكيز">
               <div class="item-details"><div class="item-header"><span class="item-name">سوفت كريم كوكيز</span></div></div>
               <div class="item-price">50</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=150" class="item-image" alt="بولة آيس كريم">
               <div class="item-details"><div class="item-header"><span class="item-name">بولة 3 آيس كريم</span></div></div>
               <div class="item-price">75</div>
             </div>
@@ -482,6 +490,7 @@
               <div class="item-price">70</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1564355808539-22fda35bed7e?w=150" class="item-image" alt="سلاد كريم">
               <div class="item-details"><div class="item-header"><span class="item-name">سلاد فواكه كريم آيس</span></div></div>
               <div class="item-price">80</div>
             </div>
@@ -489,11 +498,11 @@
 
           <h2><i class="fas fa-plus-circle"></i> إضافات (Extra)</h2>
           <div class="price-list">
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">كريمة</span></div></div><div class="item-price">20</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">صوص</span></div></div><div class="item-price">20</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">مكسرات</span></div></div><div class="item-price">40</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">شوكولات بار</span></div></div><div class="item-price">20</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">فواكه</span></div></div><div class="item-price">25</div></div>
+            <div class="item"><img src="https://images.unsplash.com/photo-1627981779056-e5509a23cc4c?w=150" class="item-image" alt="كريمة"><div class="item-details"><div class="item-header"><span class="item-name">كريمة</span></div></div><div class="item-price">20</div></div>
+            <div class="item"><img src="https://images.unsplash.com/photo-1596560548464-f010549b84d7?w=150" class="item-image" alt="صوص"><div class="item-details"><div class="item-header"><span class="item-name">صوص</span></div></div><div class="item-price">20</div></div>
+            <div class="item"><img src="https://images.unsplash.com/photo-1508737027454-e6454ef45afd?w=150" class="item-image" alt="مكسرات"><div class="item-details"><div class="item-header"><span class="item-name">مكسرات</span></div></div><div class="item-price">40</div></div>
+            <div class="item"><img src="https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?w=150" class="item-image" alt="شوكولات بار"><div class="item-details"><div class="item-header"><span class="item-name">شوكولات بار</span></div></div><div class="item-price">20</div></div>
+            <div class="item"><img src="https://images.unsplash.com/photo-1505253758473-96b7015fcd40?w=150" class="item-image" alt="فواكه"><div class="item-details"><div class="item-header"><span class="item-name">فواكه</span></div></div><div class="item-price">25</div></div>
           </div>
         </div>
       </div>
@@ -508,18 +517,31 @@
               <div class="item-details"><div class="item-header"><span class="item-name">كابتشينو</span></div></div>
               <div class="item-price">40</div>
             </div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">كورتادو</span></div></div><div class="item-price">55</div></div>
             <div class="item">
-              <img src="https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?w=150" class="item-image" alt="موكا">
+              <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=150" class="item-image" alt="كورتادو">
+              <div class="item-details"><div class="item-header"><span class="item-name">كورتادو</span></div></div>
+              <div class="item-price">55</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=150" class="item-image" alt="موكا">
               <div class="item-details"><div class="item-header"><span class="item-name">موكا (دارك / وايت)</span></div></div>
               <div class="item-price">65</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=150" class="item-image" alt="نسكافيه بلاك">
               <div class="item-details"><div class="item-header"><span class="item-name">نسكافيه بلاك</span><span class="status-badge special">قوي</span></div></div>
               <div class="item-price">75</div>
             </div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">نسكافيه بالحليب</span></div></div><div class="item-price">50</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">نسكافيه حليب</span></div></div><div class="item-price">60</div></div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=150" class="item-image" alt="نسكافيه بالحليب">
+              <div class="item-details"><div class="item-header"><span class="item-name">نسكافيه بالحليب</span></div></div>
+              <div class="item-price">50</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?w=150" class="item-image" alt="نسكافيه حليب">
+              <div class="item-details"><div class="item-header"><span class="item-name">نسكافيه حليب</span></div></div>
+              <div class="item-price">60</div>
+            </div>
           </div>
 
           <h2><i class="fas fa-mug-hot"></i> كوفي كورنر</h2>
@@ -534,9 +556,18 @@
               <div class="item-details"><div class="item-header"><span class="item-name">لاتيه</span></div></div>
               <div class="item-price">45</div>
             </div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">فلات وايت</span></div></div><div class="item-price">50</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">أمريكانو</span></div></div><div class="item-price">50</div></div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?w=150" class="item-image" alt="فلات وايت">
+              <div class="item-details"><div class="item-header"><span class="item-name">فلات وايت</span></div></div>
+              <div class="item-price">50</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=150" class="item-image" alt="أمريكانو">
+              <div class="item-details"><div class="item-header"><span class="item-name">أمريكانو</span></div></div>
+              <div class="item-price">50</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=150" class="item-image" alt="إسبانيش لاتيه">
               <div class="item-details"><div class="item-header"><span class="item-name">إسبانيش لاتيه</span><span class="status-badge special">مميز</span></div></div>
               <div class="item-price">50</div>
             </div>
@@ -544,10 +575,10 @@
 
           <h2><i class="fas fa-flask"></i> إضافات نكهات</h2>
           <div class="price-list">
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">فليفر</span></div></div><div class="item-price">20</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">صوص</span></div></div><div class="item-price">20</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">كريم آيس</span></div></div><div class="item-price">20</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">كريمة</span></div></div><div class="item-price">20</div></div>
+            <div class="item"><img src="https://images.unsplash.com/photo-1596560548464-f010549b84d7?w=150" class="item-image" alt="فليفر"><div class="item-details"><div class="item-header"><span class="item-name">فليفر</span></div></div><div class="item-price">20</div></div>
+            <div class="item"><img src="https://images.unsplash.com/photo-1596560548464-f010549b84d7?w=150" class="item-image" alt="صوص"><div class="item-details"><div class="item-header"><span class="item-name">صوص</span></div></div><div class="item-price">20</div></div>
+            <div class="item"><img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=150" class="item-image" alt="كريم آيس"><div class="item-details"><div class="item-header"><span class="item-name">كريم آيس</span></div></div><div class="item-price">20</div></div>
+            <div class="item"><img src="https://images.unsplash.com/photo-1627981779056-e5509a23cc4c?w=150" class="item-image" alt="كريمة"><div class="item-details"><div class="item-header"><span class="item-name">كريمة</span></div></div><div class="item-price">20</div></div>
           </div>
         </div>
       </div>
@@ -574,6 +605,7 @@
               <div class="item-price">90</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=150" class="item-image" alt="بان كيك مكسرات">
               <div class="item-details"><div class="item-header"><span class="item-name">ميني بان كيك مكسرات وعسل</span></div></div>
               <div class="item-price">80</div>
             </div>
@@ -597,10 +629,23 @@
               </div>
               <div class="item-price">95</div>
             </div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">وافل أوريو</span></div></div><div class="item-price">85</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">وافل مكسرات وعسل</span></div></div><div class="item-price">85</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">وافل بوريم كريميه</span></div></div><div class="item-price">100</div></div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?w=150" class="item-image" alt="وافل أوريو">
+              <div class="item-details"><div class="item-header"><span class="item-name">وافل أوريو</span></div></div>
+              <div class="item-price">85</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=150" class="item-image" alt="وافل مكسرات">
+              <div class="item-details"><div class="item-header"><span class="item-name">وافل مكسرات وعسل</span></div></div>
+              <div class="item-price">85</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=150" class="item-image" alt="وافل بوريم">
+              <div class="item-details"><div class="item-header"><span class="item-name">وافل بوريم كريميه</span></div></div>
+              <div class="item-price">100</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=150" class="item-image" alt="وافل بستاشيو">
               <div class="item-details"><div class="item-header"><span class="item-name">وافل بستاشيو</span><span class="status-badge exclusive">فاخر</span></div></div>
               <div class="item-price">110</div>
             </div>
@@ -618,21 +663,46 @@
               <div class="item-details"><div class="item-header"><span class="item-name">صن رايزن (برتقال - فيمتو - صودا)</span></div></div>
               <div class="item-price">60</div>
             </div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">صن شاين (أناناس - رمان - صودا)</span></div></div><div class="item-price">65</div></div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=150" class="item-image" alt="صن شاين">
+              <div class="item-details"><div class="item-header"><span class="item-name">صن شاين (أناناس - رمان - صودا)</span></div></div>
+              <div class="item-price">65</div>
+            </div>
             <div class="item">
               <img src="https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=150" class="item-image" alt="موهيتو">
               <div class="item-details"><div class="item-header"><span class="item-name">كلاسيك موهيتو</span><span class="status-badge offer">منعش</span></div></div>
               <div class="item-price">70</div>
             </div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">موهيتو فليفر</span></div></div><div class="item-price">80</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">مانجو مانيا صودا</span></div></div><div class="item-price">85</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">ستروبيري صودا</span></div></div><div class="item-price">85</div></div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=150" class="item-image" alt="موهيتو فليفر">
+              <div class="item-details"><div class="item-header"><span class="item-name">موهيتو فليفر</span></div></div>
+              <div class="item-price">80</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=150" class="item-image" alt="مانجو مانيا">
+              <div class="item-details"><div class="item-header"><span class="item-name">مانجو مانيا صودا</span></div></div>
+              <div class="item-price">85</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1497534446932-c925b458314e?w=150" class="item-image" alt="ستروبيري صودا">
+              <div class="item-details"><div class="item-header"><span class="item-name">ستروبيري صودا</span></div></div>
+              <div class="item-price">85</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1621263764928-df1444c5e859?w=150" class="item-image" alt="بلوبيري">
               <div class="item-details"><div class="item-header"><span class="item-name">بلوبيري بارادايس</span><span class="status-badge special">مميز</span></div></div>
               <div class="item-price">95</div>
             </div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">بيري ليمون</span></div></div><div class="item-price">35</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">كولا</span></div></div><div class="item-price">30</div></div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=150" class="item-image" alt="بيري ليمون">
+              <div class="item-details"><div class="item-header"><span class="item-name">بيري ليمون</span></div></div>
+              <div class="item-price">35</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1554866585-cd94860890b7?w=150" class="item-image" alt="كولا">
+              <div class="item-details"><div class="item-header"><span class="item-name">كولا</span></div></div>
+              <div class="item-price">30</div>
+            </div>
             <div class="item">
               <img src="https://images.unsplash.com/photo-1622543925917-763c34f1f7d2?w=150" class="item-image" alt="Red Bull">
               <div class="item-details"><div class="item-header"><span class="item-name">Red Bull</span></div></div>
@@ -648,31 +718,69 @@
               <div class="item-price">70</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=150" class="item-image" alt="فرابيه كراميل">
               <div class="item-details"><div class="item-header"><span class="item-name">فرابيه كراميل شينوبتشو لاتيه</span><span class="status-badge delicious">لذيذ</span></div></div>
               <div class="item-price">85</div>
             </div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">فرابيه كلاسيك شينوبتشو لاتيه</span></div></div><div class="item-price">85</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">فرابيه ماتشا لاتيه</span></div></div><div class="item-price">85</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">أمريكانو آيس</span></div></div><div class="item-price">50</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">جرين ليدي بنك آيس</span></div></div><div class="item-price">90</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">بينك ليدي آيس</span></div></div><div class="item-price">85</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">موكا آيس</span></div></div><div class="item-price">85</div></div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=150" class="item-image" alt="فرابيه كلاسيك">
+              <div class="item-details"><div class="item-header"><span class="item-name">فرابيه كلاسيك شينوبتشو لاتيه</span></div></div>
+              <div class="item-price">85</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1536013294807-b7bc846a5c44?w=150" class="item-image" alt="فرابيه ماتشا">
+              <div class="item-details"><div class="item-header"><span class="item-name">فرابيه ماتشا لاتيه</span></div></div>
+              <div class="item-price">85</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=150" class="item-image" alt="أمريكانو آيس">
+              <div class="item-details"><div class="item-header"><span class="item-name">أمريكانو آيس</span></div></div>
+              <div class="item-price">50</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=150" class="item-image" alt="جرين ليدي">
+              <div class="item-details"><div class="item-header"><span class="item-name">جرين ليدي بنك آيس</span></div></div>
+              <div class="item-price">90</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=150" class="item-image" alt="بينك ليدي">
+              <div class="item-details"><div class="item-header"><span class="item-name">بينك ليدي آيس</span></div></div>
+              <div class="item-price">85</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=150" class="item-image" alt="موكا آيس">
+              <div class="item-details"><div class="item-header"><span class="item-name">موكا آيس</span></div></div>
+              <div class="item-price">85</div>
+            </div>
           </div>
 
           <h2><i class="fas fa-leaf"></i> ماتشا</h2>
           <div class="price-list">
             <div class="item">
-              <img src="https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=150" class="item-image" alt="ماتشا">
+              <img src="https://images.unsplash.com/photo-1515823064-d6e0c04616a7?w=150" class="item-image" alt="كوكونت ماتشا">
               <div class="item-details"><div class="item-header"><span class="item-name">كوكونت ماتشا</span></div></div>
               <div class="item-price">75</div>
             </div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">ستروبيري ماتشا</span></div></div><div class="item-price">75</div></div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=150" class="item-image" alt="ستروبيري ماتشا">
+              <div class="item-details"><div class="item-header"><span class="item-name">ستروبيري ماتشا</span></div></div>
+              <div class="item-price">75</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1536013294807-b7bc846a5c44?w=150" class="item-image" alt="ماتشا بيري">
               <div class="item-details"><div class="item-header"><span class="item-name">ماتشا ماتشا بيري بيري</span><span class="status-badge special">مميز</span></div></div>
               <div class="item-price">75</div>
             </div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">ستروبيري بيري ماتشا</span></div></div><div class="item-price">75</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">مانجو ماتch</span></div></div><div class="item-price">70</div></div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=150" class="item-image" alt="ستروبيري بيري">
+              <div class="item-details"><div class="item-header"><span class="item-name">ستروبيري بيري ماتشا</span></div></div>
+              <div class="item-price">75</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1527259106902-c0a8e825c8f3?w=150" class="item-image" alt="مانجو ماتشا">
+              <div class="item-details"><div class="item-header"><span class="item-name">مانجو ماتشا</span></div></div>
+              <div class="item-price">70</div>
+            </div>
           </div>
         </div>
       </div>
@@ -691,6 +799,7 @@
               <div class="item-price">75</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=150" class="item-image" alt="ميلك شيك فواكه">
               <div class="item-details">
                 <div class="item-header"><span class="item-name">ميلك شيك فواكه</span></div>
                 <div class="item-sub">(فراولة - مانجو - بلو)</div>
@@ -698,18 +807,35 @@
               <div class="item-price">80</div>
             </div>
             <div class="item">
-              <img src="https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=150" class="item-image" alt="ميلك شيك مميز">
+              <img src="https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=150" class="item-image" alt="ميلك شيك سبيشيال">
               <div class="item-details">
                 <div class="item-header"><span class="item-name">ميلك شيك سبيشيال</span><span class="status-badge exclusive">خاص</span></div>
                 <div class="item-sub">(كيندر - لوتس - نوتيلا)</div>
               </div>
               <div class="item-price">80</div>
             </div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">ميلك شيك كورن بوب</span></div></div><div class="item-price">85</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">ميلك شيك أوريو</span></div></div><div class="item-price">80</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">ميلك شيك تيشيز</span></div></div><div class="item-price">80</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">ميلك شيك نعناع</span></div></div><div class="item-price">80</div></div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=150" class="item-image" alt="ميلك شيك كورن">
+              <div class="item-details"><div class="item-header"><span class="item-name">ميلك شيك كورن بوب</span></div></div>
+              <div class="item-price">85</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1606923829579-0cb981a83e2e?w=150" class="item-image" alt="ميلك شيك أوريو">
+              <div class="item-details"><div class="item-header"><span class="item-name">ميلك شيك أوريو</span></div></div>
+              <div class="item-price">80</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=150" class="item-image" alt="ميلك شيك تيشيز">
+              <div class="item-details"><div class="item-header"><span class="item-name">ميلك شيك تيشيز</span></div></div>
+              <div class="item-price">80</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=150" class="item-image" alt="ميلك شيك نعناع">
+              <div class="item-details"><div class="item-header"><span class="item-name">ميلك شيك نعناع</span></div></div>
+              <div class="item-price">80</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=150" class="item-image" alt="ميلك شيك بستاشيو">
               <div class="item-details"><div class="item-header"><span class="item-name">ميلك شيك بستاشيو</span><span class="status-badge exclusive">فاخر</span></div></div>
               <div class="item-price">100</div>
             </div>
@@ -722,14 +848,31 @@
               <div class="item-details"><div class="item-header"><span class="item-name">سموذي كولا بينا</span></div></div>
               <div class="item-price">75</div>
             </div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">سموذي فراولة</span></div></div><div class="item-price">75</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">سموذي بيري بلو</span></div></div><div class="item-price">75</div></div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1553530979-7ee52a2670c4?w=150" class="item-image" alt="سموذي فراولة">
+              <div class="item-details"><div class="item-header"><span class="item-name">سموذي فراولة</span></div></div>
+              <div class="item-price">75</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=150" class="item-image" alt="سموذي بيري">
+              <div class="item-details"><div class="item-header"><span class="item-name">سموذي بيري بلو</span></div></div>
+              <div class="item-price">75</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=150" class="item-image" alt="سموذي نعناع">
               <div class="item-details"><div class="item-header"><span class="item-name">سموذي نعناع ليمون</span><span class="status-badge offer">منعش</span></div></div>
               <div class="item-price">70</div>
             </div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">سموذي ليمون بنك</span></div></div><div class="item-price">75</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">سموذي مانجو ناشون</span></div></div><div class="item-price">80</div></div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1621263764928-df1444c5e859?w=150" class="item-image" alt="سموذي ليمون">
+              <div class="item-details"><div class="item-header"><span class="item-name">سموذي ليمون بنك</span></div></div>
+              <div class="item-price">75</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=150" class="item-image" alt="سموذي مانجو">
+              <div class="item-details"><div class="item-header"><span class="item-name">سموذي مانجو ناشون</span></div></div>
+              <div class="item-price">80</div>
+            </div>
           </div>
 
           <h2><i class="fas fa-cheese"></i> يوغورت</h2>
@@ -739,8 +882,13 @@
               <div class="item-details"><div class="item-header"><span class="item-name">زبادي عسل</span></div></div>
               <div class="item-price">50</div>
             </div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">زبادي فواكه</span></div></div><div class="item-price">60</div></div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1505253758473-96b7015fcd40?w=150" class="item-image" alt="زبادي فواكه">
+              <div class="item-details"><div class="item-header"><span class="item-name">زبادي فواكه</span></div></div>
+              <div class="item-price">60</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1508737027454-e6454ef45afd?w=150" class="item-image" alt="زبادي مكس">
               <div class="item-details"><div class="item-header"><span class="item-name">زبادي مكس</span><span class="status-badge delicious">لذيذ</span></div></div>
               <div class="item-price">70</div>
             </div>
@@ -763,16 +911,36 @@
               <div class="item-details"><div class="item-header"><span class="item-name">تشيز برجر</span></div></div>
               <div class="item-price">140</div>
             </div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">مايتي زنجر برجر</span></div></div><div class="item-price">130</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">سماش برجر</span></div></div><div class="item-price">120</div></div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1615557960916-5f4791effe9d?w=150" class="item-image" alt="مايتي زنجر">
+              <div class="item-details"><div class="item-header"><span class="item-name">مايتي زنجر برجر</span></div></div>
+              <div class="item-price">130</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1586190848861-99c8a3dc7a5c?w=150" class="item-image" alt="سماش برجر">
+              <div class="item-details"><div class="item-header"><span class="item-name">سماش برجر</span></div></div>
+              <div class="item-price">120</div>
+            </div>
             <div class="item">
               <img src="https://images.unsplash.com/photo-1562059392-096320bccc7e?w=150" class="item-image" alt="كرانشي">
               <div class="item-details"><div class="item-header"><span class="item-name">كرانشي</span></div></div>
               <div class="item-price">120</div>
             </div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">شيش طاووق</span></div></div><div class="item-price">110</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">فاهيتا</span></div></div><div class="item-price">110</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">زنجر</span></div></div><div class="item-price">90</div></div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=150" class="item-image" alt="شيش طاووق">
+              <div class="item-details"><div class="item-header"><span class="item-name">شيش طاووق</span></div></div>
+              <div class="item-price">110</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1626804475297-411dbe6172ad?w=150" class="item-image" alt="فاهيتا">
+              <div class="item-details"><div class="item-header"><span class="item-name">فاهيتا</span></div></div>
+              <div class="item-price">110</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1615557960916-5f4791effe9d?w=150" class="item-image" alt="زنجر">
+              <div class="item-details"><div class="item-header"><span class="item-name">زنجر</span></div></div>
+              <div class="item-price">90</div>
+            </div>
           </div>
 
           <h2><i class="fas fa-utensils"></i> باستا</h2>
@@ -783,26 +951,39 @@
               <div class="item-price">120</div>
             </div>
             <div class="item">
-              <img src="https://images.unsplash.com/photo-1572441713132-c542fc4fe282?w=150" class="item-image" alt="بلونيز">
+              <img src="https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=150" class="item-image" alt="بلونيز">
               <div class="item-details"><div class="item-header"><span class="item-name">بلونيز</span></div></div>
               <div class="item-price">100</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1626844131082-256783844137?w=150" class="item-image" alt="توتوشيني">
               <div class="item-details"><div class="item-header"><span class="item-name">فتوتشيني توتوشيني</span><span class="status-badge exclusive">خاص</span></div></div>
               <div class="item-price">130</div>
             </div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">الألفريدو</span></div></div><div class="item-price">120</div></div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1645112411341-6c4fd023714a?w=150" class="item-image" alt="ألفريدو">
+              <div class="item-details"><div class="item-header"><span class="item-name">الألفريدو</span></div></div>
+              <div class="item-price">120</div>
+            </div>
           </div>
 
           <h2><i class="fas fa-bowl-rice"></i> ريزو</h2>
           <div class="price-list">
             <div class="item">
-              <img src="https://images.unsplash.com/photo-1516684732162-798a0062be99?w=150" class="item-image" alt="ريزو">
+              <img src="https://images.unsplash.com/photo-1516684732162-798a0062be99?w=150" class="item-image" alt="ريزو استريبس">
               <div class="item-details"><div class="item-header"><span class="item-name">ريزو استريبس</span></div></div>
               <div class="item-price">100</div>
             </div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">ريزو بانيه</span></div></div><div class="item-price">100</div></div>
-            <div class="item"><div class="item-details"><div class="item-header"><span class="item-name">ريزو شيش</span></div></div><div class="item-price">100</div></div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=150" class="item-image" alt="ريزو بانيه">
+              <div class="item-details"><div class="item-header"><span class="item-name">ريزو بانيه</span></div></div>
+              <div class="item-price">100</div>
+            </div>
+            <div class="item">
+              <img src="https://images.unsplash.com/photo-1516684732162-798a0062be99?w=150" class="item-image" alt="ريزو شيش">
+              <div class="item-details"><div class="item-header"><span class="item-name">ريزو شيش</span></div></div>
+              <div class="item-price">100</div>
+            </div>
           </div>
         </div>
       </div>
@@ -821,6 +1002,7 @@
               <div class="item-price"><small style="font-weight:normal; font-size:0.7rem">من</small> 120</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=150" class="item-image" alt="مكس جبن">
               <div class="item-details">
                 <div class="item-header"><span class="item-name">مكس جبن</span></div>
                 <div class="item-sub"><span class="size-tag">L 150</span> <span class="size-tag">XL 180</span></div>
@@ -836,6 +1018,7 @@
               <div class="item-price"><small style="font-weight:normal; font-size:0.7rem">من</small> 200</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1594007654729-407eedc4be65?w=150" class="item-image" alt="رانش">
               <div class="item-details">
                 <div class="item-header"><span class="item-name">رانش</span></div>
                 <div class="item-sub"><span class="size-tag">L 200</span> <span class="size-tag">XL 235</span></div>
@@ -843,6 +1026,7 @@
               <div class="item-price"><small style="font-weight:normal; font-size:0.7rem">من</small> 200</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=150" class="item-image" alt="سوبريم">
               <div class="item-details">
                 <div class="item-header"><span class="item-name">سوبريم</span></div>
                 <div class="item-sub"><span class="size-tag">L 200</span> <span class="size-tag">XL 235</span></div>
@@ -850,6 +1034,7 @@
               <div class="item-price"><small style="font-weight:normal; font-size:0.7rem">من</small> 200</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1594007654729-407eedc4be65?w=150" class="item-image" alt="سوبريم سوبريم">
               <div class="item-details">
                 <div class="item-header"><span class="item-name">سوبريم سوبريم</span><span class="status-badge exclusive">خاص</span></div>
                 <div class="item-sub"><span class="size-tag">L 200</span> <span class="size-tag">XL 235</span></div>
@@ -857,6 +1042,7 @@
               <div class="item-price"><small style="font-weight:normal; font-size:0.7rem">من</small> 200</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=150" class="item-image" alt="إيطاليانو">
               <div class="item-details">
                 <div class="item-header"><span class="item-name">إيطاليانو</span></div>
                 <div class="item-sub"><span class="size-tag">L 190</span> <span class="size-tag">XL 220</span></div>
@@ -864,6 +1050,7 @@
               <div class="item-price"><small style="font-weight:normal; font-size:0.7rem">من</small> 190</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1615557960916-5f4791effe9d?w=150" class="item-image" alt="زنجر بيتزا">
               <div class="item-details">
                 <div class="item-header"><span class="item-name">زنجر</span></div>
                 <div class="item-sub"><span class="size-tag">L 190</span> <span class="size-tag">XL 220</span></div>
@@ -871,6 +1058,7 @@
               <div class="item-price"><small style="font-weight:normal; font-size:0.7rem">من</small> 190</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1562059392-096320bccc7e?w=150" class="item-image" alt="كرانشي بيتزا">
               <div class="item-details">
                 <div class="item-header"><span class="item-name">كرانشي</span></div>
                 <div class="item-sub"><span class="size-tag">L 200</span> <span class="size-tag">XL 220</span></div>
@@ -878,7 +1066,7 @@
               <div class="item-price"><small style="font-weight:normal; font-size:0.7rem">من</small> 200</div>
             </div>
             <div class="item">
-              <img src="https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?w=150" class="item-image" alt="تونة">
+              <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=150" class="item-image" alt="تونة">
               <div class="item-details">
                 <div class="item-header"><span class="item-name">تونة</span></div>
                 <div class="item-sub"><span class="size-tag">L 220</span> <span class="size-tag">XL 250</span></div>
@@ -886,13 +1074,15 @@
               <div class="item-price"><small style="font-weight:normal; font-size:0.7rem">من</small> 220</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=150" class="item-image" alt="أوبرا بيتزا">
               <div class="item-details">
-                <div class="item-header"><span class="item-name">أوبرا-ASHour</span><span class="status-badge exclusive">اختراعنا</span></div>
+                <div class="item-header"><span class="item-name">أوبرا-ASHOUR</span><span class="status-badge exclusive">اختراعنا</span></div>
                 <div class="item-sub"><span class="size-tag">L 200</span> <span class="size-tag">XL 220</span></div>
               </div>
               <div class="item-price"><small style="font-weight:normal; font-size:0.7rem">من</small> 200</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=150" class="item-image" alt="بيتزا سلامي">
               <div class="item-details">
                 <div class="item-header"><span class="item-name">بيتزا سلامي</span></div>
                 <div class="item-sub"><span class="size-tag">L 200</span> <span class="size-tag">XL 220</span></div>
@@ -900,6 +1090,7 @@
               <div class="item-price"><small style="font-weight:normal; font-size:0.7rem">من</small> 200</div>
             </div>
             <div class="item">
+              <img src="https://images.unsplash.com/photo-1628840042765-356cda07504e?w=150" class="item-image" alt="بيتزا بيبروني">
               <div class="item-details">
                 <div class="item-header"><span class="item-name">بيتزا بيبروني</span></div>
                 <div class="item-sub"><span class="size-tag">L 200</span> <span class="size-tag">XL 220</span></div>
@@ -936,9 +1127,9 @@
              </a>
           </div>
           
-          <div style="margin-top: 60px; color: rgba(255,255,255,0.3); font-size: 0.9rem;">
+          <a href="https://www.facebook.com/en.mohamed.nasr" target="_blank" class="footer-link">
             تصميم وتطوير: مهندس محمد حماد
-          </div>
+          </a>
         </div>
       </div>
 
@@ -968,7 +1159,7 @@
       const imageModal = document.getElementById('imageModal');
       const modalImage = document.getElementById('modalImage');
       let isSoundEnabled = true;
-      let totalPages = 10; // Total pages count (Covers + 8 content)
+      let totalPages = 10; 
 
       setTimeout(() => {
         loadingScreen.classList.add('hidden');
