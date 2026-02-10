@@ -675,7 +675,7 @@
              btn.onclick = () => {
                  let p = currentBillPhone.replace(/[^0-9]/g,'');
                  if(p.startsWith('01')) p = '2' + p;
-                 const url = `https://wa.me/${p}?text=${waMessage}`;
+                 const url = `https://wa.me/2${p}?text=${waMessage}`;
                  window.open(url, '_blank');
              };
              
