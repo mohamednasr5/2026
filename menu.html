@@ -127,7 +127,7 @@
       border-radius: 10px;
     }
 
-    /* مؤشر للأسفل - تم تعديله */
+    /* مؤشر للأسفل */
     .scroll-indicator {
       position: fixed;
       bottom: 10px;
@@ -166,25 +166,85 @@
       50% { box-shadow: 0 -6px 25px rgba(197, 160, 89, 0.7); }
     }
 
-    .page-content h2 {
+    /* تنسيق العناوين الثنائية (عربي + إنجليزي + أيقونة) */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
       color: var(--accent-color);
-      font-size: 1.6rem;
-      margin: 20px 0 15px;
-      text-align: center;
+      font-size: 1.4rem;
+      margin: 25px 0 20px;
+      padding-bottom: 15px;
       border-bottom: 2px solid #d4c08a;
-      padding-bottom: 8px;
       position: relative;
+      text-align: center;
     }
 
-    .page-content h2::before {
+    .section-header::before {
       content: '';
       position: absolute;
       bottom: -2px;
       left: 50%;
       transform: translateX(-50%);
-      width: 60px;
+      width: 80px;
       height: 2px;
       background: var(--accent-color);
+    }
+
+    .section-title-ar {
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+
+    .section-icon {
+      font-size: 2rem;
+      color: var(--accent-color);
+      animation: iconPulse 2s ease-in-out infinite;
+      filter: drop-shadow(0 2px 8px rgba(197, 160, 89, 0.4));
+    }
+
+    .section-title-en {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    @keyframes iconPulse {
+      0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 2px 8px rgba(197, 160, 89, 0.4));
+      }
+      50% {
+        transform: scale(1.15);
+        filter: drop-shadow(0 4px 12px rgba(197, 160, 89, 0.8));
+      }
+    }
+
+    .icon-shake { animation: iconShake 3s ease-in-out infinite; }
+    .icon-bounce { animation: iconBounce 2s ease-in-out infinite; }
+    .icon-rotate { animation: iconRotate 4s linear infinite; }
+
+    @keyframes iconShake {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(-10deg) scale(1.1); }
+      50% { transform: rotate(10deg) scale(1.15); }
+      75% { transform: rotate(-10deg) scale(1.1); }
+    }
+
+    @keyframes iconBounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-10px) scale(1.15); }
+    }
+
+    @keyframes iconRotate {
+      0% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(5deg) scale(1.1); }
+      50% { transform: rotate(0deg) scale(1.15); }
+      75% { transform: rotate(-5deg) scale(1.1); }
+      100% { transform: rotate(0deg) scale(1); }
     }
 
     .price-list {
@@ -211,7 +271,7 @@
       border-radius: 5px;
     }
 
-    /* شارة العروض الخاصة - تم تعديلها */
+    /* شارة العروض الخاصة */
     .item.special {
       background: rgba(231, 76, 60, 0.05);
       border-right: 3px solid var(--special-badge);
@@ -248,7 +308,6 @@
       gap: 10px;
     }
 
-    /* تنسيق المكونات */
     .item-ingredients {
       font-size: 0.7rem;
       color: #888;
@@ -343,7 +402,6 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
-    /* Sound Toggle Button */
     #sound-toggle {
       position: fixed;
       top: 25px;
@@ -423,7 +481,6 @@
       border-bottom-color: #fff;
     }
 
-    /* Image Modal */
     .image-modal {
       display: none;
       position: fixed;
@@ -448,7 +505,6 @@
       display: flex;
     }
 
-    /* Logo Styles - تم تعديلها */
     .logo-container {
       text-align: center;
       margin-bottom: 30px;
@@ -464,7 +520,6 @@
       filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
     }
 
-    /* تنسيق الصفحة الأخيرة - تم تعديله */
     .back-cover-content {
       text-align: center;
       display: flex;
@@ -522,7 +577,10 @@
     @media (max-width: 768px) {
       #flipbook-container { height: 70vh; width: 96vw; }
       .page-content { padding: 15px 18px; font-size: 0.9rem; }
-      .page-content h2 { font-size: 1.35rem; margin: 15px 0 10px; }
+      .section-header { font-size: 1.2rem; gap: 10px; margin: 20px 0 15px; }
+      .section-title-ar { font-size: 1.1rem; }
+      .section-icon { font-size: 1.6rem; }
+      .section-title-en { font-size: 0.85rem; }
       .item { gap: 8px; }
       .item-name { font-size: 0.88rem; }
       .item-ingredients { font-size: 0.65rem; }
@@ -544,14 +602,16 @@
     @media (max-width: 480px) {
       #flipbook-container { height: 65vh; }
       .page-content { padding: 12px 15px; font-size: 0.86rem; }
-      .page-content h2 { font-size: 1.2rem; }
+      .section-header { font-size: 1rem; gap: 8px; flex-wrap: wrap; }
+      .section-title-ar { font-size: 0.95rem; }
+      .section-icon { font-size: 1.4rem; }
+      .section-title-en { font-size: 0.75rem; }
       .item-name { font-size: 0.82rem; }
       .item-ingredients { font-size: 0.6rem; }
       .item-price { font-size: 0.9rem; min-width: 65px; }
       .logo-img { max-width: 150px; }
     }
 
-    /* Performance: Use GPU acceleration */
     .page, .nav-btn, .item {
       transform: translateZ(0);
       -webkit-transform: translateZ(0);
@@ -565,13 +625,11 @@
 </head>
 <body>
 
-  <!-- Loading Screen -->
   <div id="loading-screen">
     <div class="loader"></div>
     <div class="loading-text">جاري تحميل المنيو...</div>
   </div>
 
-  <!-- Sound Toggle -->
   <button id="sound-toggle" title="تشغيل/إيقاف الصوت">
     <i class="fas fa-volume-up"></i>
   </button>
@@ -606,7 +664,11 @@
             <i class="fas fa-arrow-down"></i>
           </div>
 
-          <h2><i class="fas fa-mug-hot"></i> HOT DRINKS</h2>
+          <div class="section-header">
+            <span class="section-title-ar">مشروبات ساخنة</span>
+            <i class="fas fa-mug-hot section-icon icon-shake"></i>
+            <span class="section-title-en">HOT DRINKS</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -668,7 +730,11 @@
             <div class="item"><span class="item-name"><span class="item-name-text">ميكس أعشاب</span></span><span class="item-price">50</span></div>
           </div>
 
-          <h2><i class="fas fa-cookie-bite"></i> HOT CHOCOLAT</h2>
+          <div class="section-header">
+            <span class="section-title-ar">هوت شوكولات</span>
+            <i class="fas fa-cookie-bite section-icon icon-rotate"></i>
+            <span class="section-title-en">HOT CHOCOLAT</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -717,7 +783,7 @@
         </div>
       </div>
 
-      <!-- كاساتا + آيس كريم + سلاد فواكه + إكسترا -->
+      <!-- كاساتا + آيس كريم + سلاد + إضافات -->
       <div class="page">
         <div class="page-content" id="page2">
           <div class="scroll-indicator" id="scrollIndicator2">
@@ -725,7 +791,11 @@
             <i class="fas fa-arrow-down"></i>
           </div>
 
-          <h2><i class="fas fa-ice-cream"></i> CASSATA</h2>
+          <div class="section-header">
+            <span class="section-title-ar">كاساتا</span>
+            <i class="fas fa-ice-cream section-icon icon-bounce"></i>
+            <span class="section-title-en">CASSATA</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -740,7 +810,11 @@
             <div class="item"><span class="item-name"><span class="item-name-text">كاساتا صوص</span></span><span class="item-price">65</span></div>
           </div>
 
-          <h2><i class="fas fa-ice-cream"></i> ICE CREAM</h2>
+          <div class="section-header">
+            <span class="section-title-ar">آيس كريم</span>
+            <i class="fas fa-ice-cream section-icon icon-shake"></i>
+            <span class="section-title-en">ICE CREAM</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -760,7 +834,11 @@
             <div class="item"><span class="item-name"><span class="item-name-text">سوفت كريم كوكيز</span></span><span class="item-price">50</span></div>
           </div>
 
-          <h2><i class="fas fa-apple-alt"></i> FRUIT SALAD</h2>
+          <div class="section-header">
+            <span class="section-title-ar">سلاد فواكه</span>
+            <i class="fas fa-apple-alt section-icon icon-bounce"></i>
+            <span class="section-title-en">FRUIT SALAD</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -774,7 +852,11 @@
             <div class="item"><span class="item-name"><span class="item-name-text">سلاد فواكه كريم آيس</span></span><span class="item-price">80</span></div>
           </div>
 
-          <h2><i class="fas fa-plus-circle"></i> EXTRA</h2>
+          <div class="section-header">
+            <span class="section-title-ar">إضافات</span>
+            <i class="fas fa-plus-circle section-icon icon-rotate"></i>
+            <span class="section-title-en">EXTRA</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -793,7 +875,7 @@
         </div>
       </div>
 
-      <!-- كوفي كورنر + إضافات نكهات -->
+      <!-- كوفي -->
       <div class="page">
         <div class="page-content" id="page3">
           <div class="scroll-indicator" id="scrollIndicator3">
@@ -801,7 +883,11 @@
             <i class="fas fa-arrow-down"></i>
           </div>
 
-          <h2><i class="fas fa-coffee"></i> ITALIAN COFFEE</h2>
+          <div class="section-header">
+            <span class="section-title-ar">قهوة إيطالية</span>
+            <i class="fas fa-coffee section-icon icon-shake"></i>
+            <span class="section-title-en">ITALIAN COFFEE</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -832,7 +918,11 @@
             <div class="item"><span class="item-name"><span class="item-name-text">نسكافيه حليب</span></span><span class="item-price">60</span></div>
           </div>
 
-          <h2><i class="fas fa-mug-hot"></i> COFFEE CORNER</h2>
+          <div class="section-header">
+            <span class="section-title-ar">ركن القهوة</span>
+            <i class="fas fa-mug-hot section-icon icon-bounce"></i>
+            <span class="section-title-en">COFFEE CORNER</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -861,7 +951,11 @@
             </div>
           </div>
 
-          <h2><i class="fas fa-flask"></i> إضافات نكهات</h2>
+          <div class="section-header">
+            <span class="section-title-ar">إضافات نكهات</span>
+            <i class="fas fa-flask section-icon icon-rotate"></i>
+            <span class="section-title-en">FLAVORS</span>
+          </div>
           <div class="price-list">
             <div class="item"><span class="item-name"><span class="item-name-text">فليفر</span></span><span class="item-price">20</span></div>
             <div class="item"><span class="item-name"><span class="item-name-text">صوص</span></span><span class="item-price">20</span></div>
@@ -887,7 +981,11 @@
             <i class="fas fa-arrow-down"></i>
           </div>
 
-          <h2><i class="fas fa-cookie"></i> Mini Pancake</h2>
+          <div class="section-header">
+            <span class="section-title-ar">ميني بان كيك</span>
+            <i class="fas fa-cookie section-icon icon-bounce"></i>
+            <span class="section-title-en">MINI PANCAKE</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -913,7 +1011,11 @@
             <div class="item"><span class="item-name"><span class="item-name-text">ميني بان كيك مكسرات وعسل</span></span><span class="item-price">80</span></div>
           </div>
 
-          <h2><i class="fas fa-stroopwafel"></i> Waffle</h2>
+          <div class="section-header">
+            <span class="section-title-ar">وافل</span>
+            <i class="fas fa-stroopwafel section-icon icon-shake"></i>
+            <span class="section-title-en">WAFFLE</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -946,7 +1048,11 @@
             </div>
           </div>
 
-          <h2><i class="fas fa-plus-circle"></i> EXTRA</h2>
+          <div class="section-header">
+            <span class="section-title-ar">إضافات</span>
+            <i class="fas fa-plus-circle section-icon icon-rotate"></i>
+            <span class="section-title-en">EXTRA</span>
+          </div>
           <div class="price-list">
             <div class="item"><span class="item-name"><span class="item-name-text">عسل</span></span><span class="item-price">20</span></div>
             <div class="item"><span class="item-name"><span class="item-name-text">صوص</span></span><span class="item-price">25</span></div>
@@ -964,7 +1070,11 @@
             <i class="fas fa-arrow-down"></i>
           </div>
 
-          <h2><i class="fas fa-glass-whiskey"></i> SODA DRINK</h2>
+          <div class="section-header">
+            <span class="section-title-ar">مشروبات صودا</span>
+            <i class="fas fa-glass-whiskey section-icon icon-rotate"></i>
+            <span class="section-title-en">SODA DRINK</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -1014,7 +1124,11 @@
             </div>
           </div>
 
-          <h2><i class="fas fa-snowflake"></i> ICE COFFEE</h2>
+          <div class="section-header">
+            <span class="section-title-ar">قهوة مثلجة</span>
+            <i class="fas fa-snowflake section-icon icon-bounce"></i>
+            <span class="section-title-en">ICE COFFEE</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -1046,7 +1160,11 @@
             <div class="item"><span class="item-name"><span class="item-name-text">موكا آيس</span></span><span class="item-price">85</span></div>
           </div>
 
-          <h2><i class="fas fa-leaf"></i> MATCHA</h2>
+          <div class="section-header">
+            <span class="section-title-ar">ماتشا</span>
+            <i class="fas fa-leaf section-icon icon-shake"></i>
+            <span class="section-title-en">MATCHA</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -1077,7 +1195,7 @@
         </div>
       </div>
 
-      <!-- ميلك شيك + سموذي + يوغورت -->
+      <!-- ميلك شيك + سموذي + زبادي -->
       <div class="page">
         <div class="page-content" id="page6">
           <div class="scroll-indicator" id="scrollIndicator6">
@@ -1085,7 +1203,11 @@
             <i class="fas fa-arrow-down"></i>
           </div>
 
-          <h2><i class="fas fa-blender"></i> MILKSHAKE</h2>
+          <div class="section-header">
+            <span class="section-title-ar">ميلك شيك</span>
+            <i class="fas fa-blender section-icon icon-rotate"></i>
+            <span class="section-title-en">MILKSHAKE</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -1126,7 +1248,11 @@
             </div>
           </div>
 
-          <h2><i class="fas fa-glass-martini"></i> SMOOTHIE</h2>
+          <div class="section-header">
+            <span class="section-title-ar">سموذي</span>
+            <i class="fas fa-glass-martini section-icon icon-bounce"></i>
+            <span class="section-title-en">SMOOTHIE</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -1148,7 +1274,11 @@
             <div class="item"><span class="item-name"><span class="item-name-text">سموذي مانجو ناشون</span></span><span class="item-price">80</span></div>
           </div>
 
-          <h2><i class="fas fa-cheese"></i> YOGURT</h2>
+          <div class="section-header">
+            <span class="section-title-ar">زبادي</span>
+            <i class="fas fa-cheese section-icon icon-shake"></i>
+            <span class="section-title-en">YOGURT</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -1177,7 +1307,11 @@
             <i class="fas fa-arrow-down"></i>
           </div>
 
-          <h2><i class="fas fa-hamburger"></i> SANDWICH</h2>
+          <div class="section-header">
+            <span class="section-title-ar">ساندويتش</span>
+            <i class="fas fa-hamburger section-icon icon-rotate"></i>
+            <span class="section-title-en">SANDWICH</span>
+          </div>
           <div class="price-list">
             <div class="item special">
               <span class="special-badge">مميز</span>
@@ -1230,7 +1364,11 @@
             <div class="item"><span class="item-name"><span class="item-name-text">زنجر</span></span><span class="item-price">90</span></div>
           </div>
 
-          <h2><i class="fas fa-utensils"></i> PASTA</h2>
+          <div class="section-header">
+            <span class="section-title-ar">باستا</span>
+            <i class="fas fa-utensils section-icon icon-bounce"></i>
+            <span class="section-title-en">PASTA</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -1258,7 +1396,11 @@
             <div class="item"><span class="item-name"><span class="item-name-text">الفريدو</span></span><span class="item-price">120</span></div>
           </div>
 
-          <h2><i class="fas fa-bowl-rice"></i> RIZZO</h2>
+          <div class="section-header">
+            <span class="section-title-ar">ريزو</span>
+            <i class="fas fa-bowl-rice section-icon icon-shake"></i>
+            <span class="section-title-en">RIZZO</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -1283,7 +1425,11 @@
             <i class="fas fa-arrow-down"></i>
           </div>
 
-          <h2><i class="fas fa-pizza-slice"></i> PIZZA</h2>
+          <div class="section-header">
+            <span class="section-title-ar">بيتزا</span>
+            <i class="fas fa-pizza-slice section-icon icon-rotate"></i>
+            <span class="section-title-en">PIZZA</span>
+          </div>
           <div class="price-list">
             <div class="item">
               <span class="item-name">
@@ -1380,7 +1526,7 @@
         </div>
       </div>
 
-      <!-- غلاف خلفي محسّن -->
+      <!-- غلاف خلفي -->
       <div class="page">
         <div class="page-content back-cover-content">
           <div class="logo-container">
@@ -1534,7 +1680,6 @@
 
         if (pageContent && indicator) {
           pageContent.addEventListener('scroll', function() {
-            // يظهر المؤشر إذا كان هناك محتوى للأسفل ولم يصل للنهاية
             const isAtBottom = Math.abs(this.scrollHeight - this.scrollTop - this.clientHeight) < 10;
             if (!isAtBottom && this.scrollHeight > this.clientHeight) {
               indicator.classList.add('show');
@@ -1543,7 +1688,6 @@
             }
           });
 
-          // تحقق أولي عند التحميل
           setTimeout(() => {
             const isScrollable = pageContent.scrollHeight > pageContent.clientHeight;
             const isAtTop = pageContent.scrollTop < 50;
@@ -1554,7 +1698,6 @@
         }
       }
 
-      // تطبيق المؤشر على جميع الصفحات
       for(let i = 1; i <= 8; i++) {
         checkScrollIndicator('page' + i, 'scrollIndicator' + i);
       }
