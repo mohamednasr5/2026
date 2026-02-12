@@ -3,600 +3,813 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>استضافة أوبرا عاشور - النظام المطور</title>
+    <title>أوبرا عاشور - Kids Area</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- المتغيرات والتصميم العام --- */
+        /* --- Themes & Colors --- */
         :root {
             --primary: #ff4757;
             --secondary: #2f3542;
             --accent: #1e90ff;
             --success: #2ed573;
             --warning: #ffa502;
-            --bg-body: #e5ddd5; /* خلفية واتساب */
+            --danger: #ff4757;
+            --purple: #a55eea;
+            --bg-body: #e5ddd5;
             --surface: #ffffff;
-            --whatsapp: #25D366;
+            --chat-sent: #dcf8c6;
+            --chat-recv: #ffffff;
+            --blue-tick: #34B7F1;
             --radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* --- General Reset --- */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { background-color: #f0f2f5; color: var(--secondary); min-height: 100vh; display: flex; flex-direction: column; font-size: 16px; overflow-x: hidden; }
+        body { background-color: #f1f2f6; color: var(--secondary); min-height: 100vh; display: flex; flex-direction: column; font-size: 16px; overflow-x: hidden; padding-bottom: 100px; /* Space for footer */ }
 
-        /* --- الهيدر --- */
-        header { background: rgba(255, 255, 255, 0.98); padding: 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-        .header-top { background: var(--secondary); color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;}
-        
-        .logout-btn-styled {
-            background-color: var(--primary); color: white !important; border: none; padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.3s;
-        }
-        .logout-btn-styled:hover { background-color: #ff6b81; transform: translateY(-2px); }
+        /* --- Scrollbar --- */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
 
-        .header-content { padding: 15px 20px; display: flex; align-items: center; gap: 20px; max-width: 1200px; margin: 0 auto;}
-        .logo-img { height: 60px; width: 60px; background: white; border-radius: 50%; padding: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid #fff;}
-        
-        /* --- البحث --- */
-        .search-box { background: white; padding: 0.8rem 1.2rem; border-radius: 50px; margin-bottom: 1.5rem; display: flex; gap: 15px; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 2px solid #e1e1e1; }
-        .search-box input { border: none; flex: 1; outline: none; font-size: 1rem; color: #333; }
-        .search-box i { color: var(--secondary); font-size: 1.1rem; }
+        /* --- Header --- */
+        header { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .header-top { background: var(--secondary); color: white; font-size: 0.85rem; padding: 8px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .header-content { padding: 15px 20px; display: flex; align-items: center; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .logo-img { height: 50px; width: 50px; border-radius: 50%; border: 2px solid #eee; }
+        .header-text h1 { color: var(--primary); font-weight: 800; font-size: 1.4rem; }
 
-        /* --- الأزرار --- */
-        .btn { padding: 10px 15px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 1rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; color: var(--secondary); background: #fff; border: 1px solid #eee; }
-        .btn i { font-size: 1.1rem; }
-        .btn-danger { background-color: #ff4757 !important; color: white !important; border: none !important; }
-        .btn-primary { background-color: #2f3542 !important; color: white !important; border: none !important; }
-        .btn-warning { background-color: #ffa502 !important; color: white !important; border: none !important; }
-        .btn-success { background-color: #2ed573 !important; color: white !important; border: none !important; }
-        .btn-whatsapp { background-color: #25D366 !important; color: white !important; border: none !important; }
-        .btn-purple { background-color: #a55eea !important; color: white !important; border: none !important; }
-        .btn-outline { background-color: transparent !important; border: 2px solid #ccc !important; color: #555 !important; }
-        .btn-info { background-color: var(--accent) !important; color: white !important; border: none !important; }
-
-        /* Login */
+        /* --- Login --- */
         #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #ff9ff3 0%, #feca57 100%); display: flex; justify-content: center; align-items: center; z-index: 9999; }
-        .login-card { background: rgba(255, 255, 255, 0.95); padding: 3rem 2rem; border-radius: 24px; width: 90%; max-width: 420px; text-align: center; }
-        .login-input { width: 100%; padding: 18px; background: #f7f9fc; border-radius: 12px; font-size: 1.3rem; text-align: center; margin: 2rem 0; letter-spacing: 8px; font-weight: bold; border: 2px solid transparent;}
+        .login-card { background: rgba(255,255,255,0.95); padding: 3rem 2rem; border-radius: 24px; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+        .login-input { width: 100%; padding: 15px; background: #f7f9fc; border: 2px solid transparent; border-radius: 12px; font-size: 1.3rem; text-align: center; margin: 2rem 0; letter-spacing: 5px; font-weight: bold; }
+        .login-input:focus { background: white; border-color: var(--primary); }
 
-        /* Layout */
-        main { flex: 1; padding: 2rem 1rem; max-width: 1200px; margin: 0 auto; width: 100%; }
-        .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+        /* --- Main Layout --- */
+        main { flex: 1; padding: 1.5rem 1rem; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
         @media (min-width: 992px) { .dashboard-grid { grid-template-columns: 380px 1fr; } }
-        
-        .card { background: var(--surface); border-radius: var(--radius); padding: 1.8rem; box-shadow: 0 8px 24px rgba(149, 157, 165, 0.1); margin-bottom: 1.5rem; }
-        .form-group { margin-bottom: 1.2rem; }
-        .form-control { width: 100%; padding: 14px; background: #f8f9fa; border: 1px solid #dfe4ea; border-radius: 12px; font-size: 1rem; }
-        select.form-control { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: left 1rem center; background-size: 1em; }
 
-        .kid-card { background: white; border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); position: relative; overflow: hidden; border: 1px solid #f1f2f6;}
-        .kid-card::before { content: ''; position: absolute; top: 0; right: 0; width: 6px; height: 100%; }
-        .kid-card.in-status::before { background: var(--success); }
-        .kid-card.paused-status::before { background: var(--warning); }
-        .kid-card.out-status::before { background: #ccc; }
+        /* --- Cards --- */
+        .card { background: var(--surface); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); }
+        .form-control { width: 100%; padding: 12px; background: #f8f9fa; border: 1px solid #dfe4ea; border-radius: 10px; font-size: 1rem; margin-bottom: 1rem; }
+        .form-control:focus { border-color: var(--accent); background: white; }
+
+        /* --- Buttons --- */
+        .btn { padding: 12px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 0.95rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: var(--transition); }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary { background: var(--secondary); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-whatsapp { background: #25D366; color: white; }
+        .btn-product { background: var(--purple); color: white; } 
+        .btn-success { background: var(--success); color: white; }
+        .btn-outline { background: transparent; border: 2px solid #ddd; color: #666; }
+
+        /* --- Active Kid Card --- */
+        .kid-card { background: white; border-radius: 16px; padding: 1rem; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border-right: 5px solid transparent; position: relative; }
+        .kid-card.in-status { border-right-color: var(--success); }
+        .kid-card.paused-status { border-right-color: var(--warning); }
+        .kid-card.out-status { border-right-color: #ccc; opacity: 0.9; }
         @media (min-width: 600px) { .kid-card { flex-direction: row; justify-content: space-between; align-items: center; } }
-        .kid-info h3 { font-size: 1.15rem; font-weight: 700; color: var(--secondary); display: flex; align-items: center; gap: 8px; }
+
+        .kid-info h3 { margin-bottom: 5px; font-size: 1.1rem; color: var(--secondary); display: flex; align-items: center; gap: 5px; }
+        .kid-meta { display: flex; gap: 5px; flex-wrap: wrap; font-size: 0.85rem; color: #777; }
+        .timer-display { font-family: monospace; font-weight: bold; color: var(--primary); background: #fff0f1; padding: 2px 8px; border-radius: 4px; }
+        .products-mini-list { font-size: 0.8rem; color: var(--purple); margin-top: 5px; font-weight: bold; }
+
+        .controls { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
+        .controls .btn { padding: 8px 12px; font-size: 0.85rem; }
+
+        /* --- Stats View Styles --- */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: white; padding: 20px; border-radius: 16px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s; }
         
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 2rem; border-radius: 24px; width: 90%; max-width: 450px; }
+        /* جعل كرت الزوار قابل للضغط */
+        .stat-card.clickable { cursor: pointer; border: 2px solid transparent; }
+        .stat-card.clickable:hover { border-color: var(--accent); transform: translateY(-5px); }
+
+        .stat-value { font-size: 2.5rem; font-weight: 800; color: var(--secondary); margin: 10px 0; }
+        .stat-label { color: #888; font-size: 0.9rem; }
+        .stat-icon { font-size: 1.5rem; margin-bottom: 10px; color: var(--primary); }
+        
+        /* --- History List Modal Items --- */
+        .history-item { background: #f9f9f9; padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; border: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .history-item:hover { background: #fff; border-color: var(--accent); box-shadow: 0 3px 10px rgba(0,0,0,0.05); }
+
+        /* --- WHATSAPP STYLE CHAT --- */
+        .chat-container { 
+            margin-top: 1rem; border-radius: 16px; overflow: hidden; 
+            background: #e5ddd5; 
+            background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"); 
+            display: flex; flex-direction: column; height: 350px;
+            border: 1px solid #ddd;
+        }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 5px; }
+        
+        .message { 
+            max-width: 80%; padding: 8px 10px; border-radius: 8px; 
+            font-size: 0.95rem; line-height: 1.4; position: relative; 
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1); 
+            display: flex; flex-direction: column;
+            user-select: none;
+        }
+        
+        .message.recv { align-self: flex-start; background: var(--chat-recv); color: #000; border-top-left-radius: 0; }
+        .message.sent { align-self: flex-end; background: var(--chat-sent); color: #000; border-top-right-radius: 0; }
+
+        .message.recv::before { content: ""; position: absolute; top: 0; left: -8px; width: 0; height: 0; border-top: 8px solid var(--chat-recv); border-left: 8px solid transparent; }
+        .message.sent::before { content: ""; position: absolute; top: 0; right: -8px; width: 0; height: 0; border-top: 8px solid var(--chat-sent); border-right: 8px solid transparent; }
+
+        .msg-content { margin-bottom: 2px; }
+        .msg-meta { align-self: flex-end; display: flex; align-items: center; gap: 4px; font-size: 0.7rem; color: #999; margin-top: -2px; margin-left: 5px; }
+        .tick-icon { font-size: 0.75rem; }
+        .tick-read { color: var(--blue-tick) !important; }
+
+        .chat-input-area { padding: 10px; background: #f0f0f0; display: flex; gap: 10px; align-items: center; }
+        .chat-input-area input { flex: 1; padding: 10px 15px; border-radius: 20px; border: none; background: white; }
+
+        .reaction-badge { position: absolute; bottom: -8px; left: -5px; background: white; border-radius: 50%; padding: 2px; font-size: 0.9rem; box-shadow: 0 1px 3px rgba(0,0,0,0.2); animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+        .badge-count { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+
+        /* --- Modals --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 20px; border-radius: 16px; width: 95%; max-width: 450px; position: relative; max-height: 90vh; overflow-y: auto; }
+        
+        /* --- Receipt Styles --- */
+        .receipt-card {
+            background: #fff;
+            border: 1px dashed #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            position: relative;
+            background-image: radial-gradient(circle at 0 0, transparent 0, transparent 0), radial-gradient(circle at 100% 0, transparent 0, transparent 0);
+        }
+        .receipt-header { text-align: center; border-bottom: 2px dashed #eee; padding-bottom: 15px; margin-bottom: 15px; }
+        .receipt-logo { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 5px; }
+        .receipt-welcome { font-size: 0.9rem; color: #555; margin-bottom: 5px; }
+        .receipt-title { font-weight: 800; font-size: 1.2rem; color: var(--primary); }
+        .receipt-details { margin-bottom: 15px; font-size: 0.95rem; }
+        .receipt-row { display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dotted #f0f0f0; padding-bottom: 2px; }
+        .receipt-row.total-row { border-top: 2px solid #333; border-bottom: none; padding-top: 10px; margin-top: 10px; font-weight: bold; font-size: 1.2rem; }
+        .receipt-footer { text-align: center; margin-top: 20px; font-size: 0.85rem; color: #777; border-top: 2px dashed #eee; padding-top: 10px; }
+        
+        /* --- Parent View Specifics --- */
+        .parent-header-card { background: white; border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .big-timer-circle { width: 180px; height: 180px; border-radius: 50%; border: 6px solid var(--primary); display: flex; align-items: center; justify-content: center; margin: 20px auto; font-size: 2.5rem; font-weight: 800; color: var(--secondary); background: #fff; padding: 10px; text-align: center; line-height: 1.2; }
+        .paused-circle { border-color: var(--warning); color: #777; font-size: 1rem; }
+
+        /* --- Custom Footer & Heartbeat Animation --- */
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            15% { transform: scale(1.3); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.3); }
+            60% { transform: scale(1); }
+            100% { transform: scale(1); }
+        }
+        .fa-heart-pulse {
+            color: red;
+            animation: heartbeat 2s infinite;
+            display: inline-block;
+            margin: 0 5px;
+            vertical-align: middle;
+        }
+
+        .dev-footer {
+            margin-top: 30px;
+            padding: 20px;
+            text-align: center;
+            background: #fff;
+            border-top: 1px solid #eee;
+            color: #555;
+            width: 100%;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.02);
+        }
+        .dev-footer p { margin: 5px 0; }
+        .dev-footer a { color: var(--accent); text-decoration: none; font-weight: bold; }
+        .dev-footer a:hover { text-decoration: underline; }
+        
+        /* Products List in Modal */
+        .manage-prod-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem;
+        }
+        .manage-prod-item:last-child { border-bottom: none; }
+        .btn-delete-prod {
+            background: #ffe0e0; color: #ff4757; border: none;
+            padding: 4px 8px; border-radius: 5px; cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Utils */
         .hidden { display: none !important; }
-
-        /* Receipt */
-        .receipt-card { background: #fff; width: 100%; position: relative; overflow: hidden; }
-        .receipt-header { background: var(--secondary); color: white; padding: 20px; text-align: center; border-bottom: 5px solid var(--primary); }
-        .receipt-body { padding: 20px; background: #fff; }
-        .receipt-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.95rem; color: #555; }
-        .receipt-row.bold { font-weight: bold; color: #000; font-size: 1.1rem; }
-        .dashed-divider { border-bottom: 2px dashed #ccc; margin: 15px 0; position: relative; }
-        .receipt-total-box { background: #f1f2f6; padding: 15px; text-align: center; border-radius: 10px; margin-top: 15px; }
-        .timer-display { font-family: 'Courier New', monospace; font-weight: 800; color: var(--primary); font-size: 1.1rem; background: rgba(255, 71, 87, 0.05); padding: 5px 10px; border-radius: 8px; display: inline-block;}
-        .pricing-badge { font-size: 0.75rem; padding: 3px 8px; border-radius: 10px; background: #eee; color: #555; margin-right: 5px; }
-
-        /* Financial */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .stat-card { background: white; padding: 1.5rem; border-radius: 16px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; overflow: hidden; border: 1px solid #eee; }
-        .stat-card h3 { color: #888; font-size: 0.9rem; margin-bottom: 10px; }
-        .stat-card .value { font-size: 1.6rem; font-weight: 800; color: var(--secondary); }
-        .stat-card.clickable { cursor: pointer; border: 2px solid transparent; transition: 0.3s; background: #fffdfd; }
-        .stat-card.clickable:hover { border-color: var(--primary); transform: translateY(-5px); }
-        .stat-card.income-card .value { color: var(--success); }
-        .stat-card.product-card .value { color: var(--accent); }
-        
-        /* Parent View */
-        .parent-view-card { text-align: center; border-radius: 30px; padding: 2rem 1.5rem; background: rgba(255, 255, 255, 0.95); margin-top: 2rem; position: relative; z-index: 10; box-shadow: 0 20px 50px rgba(0,0,0,0.08); }
-        .parent-timer-circle { width: 180px; height: 180px; background: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 20px auto; border: 8px solid rgba(255, 71, 87, 0.1); }
-        .timer-text-big { font-size: 2.5rem; font-weight: 900; color: var(--secondary); }
-        .paused-text-msg { color: var(--warning); font-weight: bold; font-size: 1.2rem; line-height: 1.6; }
-        .scene-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; background: linear-gradient(to bottom, #87CEEB 0%, #E0F7FA 100%); pointer-events: none; }
-        
-        /* --- WhatsApp Chat Style --- */
-        .chat-container { margin-top: 1.5rem; background: #e5ddd5; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"); /* خلفية واتساب */ }
-        .chat-messages { height: 350px; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
-        
-        .message { padding: 8px 12px; border-radius: 8px; max-width: 75%; font-size: 0.95rem; position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); display: flex; flex-direction: column; min-width: 100px; }
-        
-        /* رسالة مستلمة (أبيض) */
-        .message.received { align-self: flex-start; background: white; color: #111; border-top-left-radius: 0; }
-        .message.received::after { content: ''; position: absolute; top: 0; right: -10px; width: 0; height: 0; border: 10px solid transparent; border-top-color: white; border-left: 0; border-right: 0; margin-top: 0; margin-right: -10px; transform: rotate(180deg); right: auto; left: -8px;}
-
-        /* رسالة مرسلة (أخضر فاتح) */
-        .message.sent { align-self: flex-end; background: #dcf8c6; color: #111; border-top-right-radius: 0; }
-        .message.sent::after { content: ''; position: absolute; top: 0; right: -8px; width: 0; height: 0; border: 10px solid transparent; border-top-color: #dcf8c6; border-left: 0; border-right: 0; margin-top: 0; margin-right: -10px;}
-
-        .msg-meta { font-size: 0.7rem; color: #999; align-self: flex-end; display: flex; align-items: center; gap: 4px; margin-top: 4px; }
-        .msg-ticks { font-size: 0.8rem; }
-        .msg-ticks.read { color: #34B7F1; } /* الأزرق للصحين */
-        .msg-ticks.sent { color: #999; } /* الرمادي */
-
-        .chat-input-area { padding: 10px; background: #f0f0f0; display: flex; gap: 10px; }
-        .chat-input-area input { flex:1; padding: 12px; border-radius: 25px; border:none; outline:none; }
-        
-        /* Parent Product List */
-        .parent-products-list { margin-top: 15px; background: white; border-radius: 12px; padding: 15px; text-align: right; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .prod-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 0.9rem; }
-        .prod-row:last-child { border-bottom: none; }
-        
-        /* Mini Products */
-        .mini-product-list { margin-bottom: 15px; max-height: 150px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; padding: 5px; background: #fafafa; }
-        .mini-product-item { display: flex; justify-content: space-between; align-items: center; background: white; padding: 8px 12px; margin-bottom: 5px; border-radius: 6px; border-bottom: 1px solid #f1f1f1; }
-        .btn-delete-mini { background: #ff7675; color: white; border: none; width: 25px; height: 25px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-card">
-            <img src="https://raw.githubusercontent.com/mohamednasr5/opera/main/01.png" alt="Logo" style="width:100px; margin-bottom:15px; border-radius: 50%; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-            <h2>استضافة أوبرا عاشور</h2>
-            <p style="color:#666; margin-bottom:20px;">أدخل كلمة المرور للمتابعة</p>
+            <img src="https://raw.githubusercontent.com/mohamednasr5/opera/main/01.png" style="width:80px; border-radius:50%; margin-bottom:15px;">
+            <h2>أوبرا عاشور كيدز</h2>
             <input type="password" id="login-pass" class="login-input" placeholder="****" onkeypress="handleEnter(event)">
-            <button class="btn btn-primary" onclick="checkLogin()">دخول</button>
+            <button class="btn btn-primary" style="width:100%" onclick="checkLogin()">دخول للنظام</button>
         </div>
     </div>
 
     <header>
         <div class="header-top">
-            <span>📅 <span id="header-datetime">...</span></span>
-            <div id="admin-controls" style="display:flex; gap:10px;">
-                <button id="nav-logout-btn" class="logout-btn-styled hidden" onclick="logout()">
-                    خروج <i class="fas fa-sign-out-alt"></i>
-                </button>
-            </div>
+            <span id="header-datetime">...</span>
+            <button id="logout-btn" class="btn btn-outline hidden" style="padding:4px 10px; font-size:0.8rem; border:1px solid rgba(255,255,255,0.5); color:white;" onclick="logout()">خروج</button>
         </div>
         <div class="header-content">
-            <img src="https://raw.githubusercontent.com/mohamednasr5/opera/main/01.png" alt="Logo" class="logo-img">
+            <img src="https://raw.githubusercontent.com/mohamednasr5/opera/main/01.png" class="logo-img">
             <div class="header-text">
-                <h1>🎪 استضافة أوبرا عاشور</h1>
-                <p id="view-subtitle">نظام إدارة وتتبع الأطفال</p>
+                <h1>أوبرا عاشور للأطفال 🎪</h1>
             </div>
         </div>
     </header>
 
-    <main id="app">
-        
-        <div id="staff-view" class="hidden">
+    <main>
+        <div id="admin-view" class="hidden">
             <div class="dashboard-grid">
-                
-                <section class="card">
-                    <h2 style="margin-bottom: 1.5rem; color: var(--primary);">📝 تسجيل طفل جديد</h2>
+                <div class="card">
+                    <h2 style="color:var(--primary); margin-bottom:15px;">📝 تسجيل دخول</h2>
                     <form id="checkin-form">
-                        <div class="form-group">
-                            <label>اسم الطفل</label>
-                            <input type="text" id="child-name" class="form-control" placeholder="اسم الطفل" required>
-                        </div>
-                        <div class="form-group">
-                            <label>رقم الهاتف</label>
-                            <input type="tel" id="parent-phone" class="form-control" placeholder="01xxxxxxxxx" maxlength="11" required>
-                            <small style="color:#888; font-size:0.8rem;">يجب أن يبدأ بـ 01 ويكون 11 رقم</small>
-                        </div>
-                        
-                        <div class="form-group" style="background: #fdfdfd; padding: 10px; border: 1px dashed #ccc; border-radius: 10px;">
-                            <label style="color: var(--primary); font-weight: bold;">💰 نظام المحاسبة</label>
-                            <select id="pricing-mode" class="form-control" style="font-weight: bold; color: #333;">
-                                <option value="hourly">⏱️ حساب بالساعة (30ج - حد أدنى ساعتين)</option>
-                                <option value="package3">📦 باكدج 3 ساعات (100ج شامل الوجبة)</option>
-                                <option value="package5">🌟 باكدج نصف يوم (150ج حتى 5 ساعات)</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>منتج إضافي (اختياري)</label>
-                            <input type="text" id="extra-item" class="form-control" placeholder="مثلاً: فشار">
-                        </div>
-                        <div class="form-group">
-                            <label>سعر المنتج</label>
-                            <input type="number" id="extra-price" class="form-control" placeholder="ج.م">
-                        </div>
-                        <button type="submit" class="btn btn-primary">تسجيل دخول</button>
+                        <input type="text" id="child-name" class="form-control" placeholder="اسم الطفل" required>
+                        <input type="tel" id="parent-phone" class="form-control" placeholder="رقم الموبايل (يبدأ بـ 01)" maxlength="11" required>
+                        <button type="submit" class="btn btn-primary" style="width:100%">تسجيل</button>
                     </form>
                     
-                    <div id="new-child-qr" class="hidden text-center" style="margin-top: 1.5rem; border-top: 1px dashed #ccc; padding-top: 1rem;">
-                        <h3 style="color: var(--success);">✅ تم التسجيل</h3>
-                        <div id="qr-code" style="display:flex; justify-content:center; margin: 15px 0;"></div>
+                    <div id="new-child-qr" class="hidden" style="text-align:center; margin-top:20px; border-top:1px dashed #ccc; padding-top:10px;">
+                        <h3 style="color:var(--success)">تم التسجيل بنجاح!</h3>
+                        <div id="qr-code" style="display:flex; justify-content:center; margin:15px 0;"></div>
                         <div style="display:grid; gap:10px;">
-                            <button class="btn btn-whatsapp" id="wa-btn-new">إرسال الرابط واتساب</button>
+                            <button class="btn btn-whatsapp" id="wa-btn-new">إرسال واتساب 📱</button>
                             <button class="btn btn-outline" onclick="closeQR()">إغلاق</button>
                         </div>
                     </div>
-                </section>
+                </div>
 
-                <section>
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="admin-search" placeholder="بحث بالاسم أو الكود...">
+                <div>
+                    <div class="form-control" style="background:white; display:flex; gap:10px; padding:8px;">
+                        <i class="fas fa-search" style="color:#ccc; margin-top:3px;"></i>
+                        <input type="text" id="admin-search" placeholder="بحث..." style="border:none; width:100%; outline:none;">
                     </div>
-                    <div class="card">
-                        <h2 style="margin-bottom:1rem;">👶 الأطفال الحاليين</h2>
-                        <div id="kids-list-active"></div>
-                    </div>
-                    <div class="card" style="background: #fafafa;">
-                        <h2 style="margin-bottom:1rem; color:#7f8c8d;">📜 سجل اليوم</h2>
-                        <div id="kids-list-history"></div>
-                    </div>
-                </section>
+                    
+                    <div id="kids-list-active"></div>
+                    <h3 style="margin:20px 0 10px; color:#777;">سجل الخروج اليوم</h3>
+                    <div id="kids-list-history"></div>
+                </div>
             </div>
         </div>
 
-        <div id="financial-view" class="hidden">
-            <h2 style="margin-bottom:2rem; text-align:center;">📊 لوحة التحكم المالي</h2>
+        <div id="stats-view" class="hidden">
+            <h2 style="margin-bottom:20px; border-bottom:2px solid var(--primary); padding-bottom:10px; display:inline-block;">📊 الإحصائيات المالية</h2>
             
             <div class="stats-grid">
-                <div class="stat-card income-card">
-                    <h3>صافي اليوم</h3>
-                    <div class="value" id="stat-day-income">0 ج.م</div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-coins"></i></div>
+                    <div class="stat-value" id="stat-total-income">0</div>
+                    <div class="stat-label">إجمالي الإيرادات (الكل)</div>
                 </div>
-                <div class="stat-card product-card">
-                    <h3>مبيعات المنتجات (يومي)</h3>
-                    <div class="value" id="stat-day-products">0 ج.م</div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
+                    <div class="stat-value" style="color:var(--success);" id="stat-today-income">0</div>
+                    <div class="stat-label">إيرادات اليوم</div>
                 </div>
-                <div class="stat-card income-card">
-                    <h3>صافي الأسبوع</h3>
-                    <div class="value" id="stat-week-income">0 ج.م</div>
-                </div>
-                <div class="stat-card income-card">
-                    <h3>صافي الشهر</h3>
-                    <div class="value" id="stat-month-income">0 ج.م</div>
-                </div>
-                <div class="stat-card clickable" onclick="toggleDailyDetails()">
-                    <h3>عدد أطفال اليوم</h3>
-                    <div class="value" id="stat-day-count">0</div>
-                    <div style="font-size:0.8rem; color:var(--primary); margin-top:5px;">اضغط للتفاصيل</div>
+                <div class="stat-card clickable" onclick="showDailyHistory()">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-value" id="stat-total-kids">0</div>
+                    <div class="stat-label">إجمالي الزوار (اضغط للعرض)</div>
                 </div>
             </div>
 
-            <div id="daily-details-container" class="hidden card">
-                <h3 style="margin-bottom:1rem; border-bottom:1px solid #eee; padding-bottom:10px;">📄 قائمة الأطفال المغادرين اليوم</h3>
-                <div id="financial-kids-list"></div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-shopping-basket"></i></div>
+                    <div class="stat-value" style="color:var(--purple);" id="stat-products-income">0</div>
+                    <div class="stat-label">مبيعات المنتجات (الكل)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-stopwatch"></i></div>
+                    <div class="stat-value" id="stat-time-income">0</div>
+                    <div class="stat-label">إيرادات الوقت فقط</div>
+                </div>
             </div>
         </div>
 
         <div id="parent-view" class="hidden">
-            <div class="scene-container"></div>
-            <div class="parent-view-card">
-                <div id="p-status-badge" style="padding:5px 15px; border-radius:20px; display:inline-block; font-weight:bold; margin-bottom:10px;"></div>
-                <h2 id="p-child-name"></h2>
-                <div id="p-child-id" style="color:#666; margin-bottom:10px;"></div>
-                <div id="p-pricing-mode" style="background:#f0f0f0; padding:5px 10px; border-radius:8px; display:inline-block; font-size:0.9rem; margin-bottom:15px; color:#555;"></div>
+            <div class="parent-header-card">
+                <div id="p-status-badge" style="background:var(--success); color:white; display:inline-block; padding:5px 15px; border-radius:20px; font-weight:bold; margin-bottom:10px;">متواجد حالياً</div>
+                <h2 id="p-child-name" style="font-size:1.8rem;">اسم الطفل</h2>
+                <div id="p-child-id" style="background:#eee; display:inline-block; padding:2px 10px; border-radius:10px; margin:5px 0;">#0000</div>
                 
-                <div class="parent-timer-circle" id="parent-timer-container">
-                    <div class="timer-text-big" id="live-timer">00:00:00</div>
+                <div class="big-timer-circle" id="live-timer">00:00:00</div>
+                
+                <div style="font-size:1.5rem; font-weight:bold; color:var(--primary); margin-top:10px;">
+                    التكلفة الحالية: <span id="live-cost">0</span> ج.م
                 </div>
-                
-                <h3 style="color:var(--primary); margin:20px 0;">الإجمالي: <span id="live-cost">0</span> ج.م</h3>
-                
-                <div id="parent-products-container" class="parent-products-list hidden">
-                    <h4 style="margin-bottom:10px; color:#555; border-bottom:1px solid #eee; padding-bottom:5px;">🛒 تفاصيل الطلبات</h4>
-                    <div id="parent-products-items"></div>
-                </div>
+                <div id="p-products-list" style="margin-top:15px; padding:10px; background:#f9f9f9; border-radius:10px; color:var(--purple); font-size:0.95rem; line-height:1.6;"></div>
+            </div>
 
-                <div class="chat-container">
+            <div class="card" style="padding:0; overflow:hidden;">
+                <div class="chat-container" style="margin:0; border:none; height:400px;">
+                    <div style="background:#075e54; color:white; padding:10px 15px; font-weight:bold;">
+                        <i class="fas fa-headset"></i> إدارة الكيدز إيريا
+                    </div>
                     <div id="parent-chat-messages" class="chat-messages"></div>
                     <div class="chat-input-area">
-                        <input type="text" id="parent-message-input" placeholder="رسالة للإدارة...">
-                        <button class="btn btn-primary" onclick="sendParentMessage()" style="width:auto; border-radius:50%; padding:10px 15px;">➤</button>
+                        <input type="text" id="parent-message-input" placeholder="اكتب رسالة...">
+                        <button class="btn btn-primary" onclick="sendParentMessage()" style="border-radius:50%; width:40px; height:40px; padding:0;"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
         </div>
+        
+        <div id="session-ended-view" class="hidden" style="text-align:center; padding-top:50px;">
+            <i class="fas fa-check-circle" style="font-size:4rem; color:var(--success);"></i>
+            <h2 style="margin:20px 0;">انتهت الجلسة</h2>
+            <div style="font-size:3rem; font-weight:800; color:var(--secondary); margin-bottom:10px;">
+                <span id="final-cost-display">0</span> ج.م
+            </div>
+            <p style="font-size:1.2rem; margin-bottom:10px;">شكراً لزيارتكم أوبرا عاشور ❤️</p>
+            <p style="font-size:1.1rem; color:var(--primary); font-weight:bold;">من هنا تبدأ الحكاية ✨</p>
+        </div>
 
     </main>
 
+    <div class="dev-footer">
+        <p>تمت البرمجة والتطوير <i class="fas fa-heart fa-heart-pulse"></i></p>
+        <p><strong>المهندس محمد حماد</strong></p>
+        <p><a href="tel:01279934735" style="color: inherit; text-decoration: none;">01279934735</a></p>
+        <p><a href="https://www.facebook.com/en.mohamed.nasr" target="_blank">https://www.facebook.com/en.mohamed.nasr</a></p>
+    </div>
+
     <div id="admin-chat-modal" class="modal">
-        <div class="modal-content" style="height:80vh; display:flex; flex-direction:column; background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); background-color:#e5ddd5;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px; background:white; padding:10px; border-radius:10px;">
-                <h3 id="chat-modal-title">محادثة</h3>
-                <button onclick="closeAdminChat()" style="background:none; border:none; font-size:1.5rem;">&times;</button>
+        <div class="modal-content" style="height:80vh; display:flex; flex-direction:column; padding:0; overflow:hidden;">
+            <div style="background:#075e54; color:white; padding:15px; display:flex; justify-content:space-between; align-items:center;">
+                <span id="chat-modal-title" style="font-weight:bold;">محادثة</span>
+                <i class="fas fa-times" onclick="closeAdminChat()" style="cursor:pointer;"></i>
             </div>
-            <div id="admin-chat-history" class="chat-messages" style="flex:1;"></div>
-            <div class="chat-input-area">
-                <input type="text" id="admin-chat-input" placeholder="رد...">
-                <button class="btn btn-primary" onclick="sendAdminMessage()" style="width:auto;">إرسال</button>
+            <div class="chat-container" style="margin:0; border:none; flex:1; border-radius:0;">
+                <div id="admin-chat-history" class="chat-messages"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="admin-chat-input" placeholder="اكتب رسالة...">
+                    <button class="btn btn-primary" onclick="sendAdminMessage()" style="border-radius:50%; width:40px; height:40px; padding:0;"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <h3 style="color:var(--purple); margin-bottom:10px;">🛍️ إدارة المنتجات</h3>
+            <p id="prod-modal-title" style="margin-bottom:15px; font-weight:bold; color:#555;"></p>
+            
+            <div id="current-prod-list" style="max-height:150px; overflow-y:auto; background:#f9f9f9; padding:5px; border-radius:8px; margin-bottom:15px; border:1px solid #eee;"></div>
+
+            <div style="border-top:1px dashed #ccc; padding-top:15px;">
+                <h4 style="margin-bottom:10px; font-size:0.9rem;">إضافة جديد:</h4>
+                <input type="text" id="prod-name" class="form-control" placeholder="اسم المنتج (عصير، مياه..)">
+                <input type="number" id="prod-price" class="form-control" placeholder="السعر">
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-product" style="flex:1;" onclick="addProduct()">إضافة وتأكيد</button>
+                    <button class="btn btn-outline" style="flex:1;" onclick="closeProductModal()">إغلاق</button>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="checkout-modal" class="modal">
-        <div class="modal-content" style="padding: 0; background: transparent; max-width: 380px;">
-            <div class="receipt-card">
+        <div class="modal-content" style="padding:15px;">
+            <div class="receipt-card" id="receipt-print-area">
                 <div class="receipt-header">
-                    <img src="https://raw.githubusercontent.com/mohamednasr5/opera/main/01.png" style="width:50px; border-radius:50%; border:2px solid white; margin-bottom:5px;">
-                    <h3>استضافة أوبرا عاشور</h3>
+                    <img src="https://raw.githubusercontent.com/mohamednasr5/opera/main/01.png" class="receipt-logo">
+                    <div class="receipt-welcome">لقد استمتع طفلكم باللعب معنا</div>
+                    <div class="receipt-title">أوبرا عاشور للأطفال</div>
+                    <div style="font-size:0.8rem; color:#999; margin-top:5px;" id="bill-date-line"></div>
                 </div>
-                <div class="receipt-body">
-                    <div class="receipt-row bold">
-                        <span>الطفل:</span>
-                        <span id="receipt-child-name">--</span>
+                
+                <div class="receipt-details">
+                    <div class="receipt-row">
+                        <span>اسم الطفل:</span>
+                        <span id="bill-child-name" style="font-weight:bold;">-</span>
                     </div>
                     <div class="receipt-row">
-                        <span>نظام المحاسبة:</span>
-                        <span id="receipt-mode-text" style="font-size:0.85rem;">--</span>
-                    </div>
-                    <div class="receipt-row">
-                        <span>الوقت المستهلك:</span>
-                        <span id="receipt-hours-text" dir="ltr">--</span>
-                    </div>
-                    <div class="dashed-divider"></div>
-                    <div class="receipt-row bold" style="color:var(--primary);">
-                        <span>حساب الاستضافة:</span>
-                        <span id="receipt-entry-cost">0 ج.م</span>
+                        <span>عدد الساعات:</span>
+                        <span id="bill-duration">-</span>
                     </div>
                     
-                    <div class="dashed-divider"></div>
-                    <div style="font-weight:bold; margin-bottom:10px;">الطلبات الإضافية:</div>
-                    <div id="receipt-products-list"></div>
-                    <div class="dashed-divider"></div>
-                    <div class="receipt-total-box">
-                        <div style="font-size:0.9rem; color:#777;">الإجمالي المطلوب</div>
-                        <div class="receipt-total" id="receipt-grand-total">0 ج.م</div>
+                    <div id="bill-products-container" style="margin: 10px 0; border-top:1px dotted #ccc; padding-top:5px;"></div>
+
+                    <div class="receipt-row total-row">
+                        <span>إجمالي المبلغ:</span>
+                        <span id="bill-total-amount" style="color:var(--primary);">-</span>
                     </div>
-                    <div style="display:grid; gap:10px; margin-top:20px;">
-                        <a id="receipt-whatsapp-btn" href="#" target="_blank" class="btn btn-whatsapp">
-                            <i class="fab fa-whatsapp"></i> إرسال الفاتورة واتساب
-                        </a>
-                        <div style="display:flex; gap:10px;" id="checkout-actions">
-                            <button class="btn btn-danger" onclick="confirmCheckout()" id="btn-confirm-out">✅ تأكيد الخروج</button>
-                            <button class="btn btn-outline" onclick="closeModal()">إغلاق</button>
-                        </div>
-                    </div>
-                    <div class="receipt-footer">شكراً لزيارتكم .. نتمنى لكم يوماً سعيداً!</div>
+                </div>
+
+                <div class="receipt-footer">
+                    <p>شكراً لزيارتكم منطقة العاب أوبرا عاشور</p>
+                    <p>ننتظر عودتكم لنا ❤️</p>
+                </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <button id="btn-send-bill-wa" class="btn btn-whatsapp" style="width:100%">
+                    <i class="fab fa-whatsapp"></i> إرسال الفاتورة لولي الأمر
+                </button>
+                
+                <div style="display:flex; gap:10px;">
+                    <button id="btn-confirm-checkout" class="btn btn-danger" style="flex:1;" onclick="confirmCheckout()">تأكيد الخروج</button>
+                    <button class="btn btn-outline" style="flex:1;" onclick="closeModal()">إغلاق</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <div id="add-product-modal" class="modal">
+    
+    <div id="history-list-modal" class="modal">
         <div class="modal-content">
-            <h2 style="color: var(--accent); margin-bottom: 1rem; text-align:center;">🛍️ إدارة المنتجات</h2>
-            <div id="current-products-list" class="mini-product-list"></div>
-            <div class="form-group">
-                <label>اسم المنتج الجديد</label>
-                <input type="text" id="new-product-name" class="form-control" placeholder="مثال: عصير">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 style="color:var(--secondary);">سجل خروج اليوم 📅</h3>
+                <i class="fas fa-times" onclick="closeHistoryModal()" style="cursor:pointer; font-size:1.2rem;"></i>
             </div>
-            <div class="form-group">
-                <label>السعر</label>
-                <input type="number" id="new-product-price" class="form-control" placeholder="0">
-            </div>
-            <div style="display:flex; gap:10px; justify-content:center; margin-top: 15px;">
-                <button class="btn btn-info" onclick="submitAddProduct()">إضافة وإغلاق</button>
-                <button class="btn btn-outline" onclick="closeProductModal()">إلغاء</button>
-            </div>
+            <div id="daily-history-container" style="max-height:400px; overflow-y:auto;">
+                </div>
         </div>
     </div>
 
+    <div id="toast-container" style="position:fixed; bottom:20px; left:20px; z-index:3000;"></div>
+    
     <audio id="msg-sound" src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_3f32527b79.mp3"></audio>
+    <audio id="hour-sound" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_12b0c7443c.mp3"></audio>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getDatabase, ref, push, onValue, update, set, get, remove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyDIH-wzZV71U-zbkxArRE4f9oiCtwvKOWA",
-            authDomain: "operaestdafa.firebaseapp.com",
-            databaseURL: "https://operaestdafa-default-rtdb.firebaseio.com",
-            projectId: "operaestdafa",
-            storageBucket: "operaestdafa.firebasestorage.app",
-            messagingSenderId: "44885598287",
-            appId: "1:44885598287:web:e2b0d3497b86c69de38a3a"
+            apiKey: "AIzaSyDJ_dnEZP62J871KLAg88_quQdUt01004o",
+            authDomain: "operakides.firebaseapp.com",
+            projectId: "operakides",
+            storageBucket: "operakides.firebasestorage.app",
+            messagingSenderId: "1028823199618",
+            appId: "1:1028823199618:web:16062acdd68c32002a299b",
+            measurementId: "G-W46366S9Z2"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // --- GLOBAL VARIABLES ---
+        // --- Variables ---
         let currentChildId = null; 
-        let childIdForProduct = null;
-        let searchQuery = "";
-        let currentChatId = null;
-
-        // --- DOM ELEMENTS ---
-        const loginScreen = document.getElementById('login-screen');
-        const staffView = document.getElementById('staff-view');
-        const financialView = document.getElementById('financial-view');
+        let currentLink = "";
+        let adminTimer = null;
+        let parentTimer = null;
+        let activeChatId = null;
+        let productTargetId = null;
+        let lastMsgCounts = {};
+        let currentBillPhone = "";
+        let searchQuery = ""; // NEW: Variable for search
         
-        // --- AUTH & ROUTING ---
+        // --- Sounds ---
+        const playMsgSound = () => document.getElementById('msg-sound').play().catch(()=>{});
+        const playHourSound = () => document.getElementById('hour-sound').play().catch(()=>{});
+
+        // --- Auth ---
         window.handleEnter = (e) => { if(e.key === 'Enter') checkLogin(); }
         
         window.checkLogin = () => {
-            const p = document.getElementById('login-pass').value;
-            if(p === '0100') {
-                loginScreen.classList.add('hidden');
-                staffView.classList.remove('hidden');
-                financialView.classList.add('hidden');
-                document.getElementById('nav-logout-btn').classList.remove('hidden');
-                document.getElementById('view-subtitle').innerText = "نظام المتابعة اليومي";
-                initStaffView();
-            } 
-            else if (p === '521988') {
-                loginScreen.classList.add('hidden');
-                staffView.classList.add('hidden');
-                financialView.classList.remove('hidden');
-                document.getElementById('nav-logout-btn').classList.remove('hidden');
-                document.getElementById('view-subtitle').innerText = "التقارير المالية";
-                initFinancialView();
-            } 
-            else { 
-                alert("خطأ في كلمة المرور"); 
+            const pass = document.getElementById('login-pass').value;
+            if(pass === '0100') {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('admin-view').classList.remove('hidden');
+                document.getElementById('logout-btn').classList.remove('hidden');
+                initAdmin();
+            } else if (pass === '521988') {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('stats-view').classList.remove('hidden');
+                document.getElementById('logout-btn').classList.remove('hidden');
+                initStats();
+            } else {
+                showToast('كلمة المرور خطأ');
             }
         };
         
         window.logout = () => location.reload();
 
+        // --- Routing ---
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('mode') === 'parent' && urlParams.get('id')) {
-            loginScreen.classList.add('hidden');
-            initParentView(urlParams.get('id'));
+        if(urlParams.get('mode') === 'parent' && urlParams.get('id')) {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('parent-view').classList.remove('hidden');
+            initParent(urlParams.get('id'));
         }
 
-        setInterval(() => {
-            document.getElementById('header-datetime').innerText = new Date().toLocaleDateString('ar-EG', { weekday:'long', hour:'2-digit', minute:'2-digit' });
-        }, 1000);
+        // --- Stats Logic ---
+        function initStats() {
+            onValue(ref(db, 'children'), (snap) => {
+                const data = snap.val() || {};
+                let totalIncome = 0;
+                let todayIncome = 0;
+                let totalKids = 0;
+                let productIncome = 0;
+                let timeIncome = 0;
 
-        // --- Pricing Helper ---
-        function getModeLabel(mode) {
-            if(mode === 'package3') return 'باكدج 3 ساعات';
-            if(mode === 'package5') return 'باكدج نصف يوم';
-            return 'حساب بالساعة';
+                const todayStr = new Date().toLocaleDateString('en-US');
+
+                Object.values(data).forEach(child => {
+                    if(child.status === 'out' && child.totalCost) {
+                        const cost = parseFloat(child.totalCost);
+                        totalIncome += cost;
+                        if(child.exitTime) {
+                            const exitDate = new Date(child.exitTime).toLocaleDateString('en-US');
+                            if(exitDate === todayStr) {
+                                todayIncome += cost;
+                                totalKids++; // Count only today's kids for the daily view
+                            }
+                        }
+                        
+                        // Calculate products logic only for today or total if needed (Current logic calculates total)
+                        let pCost = 0;
+                        if(child.products) {
+                            Object.values(child.products).forEach(p => pCost += p.price);
+                        }
+                        productIncome += pCost;
+                        timeIncome += (cost - pCost);
+                    }
+                });
+
+                document.getElementById('stat-total-income').innerText = totalIncome + ' ج.م';
+                document.getElementById('stat-today-income').innerText = todayIncome + ' ج.م';
+                document.getElementById('stat-total-kids').innerText = totalKids; // This is now TODAY's checked out count
+                document.getElementById('stat-products-income').innerText = productIncome + ' ج.م';
+                document.getElementById('stat-time-income').innerText = timeIncome + ' ج.م';
+            });
         }
+        
+        // --- NEW: History List Logic ---
+        window.showDailyHistory = () => {
+            document.getElementById('history-list-modal').style.display = 'flex';
+            const container = document.getElementById('daily-history-container');
+            container.innerHTML = '<div style="text-align:center; padding:20px;">جاري التحميل...</div>';
+            
+            get(ref(db, 'children')).then((snap) => {
+                const data = snap.val() || {};
+                container.innerHTML = '';
+                const todayStr = new Date().toLocaleDateString('en-US');
+                let found = false;
 
-        // --- Staff View ---
-        function initStaffView() {
-            onValue(ref(db, 'children'), (snapshot) => {
-                const data = snapshot.val();
+                Object.entries(data).forEach(([key, child]) => {
+                    if(child.status === 'out' && child.exitTime) {
+                        const exitDate = new Date(child.exitTime).toLocaleDateString('en-US');
+                        if(exitDate === todayStr) {
+                            found = true;
+                            const div = document.createElement('div');
+                            div.className = 'history-item';
+                            div.innerHTML = `
+                                <div>
+                                    <div style="font-weight:bold; font-size:1.1rem;">${child.name}</div>
+                                    <div style="font-size:0.85rem; color:#777;">${new Date(child.exitTime).toLocaleTimeString('ar-EG')}</div>
+                                </div>
+                                <div style="text-align:left;">
+                                    <div style="font-weight:bold; color:var(--primary);">${child.totalCost} ج.م</div>
+                                    <div style="font-size:0.8rem; color:#999;">#${child.childId}</div>
+                                </div>
+                            `;
+                            div.onclick = () => viewBillFromHistory(key, child);
+                            container.appendChild(div);
+                        }
+                    }
+                });
+                
+                if(!found) {
+                    container.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">لا يوجد أطفال غادروا اليوم حتى الآن</div>';
+                }
+            });
+        };
+
+        window.closeHistoryModal = () => document.getElementById('history-list-modal').style.display = 'none';
+
+        window.viewBillFromHistory = (key, child) => {
+             // إغلاق قائمة الأسماء حتى تظهر الفاتورة بوضوح
+             document.getElementById('history-list-modal').style.display = 'none';
+
+             // Setup bill logic for view only
+             currentBillPhone = child.phone;
+             
+             // Calculate time based on stored data (Total cost - Products)
+             // But we need the hours. We can approximate or use stored data if we had it.
+             // Reverse Calculation:
+             let pTotal = 0;
+             let productsHTML = '';
+             let waProductsText = "";
+             
+             if(child.products) {
+                 Object.values(child.products).forEach(p => {
+                    pTotal += p.price;
+                    const priceTxt = p.price > 0 ? `${p.price} ج.م` : 'مجاناً';
+                    productsHTML += `
+                        <div class="receipt-row">
+                            <span>${p.name}</span>
+                            <span>${priceTxt}</span>
+                        </div>`;
+                   waProductsText += `▫️ ${p.name}: ${priceTxt}%0a`;
+                 });
+             }
+             
+             if(productsHTML === '') {
+                 productsHTML = '<div style="text-align:center; color:#ccc; font-size:0.8rem;">لا توجد طلبات إضافية</div>';
+                 waProductsText = "لا توجد طلبات إضافية%0a";
+             }
+             
+             const totalCost = parseFloat(child.totalCost);
+             const timeCost = totalCost - pTotal;
+             const hours = Math.round(timeCost / 50); // Approximate back to hours
+             
+             // Set Data
+             const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+             const exitDateObj = new Date(child.exitTime);
+             const dayName = days[exitDateObj.getDay()];
+             const dateStr = exitDateObj.toLocaleDateString('ar-EG');
+             const fullDate = `${dayName}، ${dateStr}`;
+
+             document.getElementById('bill-child-name').innerText = child.name;
+             document.getElementById('bill-duration').innerText = `${hours} ساعة (${timeCost} ج.م)`;
+             document.getElementById('bill-date-line').innerText = fullDate;
+             document.getElementById('bill-products-container').innerHTML = productsHTML;
+             document.getElementById('bill-total-amount').innerText = child.totalCost + ' ج.م';
+             
+             // Construct WhatsApp Message
+             const waMessage = `*فاتورة منطقة ألعاب أوبرا عاشور* 🎪%0a` +
+                             `--------------------------------%0a` +
+                             `لقد استمتع طفلكم *${child.name}* باللعب معنا 😍%0a%0a` +
+                             `⏳ *عدد الساعات:* ${hours} ساعات%0a` +
+                             `💰 *حساب الوقت:* ${timeCost} ج.م%0a` +
+                             `--------------------------------%0a` +
+                             `📋 *المنتجات:*%0a` +
+                             waProductsText +
+                             `--------------------------------%0a` +
+                             `💵 *المبلغ الإجمالي:* *${child.totalCost} ج.م*%0a` +
+                             `📅 *التاريخ:* ${fullDate}%0a` +
+                             `--------------------------------%0a` +
+                             `شكراً لزيارتكم منطقة ألعاب أوبرا عاشور ❤️%0a` +
+                             `ننتظر عودتكم لنا ✨`;
+             
+             // Setup Buttons
+             const btn = document.getElementById('btn-send-bill-wa');
+             btn.onclick = () => {
+                 let p = currentBillPhone.replace(/[^0-9]/g,'');
+                 if(p.startsWith('01')) p = '2' + p;
+                 const url = `https://wa.me/2${p}?text=${waMessage}`;
+                 window.open(url, '_blank');
+             };
+             
+             // Hide Checkout Confirm button, Show Close only
+             document.getElementById('btn-confirm-checkout').style.display = 'none';
+             document.getElementById('checkout-modal').style.display = 'flex';
+        };
+
+        // --- Admin Logic ---
+        function initAdmin() {
+            onValue(ref(db, 'children'), (snap) => {
+                const data = snap.val() || {};
                 const listActive = document.getElementById('kids-list-active');
                 const listHistory = document.getElementById('kids-list-history');
-                listActive.innerHTML = ''; listHistory.innerHTML = '';
                 
-                if(!data) return;
+                listActive.innerHTML = '';
+                listHistory.innerHTML = '';
 
-                Object.keys(data).forEach(key => {
-                    const child = data[key];
-                    const modeLabel = getModeLabel(child.pricingMode || 'hourly');
-                    
-                    let productHTML = '';
-                    let productsTotal = 0;
-                    if(child.products) {
-                        productHTML = '<div style="font-size:0.8rem; color:#666; margin-top:5px;">🛒 ';
-                        Object.values(child.products).forEach(p => {
-                            productHTML += `${p.name}, `;
-                            productsTotal += parseFloat(p.price);
-                        });
-                        productHTML += `(مجموع: ${productsTotal} ج.م)</div>`;
-                    }
-
+                Object.entries(data).forEach(([key, child]) => {
+                    // NEW: Calculate Search Text once and store it in attribute
                     const searchText = `${child.name} ${child.phone} ${child.childId}`.toLowerCase();
 
-                    if (child.status === 'in' || child.status === 'paused') {
-                        const isPaused = child.status === 'paused';
-                        let duration = isPaused 
-                            ? (child.pauseStartTime - child.entryTime - (child.totalPausedTime||0))
-                            : (Date.now() - child.entryTime - (child.totalPausedTime||0));
-                        
-                        // Badge logic
-                        const msgs = child.messages ? Object.values(child.messages) : [];
-                        const unread = msgs.filter(m => m.sender === 'parent' && m.status !== 'read').length;
-                        const badge = unread > 0 ? `<span style="background:red; color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem; position:absolute; top:-5px; right:-5px;">${unread}</span>` : '';
+                    const products = child.products ? Object.values(child.products) : [];
+                    let prodText = products.map(p => `${p.name}`).join(' + ');
+                    if(prodText) prodText = '🛍️ ' + prodText;
 
-                        // WhatsApp Message Logic
-                        const trackingUrl = `${window.location.origin}${window.location.pathname}?mode=parent&id=${key}`;
-                        const msgBody = `نحن في كافيه ومطعم أوبرا كافيه سعداء لحضور طفلك معنا ونؤكد أن طفلك فى أمان معنا ويمكنك متابعته من خلال هذا الرابط فى اى وقت \n ${trackingUrl}`;
-                        const waUrl = `https://wa.me/2${child.phone}?text=${encodeURIComponent(msgBody)}`;
+                    if(child.status === 'in' || child.status === 'paused') {
+                        let duration = 0;
+                        if(child.status === 'in') duration = Date.now() - child.entryTime - (child.totalPausedTime||0);
+                        else duration = child.pauseStartTime - child.entryTime - (child.totalPausedTime||0);
+
+                        const hours = Math.floor(duration / 3600000);
+                        if(child.lastHourAlert !== hours && hours > 0) {
+                            playHourSound();
+                            showToast(`⏰ أتم ${child.name} ساعة جديدة`);
+                            update(ref(db, `children/${key}`), { lastHourAlert: hours });
+                        }
+
+                        const msgs = child.messages ? Object.values(child.messages) : [];
+                        const unreadCount = msgs.filter(m => m.sender === 'parent' && !m.read).length;
+                        if(unreadCount > (lastMsgCounts[key] || 0)) {
+                            playMsgSound();
+                            showToast(`📩 رسالة من ${child.name}`);
+                        }
+                        lastMsgCounts[key] = unreadCount;
+                        const badge = unreadCount > 0 ? `<div class="badge-count">${unreadCount}</div>` : '';
 
                         const div = document.createElement('div');
-                        div.className = `kid-card ${isPaused ? 'paused-status' : 'in-status'}`;
-                        div.setAttribute('data-search', searchText);
+                        div.className = `kid-card ${child.status === 'in' ? 'in-status' : 'paused-status'}`;
                         
+                        // NEW: Set the search attribute
+                        div.setAttribute('data-search', searchText);
+
                         div.innerHTML = `
                             <div class="kid-info">
-                                <h3>${child.name} <span style="background:#eee; padding:2px 8px; border-radius:5px; font-size:0.8rem;">#${child.childId}</span></h3>
-                                <div style="font-size:0.85rem; color:#888; margin-bottom:5px;">
-                                    <span class="pricing-badge">${modeLabel}</span> 📱 ${child.phone}
+                                <h3>${child.name} <span style="font-size:0.8rem; background:#eee; padding:2px 6px; border-radius:4px;">#${child.childId}</span></h3>
+                                <div class="kid-meta">
+                                    <span>📱 ${child.phone}</span>
                                 </div>
-                                ${productHTML}
-                                <div class="timer-display" style="${isPaused?'color:orange;':''}">
-                                    ⏳ ${isPaused ? 'مؤقت' : 'جاري'}: <span class="live-timer" data-start="${child.entryTime}" data-paused="${child.totalPausedTime||0}" data-status="${child.status}">${formatDuration(duration)}</span>
-                                </div>
+                                <div class="products-mini-list">${prodText}</div>
+                                <div class="timer-display" style="margin-top:5px;">${formatTime(duration)}</div>
                             </div>
-                            
-                            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; margin-top:10px;">
-                                <button class="btn btn-danger" style="padding: 8px 20px;" onclick="prepareCheckout('${key}')">خروج</button>
-                                <button class="btn btn-primary" style="width:45px;" onclick="openAdminChat('${key}', '${child.name}')"><i class="fas fa-comments"></i> ${badge}</button>
-                                ${isPaused 
-                                    ? `<button class="btn btn-success" style="width:45px;" onclick="resumeChild('${key}')"><i class="fas fa-play"></i></button>`
-                                    : `<button class="btn btn-warning" style="width:45px;" onclick="pauseChild('${key}')"><i class="fas fa-pause"></i></button>`
+                            <div class="controls">
+                                <button class="btn btn-product" onclick="openProductModal('${key}', '${child.name}')" title="إدارة المنتجات"><i class="fas fa-cart-plus"></i></button>
+                                <button class="btn btn-whatsapp" onclick="openWhatsApp('${child.phone}', '${key}')"><i class="fab fa-whatsapp"></i></button>
+                                ${child.status === 'in' 
+                                    ? `<button class="btn btn-warning" onclick="pause('${key}')"><i class="fas fa-pause"></i></button>`
+                                    : `<button class="btn btn-success" onclick="resume('${key}')"><i class="fas fa-play"></i></button>`
                                 }
-                                <a href="${waUrl}" target="_blank" class="btn btn-whatsapp" style="width:45px; text-decoration:none; display:inline-flex;"><i class="fab fa-whatsapp"></i></a>
-                                <button class="btn btn-purple" style="width:45px;" onclick="openProductModal('${key}')" title="المنتجات"><i class="fas fa-shopping-cart"></i></button>
+                                <button class="btn btn-primary" style="position:relative;" onclick="openAdminChat('${key}', '${child.name}')">
+                                    <i class="fas fa-comments"></i>${badge}
+                                </button>
+                                <button class="btn btn-danger" onclick="checkout('${key}')">خروج</button>
                             </div>
                         `;
                         listActive.appendChild(div);
-                    } else {
+                    } else if (child.status === 'out') {
                         const div = document.createElement('div');
                         div.className = 'kid-card out-status';
+                        // NEW: Set the search attribute
                         div.setAttribute('data-search', searchText);
+
                         div.innerHTML = `
                             <div class="kid-info">
-                                <h3 style="color:#777; text-decoration:line-through;">${child.name}</h3>
-                                <div>💰 ${child.totalCost} ج.م | 📅 ${new Date(child.exitTime).toLocaleTimeString('ar-EG')}</div>
-                                <div style="font-size:0.8rem; color:#999;">${modeLabel}</div>
+                                <h3>${child.name}</h3>
+                                <div class="kid-meta">
+                                    <span>💰 ${child.totalCost} ج.م</span>
+                                    <span>📅 ${new Date(child.exitTime).toLocaleTimeString('ar-EG')}</span>
+                                </div>
+                                <div class="products-mini-list">${prodText}</div>
                             </div>
                         `;
                         listHistory.appendChild(div);
                     }
                 });
+                
+                // NEW: Call Filter immediately after rendering
                 filterList();
             });
 
-            setInterval(() => {
-                document.querySelectorAll('.live-timer').forEach(el => {
-                    if(el.dataset.status === 'in') {
-                        const t = Date.now() - parseInt(el.dataset.start) - parseInt(el.dataset.paused);
-                        el.innerText = formatDuration(t);
-                    }
-                });
+            if(adminTimer) clearInterval(adminTimer);
+            adminTimer = setInterval(() => {
+                initAdmin(); 
             }, 1000);
+
+            document.getElementById('checkin-form').onsubmit = (e) => {
+                e.preventDefault();
+                const name = document.getElementById('child-name').value;
+                const phone = document.getElementById('parent-phone').value;
+                
+                const phoneRegex = /^01[0-9]{9}$/;
+                if(!phoneRegex.test(phone)) {
+                    alert("⚠️ يجب أن يتكون رقم الهاتف من 11 رقم ويبدأ بـ 01");
+                    return;
+                }
+                
+                const cid = Math.floor(1000 + Math.random() * 9000);
+                
+                const newRef = push(ref(db, 'children'));
+                const link = `${window.location.origin}${window.location.pathname}?mode=parent&id=${newRef.key}`;
+                currentLink = link;
+
+                set(newRef, {
+                    name, phone, childId: cid, 
+                    entryTime: Date.now(), status: 'in', 
+                    products: [], messages: [], totalPausedTime: 0, lastHourAlert: 0
+                }).then(() => {
+                    document.getElementById('checkin-form').reset();
+                    document.getElementById('new-child-qr').classList.remove('hidden');
+                    document.getElementById('qr-code').innerHTML = '';
+                    new QRCode(document.getElementById('qr-code'), { text: link, width:100, height:100 });
+                    document.getElementById('wa-btn-new').onclick = () => openWhatsApp(phone, newRef.key, link);
+                    showToast('تم تسجيل الطفل بنجاح');
+                });
+            };
         }
 
-        document.getElementById('checkin-form').onsubmit = (e) => {
-            e.preventDefault();
-            const name = document.getElementById('child-name').value;
-            const phone = document.getElementById('parent-phone').value;
-            const mode = document.getElementById('pricing-mode').value; // Get Pricing Mode
-            const item = document.getElementById('extra-item').value;
-            const price = document.getElementById('extra-price').value;
-
-            const phoneRegex = /^01\d{9}$/;
-            if (!phoneRegex.test(phone)) return alert("يرجى إدخال رقم هاتف صحيح (11 رقم يبدأ بـ 01)");
-
-            const newRef = push(ref(db, 'children'));
-            const code = Math.floor(1000 + Math.random() * 9000);
-            
-            const data = {
-                name, phone, childId: code,
-                pricingMode: mode, // Save Pricing Mode
-                entryTime: Date.now(), status: 'in', totalPausedTime: 0
-            };
-            set(newRef, data).then(() => {
-                if(item && price) {
-                    push(ref(db, `children/${newRef.key}/products`), { name: item, price: parseFloat(price) });
-                }
-                document.getElementById('checkin-form').reset();
-                document.getElementById('pricing-mode').value = 'hourly'; // Reset to default
-                const link = `${window.location.origin}${window.location.pathname}?mode=parent&id=${newRef.key}`;
-                
-                const qrDiv = document.getElementById('new-child-qr');
-                qrDiv.classList.remove('hidden');
-                document.getElementById('qr-code').innerHTML = '';
-                new QRCode(document.getElementById('qr-code'), { text: link, width:100, height:100 });
-                
-                const msgBody = `نحن في كافيه ومطعم أوبرا كافيه سعداء لحضور طفلك معنا ونؤكد أن طفلك فى أمان معنا ويمكنك متابعته من خلال هذا الرابط فى اى وقت \n ${link}`;
-                const whatsappPhone = '2' + phone;
-                
-                document.getElementById('wa-btn-new').onclick = () => window.open(`https://wa.me/${whatsappPhone}?text=${encodeURIComponent(msgBody)}`, '_blank');
-            });
-        };
-        window.closeQR = () => document.getElementById('new-child-qr').classList.add('hidden');
-
+        // --- NEW: Search Logic using Data Attributes (Same as your reference code) ---
         document.getElementById('admin-search').addEventListener('keyup', (e) => {
             searchQuery = e.target.value.toLowerCase();
             filterList();
@@ -606,349 +819,374 @@
             const cards = document.querySelectorAll('.kid-card');
             cards.forEach(card => {
                 const txt = card.getAttribute('data-search') || "";
-                if (txt.includes(searchQuery)) card.style.display = 'flex';
-                else card.style.display = 'none';
+                if (txt.includes(searchQuery)) {
+                    // Check if it's supposed to be flex (like in CSS)
+                    // Or just use empty string which defaults to CSS value
+                    card.style.display = 'flex'; 
+                } else {
+                    card.style.display = 'none';
+                }
             });
         }
 
-        window.pauseChild = (id) => update(ref(db, `children/${id}`), { status:'paused', pauseStartTime: Date.now() });
-        window.resumeChild = (id) => {
-            get(ref(db, `children/${id}`)).then(s => {
-                const d = s.val();
-                const p = Date.now() - d.pauseStartTime;
-                update(ref(db, `children/${id}`), { status:'in', totalPausedTime: (d.totalPausedTime||0) + p });
+        window.openProductModal = (id, name) => {
+            productTargetId = id;
+            document.getElementById('prod-modal-title').innerText = name;
+            document.getElementById('product-modal').style.display = 'flex';
+            
+            onValue(ref(db, `children/${id}/products`), (snap) => {
+                const list = document.getElementById('current-prod-list');
+                list.innerHTML = '';
+                const data = snap.val();
+                if(data) {
+                    Object.entries(data).forEach(([key, val]) => {
+                        const div = document.createElement('div');
+                        div.className = 'manage-prod-item';
+                        div.innerHTML = `
+                            <span>${val.name} (${val.price} ج.م)</span>
+                            <button class="btn-delete-prod" onclick="deleteProduct('${id}', '${key}')">حذف 🗑️</button>
+                        `;
+                        list.appendChild(div);
+                    });
+                } else {
+                    list.innerHTML = '<div style="text-align:center; color:#999; font-size:0.8rem;">لا يوجد منتجات</div>';
+                }
             });
         };
 
-        // --- Financial View ---
-        function initFinancialView() {
-            onValue(ref(db, 'children'), (snapshot) => {
-                const data = snapshot.val();
+        window.deleteProduct = (childId, prodId) => {
+            if(confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
+                remove(ref(db, `children/${childId}/products/${prodId}`));
+                showToast('تم حذف المنتج');
+            }
+        };
+
+        window.closeProductModal = () => {
+            document.getElementById('product-modal').style.display = 'none';
+            document.getElementById('prod-name').value = '';
+            document.getElementById('prod-price').value = '';
+        };
+
+        window.addProduct = () => {
+            const name = document.getElementById('prod-name').value;
+            const price = document.getElementById('prod-price').value;
+            if(!name || !price) return;
+            
+            push(ref(db, `children/${productTargetId}/products`), { name, price: parseFloat(price) })
+            .then(() => {
+                showToast('تمت الإضافة');
+                closeProductModal(); 
+            });
+        };
+
+        // --- Chat Logic ---
+        window.openAdminChat = (id, name) => {
+            activeChatId = id;
+            document.getElementById('chat-modal-title').innerText = name;
+            document.getElementById('admin-chat-modal').style.display = 'flex';
+            
+            const msgsRef = ref(db, `children/${id}/messages`);
+            onValue(msgsRef, (snap) => {
+                const msgs = snap.val();
+                renderChat(msgs, 'admin-chat-history', 'admin');
+                if(msgs) {
+                    Object.keys(msgs).forEach(key => {
+                        if(msgs[key].sender === 'parent' && !msgs[key].read) {
+                            update(ref(db, `children/${id}/messages/${key}`), { read: true });
+                        }
+                    });
+                }
+            });
+        };
+        window.closeAdminChat = () => {
+            activeChatId = null;
+            document.getElementById('admin-chat-modal').style.display = 'none';
+        };
+        window.sendAdminMessage = () => {
+            const txt = document.getElementById('admin-chat-input').value;
+            if(!txt) return;
+            push(ref(db, `children/${activeChatId}/messages`), {
+                text: txt, sender: 'admin', timestamp: Date.now(), read: false, reaction: ''
+            });
+            document.getElementById('admin-chat-input').value = '';
+        };
+
+        function initParent(id) {
+            onValue(ref(db, `children/${id}`), (snap) => {
+                const data = snap.val();
                 if(!data) return;
 
-                let dayInc = 0, weekInc = 0, monthInc = 0, dayCount = 0;
-                let dayProductSales = 0; 
-                
-                const now = new Date();
-                const todayStr = now.toDateString();
-                const currentMonth = now.getMonth();
-                const d = new Date();
-                const dayNum = d.getDay(); 
-                const daysToSaturday = (dayNum + 1) % 7; 
-                const startOfWeekTs = new Date(d.setDate(d.getDate() - daysToSaturday)).setHours(0,0,0,0);
-
-                Object.keys(data).forEach(key => {
-                    const child = data[key];
-                    if (child.status === 'out' && child.exitTime) {
-                        const cost = parseFloat(child.totalCost || 0);
-                        const exitDate = new Date(child.exitTime);
-
-                        if (exitDate.toDateString() === todayStr) {
-                            dayInc += cost;
-                            dayCount++;
-                            if(child.products) Object.values(child.products).forEach(p => dayProductSales += parseFloat(p.price));
-                        }
-                        
-                        if (exitDate.getMonth() === currentMonth && exitDate.getFullYear() === now.getFullYear()) {
-                            monthInc += cost;
-                        }
-
-                        if (child.exitTime >= startOfWeekTs) {
-                            weekInc += cost;
-                        }
-                    }
-                });
-
-                document.getElementById('stat-day-income').innerText = dayInc + ' ج.م';
-                document.getElementById('stat-week-income').innerText = weekInc + ' ج.م';
-                document.getElementById('stat-month-income').innerText = monthInc + ' ج.م';
-                document.getElementById('stat-day-count').innerText = dayCount;
-                document.getElementById('stat-day-products').innerText = dayProductSales + ' ج.م';
-                renderDailyDetails(data, todayStr);
-            });
-        }
-
-        window.toggleDailyDetails = () => {
-            document.getElementById('daily-details-container').classList.toggle('hidden');
-        };
-
-        function renderDailyDetails(data, todayStr) {
-            const listDiv = document.getElementById('financial-kids-list');
-            listDiv.innerHTML = '';
-            
-            let found = false;
-            Object.keys(data).forEach(key => {
-                const child = data[key];
-                if(child.status === 'out' && child.exitTime) {
-                    const exitDate = new Date(child.exitTime);
-                    if (exitDate.toDateString() === todayStr) {
-                        found = true;
-                        const item = document.createElement('div');
-                        item.style.cssText = "padding:12px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; cursor:pointer;";
-                        item.innerHTML = `
-                            <div>
-                                <div style="font-weight:bold;">${child.name}</div>
-                                <div style="font-size:0.85rem; color:#888;">${getModeLabel(child.pricingMode)}</div>
-                            </div>
-                            <div style="font-weight:bold; color:var(--success);">${child.totalCost} ج.م</div>
-                        `;
-                        item.onclick = () => showReceiptModal(child, key, true);
-                        listDiv.appendChild(item);
-                    }
+                if(data.status === 'out') {
+                    document.getElementById('parent-view').classList.add('hidden');
+                    document.getElementById('session-ended-view').classList.remove('hidden');
+                    document.getElementById('final-cost-display').innerText = data.totalCost;
+                    return;
                 }
-            });
-            if(!found) listDiv.innerHTML = '<div style="text-align:center; padding:10px; color:#999;">لا يوجد خروج اليوم</div>';
-        }
-
-        // --- Product Management ---
-        window.openProductModal = (id) => {
-            childIdForProduct = id;
-            const listContainer = document.getElementById('current-products-list');
-            listContainer.innerHTML = 'جاري التحميل...';
-            get(ref(db, `children/${id}/products`)).then(snap => {
-                listContainer.innerHTML = '';
-                if(snap.exists()) {
-                    snap.forEach(pSnap => {
-                        const p = pSnap.val();
-                        listContainer.innerHTML += `
-                            <div class="mini-product-item">
-                                <span>${p.name} (${p.price} ج.م)</span>
-                                <button class="btn-delete-mini" onclick="deleteProduct('${id}', '${pSnap.key}')"><i class="fas fa-trash"></i></button>
-                            </div>`;
-                    });
-                } else {
-                    listContainer.innerHTML = '<div style="text-align:center; color:#999;">لا توجد منتجات</div>';
-                }
-            });
-            document.getElementById('new-product-name').value = '';
-            document.getElementById('new-product-price').value = '';
-            document.getElementById('add-product-modal').style.display = 'flex';
-        };
-
-        window.deleteProduct = (childId, prodKey) => {
-            if(confirm('حذف المنتج؟')) remove(ref(db, `children/${childId}/products/${prodKey}`)).then(() => openProductModal(childId));
-        };
-        window.closeProductModal = () => document.getElementById('add-product-modal').style.display = 'none';
-        window.submitAddProduct = () => {
-            const name = document.getElementById('new-product-name').value;
-            const price = document.getElementById('new-product-price').value;
-            if(!name || !price) return;
-            push(ref(db, `children/${childIdForProduct}/products`), { name, price: parseFloat(price) }).then(() => closeProductModal());
-        };
-
-        // --- Checkout Logic (UPDATED) ---
-        function calculateEntryCost(c, msDuration) {
-            const hours = Math.ceil(msDuration / 3600000); // Ceiling: any part of hour is hour
-            const mode = c.pricingMode || 'hourly';
-
-            if (mode === 'package3') {
-                return 100;
-            } else if (mode === 'package5') {
-                return 150;
-            } else {
-                // Hourly Mode
-                // Minimum 2 hours
-                const chargeableHours = Math.max(hours, 2); 
-                return chargeableHours * 30; // 30 EGP per hour
-            }
-        }
-
-        function showReceiptModal(c, key, isReadOnly = false) {
-            let ms = c.status === 'paused' 
-                ? c.pauseStartTime - c.entryTime - (c.totalPausedTime||0)
-                : (c.status === 'out' && c.exitTime) ? (c.exitTime - c.entryTime - (c.totalPausedTime||0)) 
-                : Date.now() - c.entryTime - (c.totalPausedTime||0);
-            
-            const hoursCeil = Math.ceil(ms / 3600000); 
-            const entryCost = calculateEntryCost(c, ms);
-
-            let productsCost = 0;
-            let productsListHTML = '';
-            let productsTextForWA = '';
-
-            if(c.products) {
-                Object.values(c.products).forEach(p => {
-                    productsCost += parseFloat(p.price);
-                    productsListHTML += `<div class="receipt-row"><span>${p.name}</span><span>${p.price} ج.م</span></div>`;
-                    productsTextForWA += `\n🛍️ ${p.name}: ${p.price} ج.م`;
-                });
-            } else {
-                productsListHTML = '<div style="color:#999; text-align:center;">لا يوجد طلبات</div>';
-                productsTextForWA = '\n🛍️ لا يوجد طلبات إضافية';
-            }
-
-            const grandTotal = entryCost + productsCost;
-
-            document.getElementById('receipt-child-name').innerText = c.name;
-            document.getElementById('receipt-mode-text').innerText = getModeLabel(c.pricingMode);
-            document.getElementById('receipt-hours-text').innerText = `${hoursCeil} ساعة / ${formatDuration(ms)}`;
-            document.getElementById('receipt-entry-cost').innerText = `${entryCost} ج.م`;
-            document.getElementById('receipt-products-list').innerHTML = productsListHTML;
-            document.getElementById('receipt-grand-total').innerText = `${grandTotal} ج.م`;
-
-            const waPhone = '2' + c.phone;
-            const waText = `🧾 *فاتورة استضافة أوبرا عاشور*\n------------------------\n👤 *الطفل:* ${c.name}\n🔖 *النظام:* ${getModeLabel(c.pricingMode)}\n⏳ *الوقت:* ${hoursCeil} ساعة\n💰 *حساب الاستضافة:* ${entryCost} ج.م${productsTextForWA}\n------------------------\n💵 *الإجمالي النهائي:* *${grandTotal} ج.م*\n📅 ${new Date().toLocaleDateString('ar-EG')}\n------------------------\nشكراً لزيارتكم! ❤️`;
-            document.getElementById('receipt-whatsapp-btn').href = `https://wa.me/${waPhone}?text=${encodeURIComponent(waText)}`;
-
-            const confirmBtn = document.getElementById('btn-confirm-out');
-            if(isReadOnly) {
-                confirmBtn.style.display = 'none';
-            } else {
-                confirmBtn.style.display = 'inline-block';
-                document.getElementById('checkout-modal').dataset.total = grandTotal;
-            }
-            document.getElementById('checkout-modal').style.display = 'flex';
-        }
-
-        window.prepareCheckout = (id) => {
-            currentChildId = id;
-            get(ref(db, `children/${id}`)).then(s => showReceiptModal(s.val(), id, false));
-        };
-        window.confirmCheckout = () => {
-            const total = document.getElementById('checkout-modal').dataset.total;
-            update(ref(db, `children/${currentChildId}`), { status: 'out', exitTime: Date.now(), totalCost: total }).then(() => closeModal());
-        };
-        window.closeModal = () => document.getElementById('checkout-modal').style.display = 'none';
-
-        // --- PARENT VIEW & CHAT ---
-        function initParentView(childId) {
-            currentChatId = childId;
-            document.getElementById('parent-view').classList.remove('hidden');
-            
-            // Read status update
-            get(ref(db, `children/${childId}/messages`)).then(s => {
-                if(s.exists()) s.forEach(c => { if(c.val().sender==='admin' && c.val().status!=='read') update(ref(db, `children/${childId}/messages/${c.key}`), {status:'read'}); });
-            });
-
-            onValue(ref(db, `children/${childId}`), (snapshot) => {
-                const data = snapshot.val();
-                if (!data) return;
 
                 document.getElementById('p-child-name').innerText = data.name;
-                document.getElementById('p-child-id').innerText = `ID: ${data.childId}`;
-                document.getElementById('p-pricing-mode').innerText = "نظام: " + getModeLabel(data.pricingMode);
-
-                const costEl = document.getElementById('live-cost');
-                const containerEl = document.getElementById('parent-timer-container');
-
-                // Products
-                const prodContainer = document.getElementById('parent-products-container');
-                const prodItems = document.getElementById('parent-products-items');
-                let prodCost = 0;
+                document.getElementById('p-child-id').innerText = '#' + data.childId;
                 
-                if (data.products) {
-                    prodContainer.classList.remove('hidden');
-                    prodItems.innerHTML = '';
-                    Object.values(data.products).forEach(p => {
-                        prodCost += parseFloat(p.price);
-                        prodItems.innerHTML += `<div class="prod-row"><span>${p.name}</span><span>${p.price} ج.م</span></div>`;
-                    });
+                // Update Status Badge and Logic
+                const statusBadge = document.getElementById('p-status-badge');
+                const timerCircle = document.getElementById('live-timer');
+
+                if (data.status === 'paused') {
+                    statusBadge.innerText = "متوقف مؤقتاً";
+                    statusBadge.style.background = "var(--warning)";
+                    timerCircle.classList.add('paused-circle');
+                    timerCircle.innerHTML = "تم ايقاف الوقت<br>لحين عودة الطفل";
                 } else {
-                    prodContainer.classList.add('hidden');
+                    statusBadge.innerText = "متواجد حالياً";
+                    statusBadge.style.background = "var(--success)";
+                    timerCircle.classList.remove('paused-circle');
                 }
+                
+                const prods = data.products ? Object.values(data.products) : [];
+                let pTotal = 0;
+                let pHtml = '';
+                prods.forEach(p => {
+                    pTotal += p.price;
+                    if(p.price > 0) {
+                        pHtml += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding:5px 0;"><span>${p.name}</span><span>${p.price} ج.م</span></div>`;
+                    } else {
+                        pHtml += `<div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding:5px 0; color:var(--success);"><span>${p.name}</span><span>مجاناً</span></div>`;
+                    }
+                });
+                
+                if(pHtml) {
+                    document.getElementById('p-products-list').innerHTML = `<div style="font-weight:bold; margin-bottom:5px;">📋 الطلبات:</div>` + pHtml;
+                    document.getElementById('p-products-list').style.display = 'block';
+                } else {
+                    document.getElementById('p-products-list').style.display = 'none';
+                }
+
+                let timeMs = 0;
+                if(data.status === 'in') timeMs = Date.now() - data.entryTime - (data.totalPausedTime||0);
+                else timeMs = data.pauseStartTime - data.entryTime - (data.totalPausedTime||0);
+
+                const hours = Math.ceil(timeMs / 3600000);
+                const timeCost = hours * 50;
+                const totalCost = timeCost + pTotal;
 
                 if (data.status === 'in') {
-                    containerEl.innerHTML = '<div class="timer-text-big" id="live-timer">00:00:00</div>';
-                    const updateTimer = () => {
-                        const ms = Date.now() - data.entryTime - (data.totalPausedTime || 0);
-                        document.getElementById('live-timer').innerText = formatDuration(ms);
-                        
-                        // Live Cost Calculation for Parent
-                        const entryCost = calculateEntryCost(data, ms);
-                        costEl.innerText = entryCost + prodCost;
-                    };
-                    updateTimer();
-                    if(!window.parentTimerInterval) window.parentTimerInterval = setInterval(updateTimer, 1000);
-                } else if (data.status === 'paused') {
-                    if(window.parentTimerInterval) clearInterval(window.parentTimerInterval);
-                    containerEl.innerHTML = '<div class="paused-text-msg">تم ايقاف الوقت<br>لحين عودة الطفل ✋</div>';
-                    
-                    const ms = data.pauseStartTime - data.entryTime - (data.totalPausedTime || 0);
-                    const entryCost = calculateEntryCost(data, ms);
-                    costEl.innerText = entryCost + prodCost;
+                      document.getElementById('live-timer').innerText = formatTime(timeMs);
+                }
+                document.getElementById('live-cost').innerText = totalCost;
 
-                } else if (data.status === 'out') {
-                    if(window.parentTimerInterval) clearInterval(window.parentTimerInterval);
-                    containerEl.innerHTML = '<div class="paused-text-msg" style="color:gray">تم الخروج 👋</div>';
-                    costEl.innerText = data.totalCost;
+                if(data.status === 'in') {
+                    if(!parentTimer) parentTimer = setInterval(() => initParent(id), 1000); 
+                } else {
+                    if(parentTimer) clearInterval(parentTimer);
+                    parentTimer = null; 
                 }
 
-                // Chat Render
-                const chatDiv = document.getElementById('parent-chat-messages');
-                chatDiv.innerHTML = '';
+                renderChat(data.messages, 'parent-chat-messages', 'parent');
+                
                 if(data.messages) {
-                    Object.values(data.messages).forEach(m => {
-                        let tickIcon = '';
-                        if(m.sender === 'parent') {
-                            if(m.status === 'read') tickIcon = '<span class="msg-ticks read">✓✓</span>';
-                            else tickIcon = '<span class="msg-ticks sent">✓</span>';
+                    let needsUpdate = false;
+                    const updates = {};
+                    Object.keys(data.messages).forEach(k => {
+                        if(data.messages[k].sender === 'admin' && !data.messages[k].read) {
+                            updates[`children/${id}/messages/${k}/read`] = true;
+                            needsUpdate = true;
                         }
-                        const time = new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                        chatDiv.innerHTML += `
-                            <div class="message ${m.sender === 'parent' ? 'sent' : 'received'}">
-                                ${m.text}
-                                <span class="msg-meta">${time} ${tickIcon}</span>
-                            </div>`;
                     });
-                    chatDiv.scrollTop = chatDiv.scrollHeight;
+                    if(needsUpdate) update(ref(db), updates);
                 }
             });
 
             window.sendParentMessage = () => {
                 const txt = document.getElementById('parent-message-input').value;
                 if(!txt) return;
-                push(ref(db, `children/${childId}/messages`), { sender: 'parent', text: txt, timestamp: Date.now(), status: 'new' });
+                push(ref(db, `children/${id}/messages`), {
+                    text: txt, sender: 'parent', timestamp: Date.now(), read: false, reaction: ''
+                });
                 document.getElementById('parent-message-input').value = '';
+            };
+            
+            window.toggleReaction = (msgId) => {
+               get(ref(db, `children/${id}/messages/${msgId}/reaction`)).then(s => {
+                   const curr = s.val();
+                   update(ref(db, `children/${id}/messages/${msgId}`), { reaction: curr ? '' : '❤️' });
+               });
             };
         }
 
-        // --- Admin Chat Logic ---
-        window.openAdminChat = (id, name) => {
-            currentChatId = id;
-            document.getElementById('chat-modal-title').innerText = name;
-            document.getElementById('admin-chat-modal').style.display = 'flex';
+        function renderChat(msgsObj, containerId, viewer) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            if(!msgsObj) return;
+
+            const msgs = Object.entries(msgsObj).sort((a,b) => a[1].timestamp - b[1].timestamp);
             
-            get(ref(db, `children/${id}/messages`)).then(s => {
-                if(s.exists()) s.forEach(c => { if(c.val().sender==='parent' && c.val().status!=='read') update(ref(db, `children/${id}/messages/${c.key}`), {status:'read'}); });
-            });
-
-            onValue(ref(db, `children/${id}/messages`), s => {
-                const div = document.getElementById('admin-chat-history');
-                div.innerHTML = '';
-                if(s.exists()) {
-                    Object.values(s.val()).forEach(m => {
-                        let tickIcon = '';
-                        if(m.sender === 'admin') {
-                            if(m.status === 'read') tickIcon = '<span class="msg-ticks read">✓✓</span>';
-                            else tickIcon = '<span class="msg-ticks sent">✓</span>';
-                        }
-                        const time = new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                        
-                        div.innerHTML += `
-                            <div class="message ${m.sender === 'admin' ? 'sent' : 'received'}">
-                                ${m.text}
-                                <span class="msg-meta">${time} ${tickIcon}</span>
-                            </div>`;
+            msgs.forEach(([key, msg]) => {
+                const isMe = (viewer === 'admin' && msg.sender === 'admin') || (viewer === 'parent' && msg.sender === 'parent');
+                
+                const div = document.createElement('div');
+                div.className = `message ${isMe ? 'sent' : 'recv'}`;
+                
+                div.addEventListener('dblclick', () => {
+                    let pathId = viewer === 'admin' ? activeChatId : urlParams.get('id');
+                    get(ref(db, `children/${pathId}/messages/${key}/reaction`)).then(s => {
+                        const r = s.val();
+                        update(ref(db, `children/${pathId}/messages/${key}`), { reaction: r ? '' : '❤️' });
                     });
-                    div.scrollTop = div.scrollHeight;
+                });
+
+                const time = new Date(msg.timestamp).toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
+                
+                let ticks = '';
+                if(isMe) {
+                    const colorClass = msg.read ? 'tick-read' : '';
+                    const icon = msg.read ? 'fa-check-double' : 'fa-check';
+                    ticks = `<i class="fas ${icon} tick-icon ${colorClass}"></i>`;
                 }
+
+                const reactionHtml = msg.reaction ? `<div class="reaction-badge">${msg.reaction}</div>` : '';
+
+                div.innerHTML = `
+                    <div class="msg-content">${msg.text}</div>
+                    <div class="msg-meta">
+                        <span>${time}</span>
+                        ${ticks}
+                    </div>
+                    ${reactionHtml}
+                `;
+                container.appendChild(div);
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // --- Action Buttons ---
+        window.openWhatsApp = (phone, id, link) => {
+            const finalLink = link || `${window.location.origin}${window.location.pathname}?mode=parent&id=${id}`;
+            let formattedPhone = phone.replace(/[^0-9]/g,'');
+            if(formattedPhone.startsWith('01')) {
+                formattedPhone = '2' + formattedPhone;
+            }
+            
+            const url = `https://wa.me/${formattedPhone}?text=${encodeURIComponent("نحن في كافيه ومطعم أوبرا كافيه سعداء لحضور طفلك معنا ونؤكد أن طفلك فى أمان معنا ويمكنك متابعته من خلال هذا الرابط فى اى وقت:\n" + finalLink)}`;
+            window.open(url, '_blank');
+        };
+        
+        window.pause = (id) => update(ref(db, `children/${id}`), { status:'paused', pauseStartTime: Date.now() });
+        window.resume = (id) => {
+            get(ref(db, `children/${id}`)).then(s => {
+                const d = s.val();
+                const pTime = Date.now() - d.pauseStartTime;
+                update(ref(db, `children/${id}`), { status:'in', totalPausedTime: (d.totalPausedTime||0) + pTime });
             });
         };
-        window.closeAdminChat = () => document.getElementById('admin-chat-modal').style.display = 'none';
-        window.sendAdminMessage = () => {
-            const txt = document.getElementById('admin-chat-input').value;
-            if(!txt) return;
-            push(ref(db, `children/${currentChatId}/messages`), { sender: 'admin', text: txt, timestamp: Date.now(), status: 'new' });
-            document.getElementById('admin-chat-input').value = '';
+        
+        // --- CHECKOUT LOGIC ---
+        window.checkout = (id) => {
+            currentChildId = id;
+            get(ref(db, `children/${id}`)).then(s => {
+                const d = s.val();
+                currentBillPhone = d.phone;
+
+                let timeMs = d.status === 'in' ? Date.now() - d.entryTime - (d.totalPausedTime||0) : d.pauseStartTime - d.entryTime - (d.totalPausedTime||0);
+                
+                const hours = Math.ceil(timeMs/3600000); 
+                const timeCost = hours * 50;
+                
+                const prods = d.products ? Object.values(d.products) : [];
+                let pTotal = 0;
+                let productsHTML = '';
+                let waProductsText = "";
+                
+                prods.forEach(p => {
+                    pTotal += p.price;
+                    const priceTxt = p.price > 0 ? `${p.price} ج.م` : 'مجاناً';
+                    productsHTML += `
+                        <div class="receipt-row">
+                            <span>${p.name}</span>
+                            <span>${priceTxt}</span>
+                        </div>`;
+                    waProductsText += `▫️ ${p.name}: ${priceTxt}%0a`;
+                });
+
+                if(productsHTML === '') {
+                    productsHTML = '<div style="text-align:center; color:#ccc; font-size:0.8rem;">لا توجد طلبات إضافية</div>';
+                    waProductsText = "لا توجد طلبات إضافية%0a";
+                }
+
+                const totalAmount = timeCost + pTotal;
+                
+                const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+                const now = new Date();
+                const dayName = days[now.getDay()];
+                const dateStr = now.toLocaleDateString('ar-EG');
+                const fullDate = `${dayName}، ${dateStr}`;
+
+                document.getElementById('bill-child-name').innerText = d.name;
+                document.getElementById('bill-duration').innerText = `${hours} ساعة (${timeCost} ج.م)`;
+                document.getElementById('bill-date-line').innerText = fullDate;
+                document.getElementById('bill-products-container').innerHTML = productsHTML;
+                document.getElementById('bill-total-amount').innerText = totalAmount + ' ج.م';
+
+                const waMessage = `*فاتورة منطقة ألعاب أوبرا عاشور* 🎪%0a` +
+                                  `--------------------------------%0a` +
+                                  `لقد استمتع طفلكم *${d.name}* باللعب معنا 😍%0a%0a` +
+                                  `⏳ *عدد الساعات:* ${hours} ساعات%0a` +
+                                  `💰 *حساب الوقت:* ${timeCost} ج.م%0a` +
+                                  `--------------------------------%0a` +
+                                  `📋 *المنتجات:*%0a` +
+                                  waProductsText +
+                                  `--------------------------------%0a` +
+                                  `💵 *المبلغ الإجمالي:* *${totalAmount} ج.م*%0a` +
+                                  `📅 *التاريخ:* ${fullDate}%0a` +
+                                  `--------------------------------%0a` +
+                                  `شكراً لزيارتكم منطقة ألعاب أوبرا عاشور ❤️%0a` +
+                                  `ننتظر عودتكم لنا ✨`;
+
+                const btn = document.getElementById('btn-send-bill-wa');
+                btn.onclick = () => {
+                      let p = currentBillPhone.replace(/[^0-9]/g,'');
+                      if(p.startsWith('01')) p = '2' + p;
+                      const url = `https://wa.me/${p}?text=${waMessage}`;
+                      window.open(url, '_blank');
+                };
+                
+                document.getElementById('btn-confirm-checkout').style.display = 'block';
+                document.getElementById('checkout-modal').style.display = 'flex';
+            });
         };
 
-        function formatDuration(ms) {
-            if(ms < 0) ms = 0;
+        window.confirmCheckout = () => {
+            const total = document.getElementById('bill-total-amount').innerText.replace(' ج.م','');
+            update(ref(db, `children/${currentChildId}`), { status:'out', exitTime: Date.now(), totalCost: total });
+            closeModal();
+            showToast('تم الخروج');
+        };
+
+        // --- Utils ---
+        window.closeQR = () => document.getElementById('new-child-qr').classList.add('hidden');
+        window.closeModal = () => document.getElementById('checkout-modal').style.display = 'none';
+        function formatTime(ms) {
             const s = Math.floor((ms/1000)%60).toString().padStart(2,'0');
             const m = Math.floor((ms/60000)%60).toString().padStart(2,'0');
             const h = Math.floor(ms/3600000).toString().padStart(2,'0');
             return `${h}:${m}:${s}`;
         }
+        function showToast(msg) {
+            const t = document.createElement('div');
+            t.style.cssText = "background:#333; color:white; padding:10px 20px; border-radius:5px; margin-top:10px; box-shadow:0 3px 10px rgba(0,0,0,0.2);";
+            t.innerText = msg;
+            document.getElementById('toast-container').appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        }
+        
+        setInterval(() => {
+            document.getElementById('header-datetime').innerText = new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
+        }, 1000);
+        
+        // EXPOSE FUNCTIONS GLOBALLY
+        window.addProduct = addProduct;
+        window.openProductModal = openProductModal;
+        window.deleteProduct = deleteProduct;
+        window.closeProductModal = closeProductModal;
+
     </script>
 </body>
 </html>
