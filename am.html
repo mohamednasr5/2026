@@ -68,7 +68,8 @@
         .card { background: var(--surface); border-radius: var(--radius); padding: 1.8rem; box-shadow: 0 8px 24px rgba(149, 157, 165, 0.1); margin-bottom: 1.5rem; }
         .form-group { margin-bottom: 1.2rem; }
         .form-control { width: 100%; padding: 14px; background: #f8f9fa; border: 1px solid #dfe4ea; border-radius: 12px; font-size: 1rem; }
-        
+        select.form-control { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: left 1rem center; background-size: 1em; }
+
         .kid-card { background: white; border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); position: relative; overflow: hidden; border: 1px solid #f1f2f6;}
         .kid-card::before { content: ''; position: absolute; top: 0; right: 0; width: 6px; height: 100%; }
         .kid-card.in-status::before { background: var(--success); }
@@ -90,6 +91,7 @@
         .dashed-divider { border-bottom: 2px dashed #ccc; margin: 15px 0; position: relative; }
         .receipt-total-box { background: #f1f2f6; padding: 15px; text-align: center; border-radius: 10px; margin-top: 15px; }
         .timer-display { font-family: 'Courier New', monospace; font-weight: 800; color: var(--primary); font-size: 1.1rem; background: rgba(255, 71, 87, 0.05); padding: 5px 10px; border-radius: 8px; display: inline-block;}
+        .pricing-badge { font-size: 0.75rem; padding: 3px 8px; border-radius: 10px; background: #eee; color: #555; margin-right: 5px; }
 
         /* Financial */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
@@ -188,12 +190,22 @@
                             <input type="tel" id="parent-phone" class="form-control" placeholder="01xxxxxxxxx" maxlength="11" required>
                             <small style="color:#888; font-size:0.8rem;">يجب أن يبدأ بـ 01 ويكون 11 رقم</small>
                         </div>
+                        
+                        <div class="form-group" style="background: #fdfdfd; padding: 10px; border: 1px dashed #ccc; border-radius: 10px;">
+                            <label style="color: var(--primary); font-weight: bold;">💰 نظام المحاسبة</label>
+                            <select id="pricing-mode" class="form-control" style="font-weight: bold; color: #333;">
+                                <option value="hourly">⏱️ حساب بالساعة (30ج - حد أدنى ساعتين)</option>
+                                <option value="package3">📦 باكدج 3 ساعات (100ج شامل الوجبة)</option>
+                                <option value="package5">🌟 باكدج نصف يوم (150ج حتى 5 ساعات)</option>
+                            </select>
+                        </div>
+
                         <div class="form-group">
-                            <label>منتج (اختياري)</label>
+                            <label>منتج إضافي (اختياري)</label>
                             <input type="text" id="extra-item" class="form-control" placeholder="مثلاً: فشار">
                         </div>
                         <div class="form-group">
-                            <label>السعر</label>
+                            <label>سعر المنتج</label>
                             <input type="number" id="extra-price" class="form-control" placeholder="ج.م">
                         </div>
                         <button type="submit" class="btn btn-primary">تسجيل دخول</button>
@@ -265,6 +277,7 @@
                 <div id="p-status-badge" style="padding:5px 15px; border-radius:20px; display:inline-block; font-weight:bold; margin-bottom:10px;"></div>
                 <h2 id="p-child-name"></h2>
                 <div id="p-child-id" style="color:#666; margin-bottom:10px;"></div>
+                <div id="p-pricing-mode" style="background:#f0f0f0; padding:5px 10px; border-radius:8px; display:inline-block; font-size:0.9rem; margin-bottom:15px; color:#555;"></div>
                 
                 <div class="parent-timer-circle" id="parent-timer-container">
                     <div class="timer-text-big" id="live-timer">00:00:00</div>
@@ -316,11 +329,21 @@
                         <span id="receipt-child-name">--</span>
                     </div>
                     <div class="receipt-row">
-                        <span>الوقت المحسوب:</span>
+                        <span>نظام المحاسبة:</span>
+                        <span id="receipt-mode-text" style="font-size:0.85rem;">--</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>الوقت المستهلك:</span>
                         <span id="receipt-hours-text" dir="ltr">--</span>
                     </div>
                     <div class="dashed-divider"></div>
-                    <div style="font-weight:bold; margin-bottom:10px;">الطلبات:</div>
+                    <div class="receipt-row bold" style="color:var(--primary);">
+                        <span>حساب الاستضافة:</span>
+                        <span id="receipt-entry-cost">0 ج.م</span>
+                    </div>
+                    
+                    <div class="dashed-divider"></div>
+                    <div style="font-weight:bold; margin-bottom:10px;">الطلبات الإضافية:</div>
                     <div id="receipt-products-list"></div>
                     <div class="dashed-divider"></div>
                     <div class="receipt-total-box">
@@ -429,6 +452,13 @@
             document.getElementById('header-datetime').innerText = new Date().toLocaleDateString('ar-EG', { weekday:'long', hour:'2-digit', minute:'2-digit' });
         }, 1000);
 
+        // --- Pricing Helper ---
+        function getModeLabel(mode) {
+            if(mode === 'package3') return 'باكدج 3 ساعات';
+            if(mode === 'package5') return 'باكدج نصف يوم';
+            return 'حساب بالساعة';
+        }
+
         // --- Staff View ---
         function initStaffView() {
             onValue(ref(db, 'children'), (snapshot) => {
@@ -441,6 +471,8 @@
 
                 Object.keys(data).forEach(key => {
                     const child = data[key];
+                    const modeLabel = getModeLabel(child.pricingMode || 'hourly');
+                    
                     let productHTML = '';
                     let productsTotal = 0;
                     if(child.products) {
@@ -460,8 +492,6 @@
                             ? (child.pauseStartTime - child.entryTime - (child.totalPausedTime||0))
                             : (Date.now() - child.entryTime - (child.totalPausedTime||0));
                         
-                        const hoursCeil = Math.ceil(duration / 3600000); 
-                        
                         // Badge logic
                         const msgs = child.messages ? Object.values(child.messages) : [];
                         const unread = msgs.filter(m => m.sender === 'parent' && m.status !== 'read').length;
@@ -479,11 +509,12 @@
                         div.innerHTML = `
                             <div class="kid-info">
                                 <h3>${child.name} <span style="background:#eee; padding:2px 8px; border-radius:5px; font-size:0.8rem;">#${child.childId}</span></h3>
-                                <div style="font-size:0.85rem; color:#888;">📱 ${child.phone}</div>
+                                <div style="font-size:0.85rem; color:#888; margin-bottom:5px;">
+                                    <span class="pricing-badge">${modeLabel}</span> 📱 ${child.phone}
+                                </div>
                                 ${productHTML}
                                 <div class="timer-display" style="${isPaused?'color:orange;':''}">
                                     ⏳ ${isPaused ? 'مؤقت' : 'جاري'}: <span class="live-timer" data-start="${child.entryTime}" data-paused="${child.totalPausedTime||0}" data-status="${child.status}">${formatDuration(duration)}</span>
-                                    <span style="font-size:0.8rem; color:#333; margin-right:5px;">(${hoursCeil} س)</span>
                                 </div>
                             </div>
                             
@@ -507,6 +538,7 @@
                             <div class="kid-info">
                                 <h3 style="color:#777; text-decoration:line-through;">${child.name}</h3>
                                 <div>💰 ${child.totalCost} ج.م | 📅 ${new Date(child.exitTime).toLocaleTimeString('ar-EG')}</div>
+                                <div style="font-size:0.8rem; color:#999;">${modeLabel}</div>
                             </div>
                         `;
                         listHistory.appendChild(div);
@@ -529,6 +561,7 @@
             e.preventDefault();
             const name = document.getElementById('child-name').value;
             const phone = document.getElementById('parent-phone').value;
+            const mode = document.getElementById('pricing-mode').value; // Get Pricing Mode
             const item = document.getElementById('extra-item').value;
             const price = document.getElementById('extra-price').value;
 
@@ -540,6 +573,7 @@
             
             const data = {
                 name, phone, childId: code,
+                pricingMode: mode, // Save Pricing Mode
                 entryTime: Date.now(), status: 'in', totalPausedTime: 0
             };
             set(newRef, data).then(() => {
@@ -547,6 +581,7 @@
                     push(ref(db, `children/${newRef.key}/products`), { name: item, price: parseFloat(price) });
                 }
                 document.getElementById('checkin-form').reset();
+                document.getElementById('pricing-mode').value = 'hourly'; // Reset to default
                 const link = `${window.location.origin}${window.location.pathname}?mode=parent&id=${newRef.key}`;
                 
                 const qrDiv = document.getElementById('new-child-qr');
@@ -554,7 +589,6 @@
                 document.getElementById('qr-code').innerHTML = '';
                 new QRCode(document.getElementById('qr-code'), { text: link, width:100, height:100 });
                 
-                // هنا نقوم بإنشاء الرسالة التلقائية للواتساب عند التسجيل الجديد أيضاً
                 const msgBody = `نحن في كافيه ومطعم أوبرا كافيه سعداء لحضور طفلك معنا ونؤكد أن طفلك فى أمان معنا ويمكنك متابعته من خلال هذا الرابط فى اى وقت \n ${link}`;
                 const whatsappPhone = '2' + phone;
                 
@@ -654,7 +688,7 @@
                         item.innerHTML = `
                             <div>
                                 <div style="font-weight:bold;">${child.name}</div>
-                                <div style="font-size:0.85rem; color:#888;">${child.phone}</div>
+                                <div style="font-size:0.85rem; color:#888;">${getModeLabel(child.pricingMode)}</div>
                             </div>
                             <div style="font-weight:bold; color:var(--success);">${child.totalCost} ج.م</div>
                         `;
@@ -702,16 +736,31 @@
             push(ref(db, `children/${childIdForProduct}/products`), { name, price: parseFloat(price) }).then(() => closeProductModal());
         };
 
-        // --- Checkout ---
+        // --- Checkout Logic (UPDATED) ---
+        function calculateEntryCost(c, msDuration) {
+            const hours = Math.ceil(msDuration / 3600000); // Ceiling: any part of hour is hour
+            const mode = c.pricingMode || 'hourly';
+
+            if (mode === 'package3') {
+                return 100;
+            } else if (mode === 'package5') {
+                return 150;
+            } else {
+                // Hourly Mode
+                // Minimum 2 hours
+                const chargeableHours = Math.max(hours, 2); 
+                return chargeableHours * 30; // 30 EGP per hour
+            }
+        }
+
         function showReceiptModal(c, key, isReadOnly = false) {
             let ms = c.status === 'paused' 
                 ? c.pauseStartTime - c.entryTime - (c.totalPausedTime||0)
                 : (c.status === 'out' && c.exitTime) ? (c.exitTime - c.entryTime - (c.totalPausedTime||0)) 
                 : Date.now() - c.entryTime - (c.totalPausedTime||0);
             
-            const hours = Math.ceil(ms / 3600000); 
-            const safeHours = hours === 0 ? 1 : hours; 
-            const timeCost = safeHours * 20;
+            const hoursCeil = Math.ceil(ms / 3600000); 
+            const entryCost = calculateEntryCost(c, ms);
 
             let productsCost = 0;
             let productsListHTML = '';
@@ -728,15 +777,17 @@
                 productsTextForWA = '\n🛍️ لا يوجد طلبات إضافية';
             }
 
-            const grandTotal = timeCost + productsCost;
+            const grandTotal = entryCost + productsCost;
 
             document.getElementById('receipt-child-name').innerText = c.name;
-            document.getElementById('receipt-hours-text').innerText = `${safeHours} ساعة (${timeCost} ج.م)`;
+            document.getElementById('receipt-mode-text').innerText = getModeLabel(c.pricingMode);
+            document.getElementById('receipt-hours-text').innerText = `${hoursCeil} ساعة / ${formatDuration(ms)}`;
+            document.getElementById('receipt-entry-cost').innerText = `${entryCost} ج.م`;
             document.getElementById('receipt-products-list').innerHTML = productsListHTML;
             document.getElementById('receipt-grand-total').innerText = `${grandTotal} ج.م`;
 
             const waPhone = '2' + c.phone;
-            const waText = `🧾 *فاتورة استضافة أوبرا عاشور*\n------------------------\n👤 *الطفل:* ${c.name}\n⏳ *الوقت:* ${safeHours} ساعات\n💰 *حساب الوقت:* ${timeCost} ج.م${productsTextForWA}\n------------------------\n💵 *الإجمالي النهائي:* *${grandTotal} ج.م*\n📅 ${new Date().toLocaleDateString('ar-EG')}\n------------------------\nشكراً لزيارتكم! ❤️`;
+            const waText = `🧾 *فاتورة استضافة أوبرا عاشور*\n------------------------\n👤 *الطفل:* ${c.name}\n🔖 *النظام:* ${getModeLabel(c.pricingMode)}\n⏳ *الوقت:* ${hoursCeil} ساعة\n💰 *حساب الاستضافة:* ${entryCost} ج.م${productsTextForWA}\n------------------------\n💵 *الإجمالي النهائي:* *${grandTotal} ج.م*\n📅 ${new Date().toLocaleDateString('ar-EG')}\n------------------------\nشكراً لزيارتكم! ❤️`;
             document.getElementById('receipt-whatsapp-btn').href = `https://wa.me/${waPhone}?text=${encodeURIComponent(waText)}`;
 
             const confirmBtn = document.getElementById('btn-confirm-out');
@@ -759,12 +810,12 @@
         };
         window.closeModal = () => document.getElementById('checkout-modal').style.display = 'none';
 
-        // --- PARENT VIEW & CHAT (Modified) ---
+        // --- PARENT VIEW & CHAT ---
         function initParentView(childId) {
             currentChatId = childId;
             document.getElementById('parent-view').classList.remove('hidden');
             
-            // تحديث حالة قراءة رسائل الإدمن من قبل الأب
+            // Read status update
             get(ref(db, `children/${childId}/messages`)).then(s => {
                 if(s.exists()) s.forEach(c => { if(c.val().sender==='admin' && c.val().status!=='read') update(ref(db, `children/${childId}/messages/${c.key}`), {status:'read'}); });
             });
@@ -775,11 +826,12 @@
 
                 document.getElementById('p-child-name').innerText = data.name;
                 document.getElementById('p-child-id').innerText = `ID: ${data.childId}`;
+                document.getElementById('p-pricing-mode').innerText = "نظام: " + getModeLabel(data.pricingMode);
 
                 const costEl = document.getElementById('live-cost');
                 const containerEl = document.getElementById('parent-timer-container');
 
-                // عرض المنتجات للأب
+                // Products
                 const prodContainer = document.getElementById('parent-products-container');
                 const prodItems = document.getElementById('parent-products-items');
                 let prodCost = 0;
@@ -800,35 +852,37 @@
                     const updateTimer = () => {
                         const ms = Date.now() - data.entryTime - (data.totalPausedTime || 0);
                         document.getElementById('live-timer').innerText = formatDuration(ms);
-                        const h = Math.ceil(ms/3600000) || 1;
-                        costEl.innerText = (h*20) + prodCost;
+                        
+                        // Live Cost Calculation for Parent
+                        const entryCost = calculateEntryCost(data, ms);
+                        costEl.innerText = entryCost + prodCost;
                     };
                     updateTimer();
                     if(!window.parentTimerInterval) window.parentTimerInterval = setInterval(updateTimer, 1000);
                 } else if (data.status === 'paused') {
                     if(window.parentTimerInterval) clearInterval(window.parentTimerInterval);
                     containerEl.innerHTML = '<div class="paused-text-msg">تم ايقاف الوقت<br>لحين عودة الطفل ✋</div>';
+                    
                     const ms = data.pauseStartTime - data.entryTime - (data.totalPausedTime || 0);
-                    const h = Math.ceil(ms/3600000) || 1;
-                    costEl.innerText = (h*20) + prodCost;
+                    const entryCost = calculateEntryCost(data, ms);
+                    costEl.innerText = entryCost + prodCost;
+
                 } else if (data.status === 'out') {
                     if(window.parentTimerInterval) clearInterval(window.parentTimerInterval);
                     containerEl.innerHTML = '<div class="paused-text-msg" style="color:gray">تم الخروج 👋</div>';
                     costEl.innerText = data.totalCost;
                 }
 
-                // Chat Render with Ticks
+                // Chat Render
                 const chatDiv = document.getElementById('parent-chat-messages');
                 chatDiv.innerHTML = '';
                 if(data.messages) {
                     Object.values(data.messages).forEach(m => {
-                        // حالة الرسالة
                         let tickIcon = '';
                         if(m.sender === 'parent') {
                             if(m.status === 'read') tickIcon = '<span class="msg-ticks read">✓✓</span>';
                             else tickIcon = '<span class="msg-ticks sent">✓</span>';
                         }
-
                         const time = new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                         chatDiv.innerHTML += `
                             <div class="message ${m.sender === 'parent' ? 'sent' : 'received'}">
@@ -848,13 +902,12 @@
             };
         }
 
-        // --- Admin Chat Logic (Modified) ---
+        // --- Admin Chat Logic ---
         window.openAdminChat = (id, name) => {
             currentChatId = id;
             document.getElementById('chat-modal-title').innerText = name;
             document.getElementById('admin-chat-modal').style.display = 'flex';
             
-            // عند فتح الإدمن للمحادثة، اجعل رسائل الأب مقروءة
             get(ref(db, `children/${id}/messages`)).then(s => {
                 if(s.exists()) s.forEach(c => { if(c.val().sender==='parent' && c.val().status!=='read') update(ref(db, `children/${id}/messages/${c.key}`), {status:'read'}); });
             });
@@ -890,6 +943,7 @@
         };
 
         function formatDuration(ms) {
+            if(ms < 0) ms = 0;
             const s = Math.floor((ms/1000)%60).toString().padStart(2,'0');
             const m = Math.floor((ms/60000)%60).toString().padStart(2,'0');
             const h = Math.floor(ms/3600000).toString().padStart(2,'0');
